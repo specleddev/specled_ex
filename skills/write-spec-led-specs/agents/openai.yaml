@@ -1,0 +1,4 @@
+interface:
+  display_name: "Spec Led Specs"
+  short_description: "Draft and revise .spec subject specs"
+  default_prompt: "Use $write-spec-led-specs to draft or revise .spec/specs/*.spec.md files for this repository."

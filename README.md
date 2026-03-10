@@ -26,3 +26,8 @@ Then run:
 ```bash
 mix spec.check
 ```
+
+## CI
+
+GitHub Actions runs the same command through [`scripts/check_specs.sh`](scripts/check_specs.sh)
+when `.spec/`, library code, or Mix configuration changes.
