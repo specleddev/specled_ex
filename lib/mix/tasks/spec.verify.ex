@@ -67,6 +67,8 @@ defmodule Mix.Tasks.Spec.Verify do
         message = finding["message"] || ""
         Mix.shell().info("[#{severity}] #{subject_id} #{code} #{file} :: #{message}")
       end)
+
+      Mix.raise("Spec verify failed: #{length(report["findings"] || [])} finding(s)")
     end
   end
 end

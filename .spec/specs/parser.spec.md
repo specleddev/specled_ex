@@ -29,7 +29,7 @@ surface:
   priority: should
   stability: stable
 - id: specled.parser.resilient_errors
-  statement: The parser shall continue parsing and collect parse errors when a block cannot be decoded or when spec-meta appears more than once.
+  statement: The parser shall continue parsing and collect parse errors when a block cannot be decoded, when a structured block appears more than once, or when block items fail schema validation.
   priority: must
   stability: stable
 ```
@@ -47,6 +47,16 @@ surface:
     - the parser does not crash
   covers:
     - specled.parser.resilient_errors
+- id: specled.parser.duplicate_empty_block
+  given:
+    - a spec file with two empty spec-requirements blocks
+  when:
+    - the parser processes the file
+  then:
+    - the result includes a duplicate-block parse error
+    - the parser does not crash
+  covers:
+    - specled.parser.resilient_errors
 ```
 
 ## Verification
@@ -59,7 +69,9 @@ surface:
     - specled.parser.title_extraction
     - specled.parser.resilient_errors
 - kind: test_file
-  target: test/spec_led_ex_test.exs
+  target: test/spec_led_ex/parser_test.exs
   covers:
     - specled.parser.standard_blocks
+    - specled.parser.title_extraction
+    - specled.parser.resilient_errors
 ```

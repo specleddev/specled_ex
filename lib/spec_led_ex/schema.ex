@@ -4,7 +4,10 @@ defmodule SpecLedEx.Schema do
   @id_pattern ~r/^[a-z0-9][a-z0-9._-]*$/
 
   def id do
-    Zoi.string() |> Zoi.regex(@id_pattern, error: "invalid id format: must match #{inspect(Regex.source(@id_pattern))}")
+    Zoi.string()
+    |> Zoi.regex(@id_pattern,
+      error: "invalid id format: must match #{inspect(Regex.source(@id_pattern))}"
+    )
   end
 
   def meta do

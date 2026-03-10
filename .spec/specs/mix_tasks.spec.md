@@ -31,7 +31,11 @@ surface:
   priority: must
   stability: stable
 - id: specled.tasks.verify_findings
-  statement: mix spec.verify shall validate specs, derive findings, and write .spec/state.json with a verification report.
+  statement: mix spec.verify shall validate specs, derive findings, and write .spec/state.json with a verification report before returning.
+  priority: must
+  stability: stable
+- id: specled.tasks.verify_exit_status
+  statement: mix spec.verify shall exit non-zero whenever the generated verification report status is fail.
   priority: must
   stability: stable
 - id: specled.tasks.check_strict_gate
@@ -55,8 +59,17 @@ surface:
   target: lib/mix/tasks/spec.verify.ex
   covers:
     - specled.tasks.verify_findings
+    - specled.tasks.verify_exit_status
 - kind: source_file
   target: lib/mix/tasks/spec.check.ex
   covers:
+    - specled.tasks.check_strict_gate
+- kind: test_file
+  target: test/mix/tasks/spec_tasks_test.exs
+  covers:
+    - specled.tasks.init_scaffold
+    - specled.tasks.plan_writes_state
+    - specled.tasks.verify_findings
+    - specled.tasks.verify_exit_status
     - specled.tasks.check_strict_gate
 ```

@@ -64,43 +64,23 @@ defmodule SpecLedEx do
   end
 
   defp normalize_index(subjects) do
-    requirements =
-      Enum.flat_map(subjects, fn s ->
-        file = s["file"]
-        subject_id = (s["meta"] || %{})["id"]
-        Enum.map(s["requirements"] || [], &Map.merge(&1, %{"file" => file, "subject_id" => subject_id}))
-      end)
-
-    scenarios =
-      Enum.flat_map(subjects, fn s ->
-        file = s["file"]
-        subject_id = (s["meta"] || %{})["id"]
-        Enum.map(s["scenarios"] || [], &Map.merge(&1, %{"file" => file, "subject_id" => subject_id}))
-      end)
-
-    verifications =
-      Enum.flat_map(subjects, fn s ->
-        file = s["file"]
-        subject_id = (s["meta"] || %{})["id"]
-        Enum.map(s["verification"] || [], &Map.merge(&1, %{"file" => file, "subject_id" => subject_id}))
-      end)
-
-    exceptions =
-      Enum.flat_map(subjects, fn s ->
-        file = s["file"]
-        subject_id = (s["meta"] || %{})["id"]
-        Enum.map(s["exceptions"] || [], &Map.merge(&1, %{"file" => file, "subject_id" => subject_id}))
-      end)
+    requirements = flatten_subject_items(subjects, "requirements")
+    scenarios = flatten_subject_items(subjects, "scenarios")
+    verifications = flatten_subject_items(subjects, "verification")
+    exceptions = flatten_subject_items(subjects, "exceptions")
 
     %{
-      "subjects" => Enum.map(subjects, fn s ->
-        %{
-          "id" => (s["meta"] || %{})["id"],
-          "file" => s["file"],
-          "title" => s["title"],
-          "meta" => s["meta"]
-        }
-      end),
+      "subjects" =>
+        Enum.map(subjects, fn s ->
+          meta = map_or_nil(s["meta"])
+
+          %{
+            "id" => if(meta, do: meta["id"], else: nil),
+            "file" => s["file"],
+            "title" => s["title"],
+            "meta" => meta
+          }
+        end),
       "requirements" => requirements,
       "scenarios" => scenarios,
       "verifications" => verifications,
@@ -109,17 +89,53 @@ defmodule SpecLedEx do
   end
 
   defp normalize_findings(findings) do
-    Enum.map(findings, fn f ->
-      %{
-        "code" => f["code"],
-        "level" => f["severity"] || f["level"],
-        "message" => f["message"]
-      }
-      |> maybe_put("file", f["file"])
-      |> maybe_put("entity_id", f["subject_id"])
+    Enum.flat_map(findings, fn
+      f when is_map(f) ->
+        [
+          %{
+            "code" => f["code"],
+            "level" => f["severity"] || f["level"],
+            "message" => f["message"]
+          }
+          |> maybe_put("file", f["file"])
+          |> maybe_put("entity_id", f["subject_id"])
+        ]
+
+      _ ->
+        []
     end)
   end
 
   defp maybe_put(map, _key, nil), do: map
   defp maybe_put(map, key, value), do: Map.put(map, key, value)
+
+  defp flatten_subject_items(subjects, key) do
+    Enum.flat_map(subjects, fn subject ->
+      file = subject["file"]
+      meta = map_or_nil(subject["meta"])
+      subject_id = if(meta, do: meta["id"], else: nil)
+
+      subject
+      |> list_or_empty(key)
+      |> Enum.flat_map(fn
+        item when is_map(item) ->
+          [Map.merge(item, %{"file" => file, "subject_id" => subject_id})]
+
+        _ ->
+          []
+      end)
+    end)
+  end
+
+  defp list_or_empty(map, key) when is_map(map) do
+    case map[key] do
+      value when is_list(value) -> value
+      _ -> []
+    end
+  end
+
+  defp list_or_empty(_value, _key), do: []
+
+  defp map_or_nil(value) when is_map(value), do: value
+  defp map_or_nil(_value), do: nil
 end

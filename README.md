@@ -9,7 +9,7 @@ It provides canonical `mix spec.*` tasks:
 - `mix spec.plan`
   - reads `.spec/specs/*.spec.md` and updates `.spec/state.json` with index data
 - `mix spec.verify`
-  - validates authored specs and updates `.spec/state.json` with verification findings
+  - validates authored specs, updates `.spec/state.json`, and exits non-zero when the verification report fails
 - `mix spec.check`
   - runs `plan` plus strict `verify`
 

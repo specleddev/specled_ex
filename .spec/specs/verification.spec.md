@@ -38,6 +38,10 @@ surface:
   statement: Verification shall warn when a file-based verification target does not exist on disk.
   priority: should
   stability: stable
+- id: specled.verify.malformed_entries_nonfatal
+  statement: Verification shall ignore malformed non-map parsed block entries, rely on recorded parse errors, and continue producing a report.
+  priority: must
+  stability: stable
 ```
 
 ## Scenarios
@@ -61,6 +65,16 @@ surface:
     - a warning finding is produced for the missing target
   covers:
     - specled.verify.target_existence
+- id: specled.verify.malformed_entry_report
+  given:
+    - an indexed subject containing malformed parsed block entries and parse errors
+  when:
+    - verification runs
+  then:
+    - the report includes the parse error finding
+    - verification does not crash
+  covers:
+    - specled.verify.malformed_entries_nonfatal
 ```
 
 ## Verification
@@ -73,8 +87,17 @@ surface:
     - specled.verify.reference_checks
     - specled.verify.coverage_warnings
     - specled.verify.target_existence
+    - specled.verify.malformed_entries_nonfatal
 - kind: source_file
   target: lib/spec_led_ex/index.ex
   covers:
     - specled.verify.reference_checks
+- kind: test_file
+  target: test/spec_led_ex/verifier_test.exs
+  covers:
+    - specled.verify.meta_required
+    - specled.verify.reference_checks
+    - specled.verify.coverage_warnings
+    - specled.verify.target_existence
+    - specled.verify.malformed_entries_nonfatal
 ```

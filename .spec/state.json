@@ -1,6 +1,6 @@
 {
   "findings": [],
-  "generated_at": "2026-03-10T15:11:31Z",
+  "generated_at": "2026-03-10T15:49:26Z",
   "index": {
     "exceptions": [],
     "requirements": [
@@ -25,7 +25,15 @@
         "id": "specled.tasks.verify_findings",
         "priority": "must",
         "stability": "stable",
-        "statement": "mix spec.verify shall validate specs, derive findings, and write .spec/state.json with a verification report.",
+        "statement": "mix spec.verify shall validate specs, derive findings, and write .spec/state.json with a verification report before returning.",
+        "subject_id": "specled.mix_tasks"
+      },
+      {
+        "file": ".spec/specs/mix_tasks.spec.md",
+        "id": "specled.tasks.verify_exit_status",
+        "priority": "must",
+        "stability": "stable",
+        "statement": "mix spec.verify shall exit non-zero whenever the generated verification report status is fail.",
         "subject_id": "specled.mix_tasks"
       },
       {
@@ -73,7 +81,7 @@
         "id": "specled.parser.resilient_errors",
         "priority": "must",
         "stability": "stable",
-        "statement": "The parser shall continue parsing and collect parse errors when a block cannot be decoded or when spec-meta appears more than once.",
+        "statement": "The parser shall continue parsing and collect parse errors when a block cannot be decoded, when a structured block appears more than once, or when block items fail schema validation.",
         "subject_id": "specled.parser"
       },
       {
@@ -123,6 +131,14 @@
         "stability": "stable",
         "statement": "Verification shall warn when a file-based verification target does not exist on disk.",
         "subject_id": "specled.verification"
+      },
+      {
+        "file": ".spec/specs/verification.spec.md",
+        "id": "specled.verify.malformed_entries_nonfatal",
+        "priority": "must",
+        "stability": "stable",
+        "statement": "Verification shall ignore malformed non-map parsed block entries, rely on recorded parse errors, and continue producing a report.",
+        "subject_id": "specled.verification"
       }
     ],
     "scenarios": [
@@ -138,6 +154,24 @@
         "subject_id": "specled.parser",
         "then": [
           "the result includes a parse error",
+          "the parser does not crash"
+        ],
+        "when": [
+          "the parser processes the file"
+        ]
+      },
+      {
+        "covers": [
+          "specled.parser.resilient_errors"
+        ],
+        "file": ".spec/specs/parser.spec.md",
+        "given": [
+          "a spec file with two empty spec-requirements blocks"
+        ],
+        "id": "specled.parser.duplicate_empty_block",
+        "subject_id": "specled.parser",
+        "then": [
+          "the result includes a duplicate-block parse error",
           "the parser does not crash"
         ],
         "when": [
@@ -173,6 +207,24 @@
         "subject_id": "specled.verification",
         "then": [
           "a warning finding is produced for the missing target"
+        ],
+        "when": [
+          "verification runs"
+        ]
+      },
+      {
+        "covers": [
+          "specled.verify.malformed_entries_nonfatal"
+        ],
+        "file": ".spec/specs/verification.spec.md",
+        "given": [
+          "an indexed subject containing malformed parsed block entries and parse errors"
+        ],
+        "id": "specled.verify.malformed_entry_report",
+        "subject_id": "specled.verification",
+        "then": [
+          "the report includes the parse error finding",
+          "verification does not crash"
         ],
         "when": [
           "verification runs"
@@ -280,7 +332,8 @@
       },
       {
         "covers": [
-          "specled.tasks.verify_findings"
+          "specled.tasks.verify_findings",
+          "specled.tasks.verify_exit_status"
         ],
         "file": ".spec/specs/mix_tasks.spec.md",
         "kind": "source_file",
@@ -295,6 +348,19 @@
         "kind": "source_file",
         "subject_id": "specled.mix_tasks",
         "target": "lib/mix/tasks/spec.check.ex"
+      },
+      {
+        "covers": [
+          "specled.tasks.init_scaffold",
+          "specled.tasks.plan_writes_state",
+          "specled.tasks.verify_findings",
+          "specled.tasks.verify_exit_status",
+          "specled.tasks.check_strict_gate"
+        ],
+        "file": ".spec/specs/mix_tasks.spec.md",
+        "kind": "test_file",
+        "subject_id": "specled.mix_tasks",
+        "target": "test/mix/tasks/spec_tasks_test.exs"
       },
       {
         "covers": [
@@ -336,12 +402,14 @@
       },
       {
         "covers": [
-          "specled.parser.standard_blocks"
+          "specled.parser.standard_blocks",
+          "specled.parser.title_extraction",
+          "specled.parser.resilient_errors"
         ],
         "file": ".spec/specs/parser.spec.md",
         "kind": "test_file",
         "subject_id": "specled.parser",
-        "target": "test/spec_led_ex_test.exs"
+        "target": "test/spec_led_ex/parser_test.exs"
       },
       {
         "covers": [
@@ -375,7 +443,8 @@
           "specled.verify.meta_required",
           "specled.verify.reference_checks",
           "specled.verify.coverage_warnings",
-          "specled.verify.target_existence"
+          "specled.verify.target_existence",
+          "specled.verify.malformed_entries_nonfatal"
         ],
         "file": ".spec/specs/verification.spec.md",
         "kind": "source_file",
@@ -390,6 +459,19 @@
         "kind": "source_file",
         "subject_id": "specled.verification",
         "target": "lib/spec_led_ex/index.ex"
+      },
+      {
+        "covers": [
+          "specled.verify.meta_required",
+          "specled.verify.reference_checks",
+          "specled.verify.coverage_warnings",
+          "specled.verify.target_existence",
+          "specled.verify.malformed_entries_nonfatal"
+        ],
+        "file": ".spec/specs/verification.spec.md",
+        "kind": "test_file",
+        "subject_id": "specled.verification",
+        "target": "test/spec_led_ex/verifier_test.exs"
       }
     ]
   },
@@ -397,10 +479,10 @@
   "summary": {
     "exceptions": 0,
     "findings": 0,
-    "requirements": 15,
-    "scenarios": 3,
+    "requirements": 17,
+    "scenarios": 5,
     "subjects": 5,
-    "verifications": 14
+    "verifications": 16
   },
   "workspace": {
     "root": "/Users/mhostetler/Source/SpecLedDev/specled_ex",
