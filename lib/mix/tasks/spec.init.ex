@@ -7,6 +7,11 @@ defmodule Mix.Tasks.Spec.Init do
     {"specs/spec_system.spec.md.eex", "specs/spec_system.spec.md"},
     {"specs/package.spec.md.eex", "specs/package.spec.md"}
   ]
+  @skill_templates [
+    {"agents/skills/spec-led-development/SKILL.md.eex",
+     ".agents/skills/spec-led-development/SKILL.md"}
+  ]
+  @local_skill_path ".agents/skills/spec-led-development/SKILL.md"
 
   @impl true
   def run(args) do
@@ -36,12 +41,38 @@ defmodule Mix.Tasks.Spec.Init do
       )
     end)
 
+    maybe_scaffold_local_skill(root, force?)
+
     Mix.shell().info("spec.init scaffolded #{spec_dir}")
+  end
+
+  defp maybe_scaffold_local_skill(root, force?) do
+    if offer_local_skill?(root, force?) and
+         Mix.shell().yes?("Add a local Skill to help with Spec Led Development?") do
+      Enum.each(@skill_templates, fn {source, destination} ->
+        write_template(
+          Path.join(root, destination),
+          read_template!(source),
+          force?
+        )
+      end)
+    end
+  end
+
+  defp offer_local_skill?(root, force?) do
+    interactive_shell?() and (force? or not File.exists?(Path.join(root, @local_skill_path)))
+  end
+
+  defp interactive_shell? do
+    Mix.shell() == Mix.Shell.Process or Keyword.get(:io.getopts(), :terminal, false)
+  rescue
+    _ -> false
   end
 
   defp write_template(path, content, force?) do
     cond do
       force? ->
+        File.mkdir_p!(Path.dirname(path))
         File.write!(path, content)
         Mix.shell().info("wrote #{path}")
 
@@ -49,6 +80,7 @@ defmodule Mix.Tasks.Spec.Init do
         Mix.shell().info("kept #{path}")
 
       true ->
+        File.mkdir_p!(Path.dirname(path))
         File.write!(path, content)
         Mix.shell().info("wrote #{path}")
     end

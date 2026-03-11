@@ -2,6 +2,8 @@
 
 This folder is the Spec Led Development layer for `specled_ex`.
 
+<!-- covers: spec.workspace.readme_present -->
+
 This project uses its own tooling to specify itself.
 
 ## Layout
@@ -23,5 +25,5 @@ This project uses its own tooling to specify itself.
 
 ## Notes
 
-- Structured blocks use JSON (the Elixir parser uses `Jason.decode/1`)
+- Structured blocks prefer YAML, though JSON also parses.
 - Verification kinds use `source_file`, `test_file`, etc. (not `test` or `doc`)

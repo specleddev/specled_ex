@@ -80,20 +80,9 @@ surface:
 ## Verification
 
 ```spec-verification
-- kind: source_file
-  target: lib/specled_ex/verifier.ex
-  covers:
-    - specled.verify.meta_required
-    - specled.verify.reference_checks
-    - specled.verify.coverage_warnings
-    - specled.verify.target_existence
-    - specled.verify.malformed_entries_nonfatal
-- kind: source_file
-  target: lib/specled_ex/index.ex
-  covers:
-    - specled.verify.reference_checks
-- kind: test_file
-  target: test/specled_ex/verifier_test.exs
+- kind: command
+  target: mix test test/specled_ex/verifier_test.exs
+  execute: true
   covers:
     - specled.verify.meta_required
     - specled.verify.reference_checks

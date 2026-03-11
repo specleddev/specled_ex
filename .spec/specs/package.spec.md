@@ -33,16 +33,15 @@ surface:
 ## Verification
 
 ```spec-verification
-- kind: source_file
-  target: lib/specled_ex.ex
+- kind: command
+  target: mix test test/specled_ex_test.exs test/specled_ex/index_state_test.exs
+  execute: true
   covers:
     - specled.package.index_and_state
-- kind: source_file
-  target: lib/mix/tasks/spec.init.ex
-  covers:
-    - specled.package.mix_tasks
-- kind: source_file
-  target: lib/mix/tasks/spec.verify.ex
+- kind: command
+  target: >-
+    mix run -e 'Mix.Task.load_all(); Enum.each(~w(spec.init spec.plan spec.verify spec.check), fn task -> Mix.Task.get(task) || raise("missing #{task}") end)'
+  execute: true
   covers:
     - specled.package.mix_tasks
 ```

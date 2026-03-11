@@ -11,7 +11,7 @@ defmodule SpecLedEx.Case do
 
   setup _context do
     Mix.shell(Mix.Shell.Process)
-    drain_shell_messages()
+    Mix.Shell.Process.flush()
 
     root =
       System.tmp_dir!()
@@ -77,6 +77,12 @@ defmodule SpecLedEx.Case do
     |> Path.join("spec_init")
     |> Path.join(relative_path)
     |> EEx.eval_file([])
+  end
+
+  def answer_shell_yes(response, times \\ 1) when is_boolean(response) and times >= 1 do
+    Enum.each(1..times, fn _ ->
+      send(self(), {:mix_shell_input, :yes?, response})
+    end)
   end
 
   def reenable_tasks(tasks \\ ~w(spec.init spec.plan spec.verify spec.check)) do

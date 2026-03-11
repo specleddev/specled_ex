@@ -1,227 +1,40 @@
 {
-  "findings": [
-    {
-      "code": "verification_target_missing_reference",
-      "entity_id": "specled.mix_tasks",
-      "file": ".spec/specs/mix_tasks.spec.md",
-      "level": "info",
-      "message": "Verification target test/mix/tasks/spec_tasks_test.exs does not reference covered requirement: specled.tasks.check_strict_gate"
-    },
-    {
-      "code": "verification_target_missing_reference",
-      "entity_id": "specled.mix_tasks",
-      "file": ".spec/specs/mix_tasks.spec.md",
-      "level": "info",
-      "message": "Verification target test/mix/tasks/spec_tasks_test.exs does not reference covered requirement: specled.tasks.verify_exit_status"
-    },
-    {
-      "code": "verification_target_missing_reference",
-      "entity_id": "specled.mix_tasks",
-      "file": ".spec/specs/mix_tasks.spec.md",
-      "level": "info",
-      "message": "Verification target test/mix/tasks/spec_tasks_test.exs does not reference covered requirement: specled.tasks.verify_findings"
-    },
-    {
-      "code": "verification_target_missing_reference",
-      "entity_id": "specled.mix_tasks",
-      "file": ".spec/specs/mix_tasks.spec.md",
-      "level": "info",
-      "message": "Verification target test/mix/tasks/spec_tasks_test.exs does not reference covered requirement: specled.tasks.plan_writes_state"
-    },
-    {
-      "code": "verification_target_missing_reference",
-      "entity_id": "specled.mix_tasks",
-      "file": ".spec/specs/mix_tasks.spec.md",
-      "level": "info",
-      "message": "Verification target test/mix/tasks/spec_tasks_test.exs does not reference covered requirement: specled.tasks.init_scaffold"
-    },
-    {
-      "code": "verification_target_missing_reference",
-      "entity_id": "specled.mix_tasks",
-      "file": ".spec/specs/mix_tasks.spec.md",
-      "level": "info",
-      "message": "Verification target lib/mix/tasks/spec.check.ex does not reference covered requirement: specled.tasks.check_strict_gate"
-    },
-    {
-      "code": "verification_target_missing_reference",
-      "entity_id": "specled.mix_tasks",
-      "file": ".spec/specs/mix_tasks.spec.md",
-      "level": "info",
-      "message": "Verification target lib/mix/tasks/spec.verify.ex does not reference covered requirement: specled.tasks.verify_exit_status"
-    },
-    {
-      "code": "verification_target_missing_reference",
-      "entity_id": "specled.mix_tasks",
-      "file": ".spec/specs/mix_tasks.spec.md",
-      "level": "info",
-      "message": "Verification target lib/mix/tasks/spec.verify.ex does not reference covered requirement: specled.tasks.verify_findings"
-    },
-    {
-      "code": "verification_target_missing_reference",
-      "entity_id": "specled.mix_tasks",
-      "file": ".spec/specs/mix_tasks.spec.md",
-      "level": "info",
-      "message": "Verification target lib/mix/tasks/spec.plan.ex does not reference covered requirement: specled.tasks.plan_writes_state"
-    },
-    {
-      "code": "verification_target_missing_reference",
-      "entity_id": "specled.mix_tasks",
-      "file": ".spec/specs/mix_tasks.spec.md",
-      "level": "info",
-      "message": "Verification target lib/mix/tasks/spec.init.ex does not reference covered requirement: specled.tasks.init_scaffold"
-    },
-    {
-      "code": "verification_target_missing_reference",
-      "entity_id": "specled.package",
-      "file": ".spec/specs/package.spec.md",
-      "level": "info",
-      "message": "Verification target lib/mix/tasks/spec.verify.ex does not reference covered requirement: specled.package.mix_tasks"
-    },
-    {
-      "code": "verification_target_missing_reference",
-      "entity_id": "specled.package",
-      "file": ".spec/specs/package.spec.md",
-      "level": "info",
-      "message": "Verification target lib/mix/tasks/spec.init.ex does not reference covered requirement: specled.package.mix_tasks"
-    },
-    {
-      "code": "verification_target_missing_reference",
-      "entity_id": "specled.package",
-      "file": ".spec/specs/package.spec.md",
-      "level": "info",
-      "message": "Verification target lib/specled_ex.ex does not reference covered requirement: specled.package.index_and_state"
-    },
-    {
-      "code": "verification_target_missing_reference",
-      "entity_id": "specled.parser",
-      "file": ".spec/specs/parser.spec.md",
-      "level": "info",
-      "message": "Verification target test/specled_ex/parser_test.exs does not reference covered requirement: specled.parser.resilient_errors"
-    },
-    {
-      "code": "verification_target_missing_reference",
-      "entity_id": "specled.parser",
-      "file": ".spec/specs/parser.spec.md",
-      "level": "info",
-      "message": "Verification target test/specled_ex/parser_test.exs does not reference covered requirement: specled.parser.title_extraction"
-    },
-    {
-      "code": "verification_target_missing_reference",
-      "entity_id": "specled.parser",
-      "file": ".spec/specs/parser.spec.md",
-      "level": "info",
-      "message": "Verification target test/specled_ex/parser_test.exs does not reference covered requirement: specled.parser.standard_blocks"
-    },
-    {
-      "code": "verification_target_missing_reference",
-      "entity_id": "specled.parser",
-      "file": ".spec/specs/parser.spec.md",
-      "level": "info",
-      "message": "Verification target lib/specled_ex/parser.ex does not reference covered requirement: specled.parser.resilient_errors"
-    },
-    {
-      "code": "verification_target_missing_reference",
-      "entity_id": "specled.parser",
-      "file": ".spec/specs/parser.spec.md",
-      "level": "info",
-      "message": "Verification target lib/specled_ex/parser.ex does not reference covered requirement: specled.parser.title_extraction"
-    },
-    {
-      "code": "verification_target_missing_reference",
-      "entity_id": "specled.parser",
-      "file": ".spec/specs/parser.spec.md",
-      "level": "info",
-      "message": "Verification target lib/specled_ex/parser.ex does not reference covered requirement: specled.parser.standard_blocks"
-    },
-    {
-      "code": "verification_target_missing_reference",
-      "entity_id": "spec.system",
-      "file": ".spec/specs/spec_system.spec.md",
-      "level": "info",
-      "message": "Verification target .spec/README.md does not reference covered requirement: spec.workspace.readme_present"
-    },
-    {
-      "code": "verification_target_missing_reference",
-      "entity_id": "specled.verification",
-      "file": ".spec/specs/verification.spec.md",
-      "level": "info",
-      "message": "Verification target test/specled_ex/verifier_test.exs does not reference covered requirement: specled.verify.malformed_entries_nonfatal"
-    },
-    {
-      "code": "verification_target_missing_reference",
-      "entity_id": "specled.verification",
-      "file": ".spec/specs/verification.spec.md",
-      "level": "info",
-      "message": "Verification target test/specled_ex/verifier_test.exs does not reference covered requirement: specled.verify.target_existence"
-    },
-    {
-      "code": "verification_target_missing_reference",
-      "entity_id": "specled.verification",
-      "file": ".spec/specs/verification.spec.md",
-      "level": "info",
-      "message": "Verification target test/specled_ex/verifier_test.exs does not reference covered requirement: specled.verify.coverage_warnings"
-    },
-    {
-      "code": "verification_target_missing_reference",
-      "entity_id": "specled.verification",
-      "file": ".spec/specs/verification.spec.md",
-      "level": "info",
-      "message": "Verification target test/specled_ex/verifier_test.exs does not reference covered requirement: specled.verify.reference_checks"
-    },
-    {
-      "code": "verification_target_missing_reference",
-      "entity_id": "specled.verification",
-      "file": ".spec/specs/verification.spec.md",
-      "level": "info",
-      "message": "Verification target test/specled_ex/verifier_test.exs does not reference covered requirement: specled.verify.meta_required"
-    },
-    {
-      "code": "verification_target_missing_reference",
-      "entity_id": "specled.verification",
-      "file": ".spec/specs/verification.spec.md",
-      "level": "info",
-      "message": "Verification target lib/specled_ex/index.ex does not reference covered requirement: specled.verify.reference_checks"
-    },
-    {
-      "code": "verification_target_missing_reference",
-      "entity_id": "specled.verification",
-      "file": ".spec/specs/verification.spec.md",
-      "level": "info",
-      "message": "Verification target lib/specled_ex/verifier.ex does not reference covered requirement: specled.verify.malformed_entries_nonfatal"
-    },
-    {
-      "code": "verification_target_missing_reference",
-      "entity_id": "specled.verification",
-      "file": ".spec/specs/verification.spec.md",
-      "level": "info",
-      "message": "Verification target lib/specled_ex/verifier.ex does not reference covered requirement: specled.verify.target_existence"
-    },
-    {
-      "code": "verification_target_missing_reference",
-      "entity_id": "specled.verification",
-      "file": ".spec/specs/verification.spec.md",
-      "level": "info",
-      "message": "Verification target lib/specled_ex/verifier.ex does not reference covered requirement: specled.verify.coverage_warnings"
-    },
-    {
-      "code": "verification_target_missing_reference",
-      "entity_id": "specled.verification",
-      "file": ".spec/specs/verification.spec.md",
-      "level": "info",
-      "message": "Verification target lib/specled_ex/verifier.ex does not reference covered requirement: specled.verify.reference_checks"
-    },
-    {
-      "code": "verification_target_missing_reference",
-      "entity_id": "specled.verification",
-      "file": ".spec/specs/verification.spec.md",
-      "level": "info",
-      "message": "Verification target lib/specled_ex/verifier.ex does not reference covered requirement: specled.verify.meta_required"
-    }
-  ],
-  "generated_at": "2026-03-11T12:14:38Z",
+  "findings": [],
   "index": {
     "exceptions": [],
     "requirements": [
+      {
+        "file": ".spec/specs/spec_system.spec.md",
+        "id": "spec.workspace.readme_present",
+        "priority": "must",
+        "stability": "stable",
+        "statement": "The repository shall include a .spec/README.md that explains purpose, layout, and workflow.",
+        "subject_id": "spec.system"
+      },
+      {
+        "file": ".spec/specs/spec_system.spec.md",
+        "id": "spec.workspace.state_generated",
+        "priority": "must",
+        "stability": "stable",
+        "statement": "When planning and verification run, the workspace shall generate .spec/state.json containing index and verification state.",
+        "subject_id": "spec.system"
+      },
+      {
+        "file": ".spec/specs/mix_tasks.spec.md",
+        "id": "specled.tasks.check_strict_gate",
+        "priority": "must",
+        "stability": "stable",
+        "statement": "mix spec.check shall run planning and strict verification, failing on any errors or warnings.",
+        "subject_id": "specled.mix_tasks"
+      },
+      {
+        "file": ".spec/specs/mix_tasks.spec.md",
+        "id": "specled.tasks.init_local_skill",
+        "priority": "should",
+        "stability": "evolving",
+        "statement": "In interactive runs, mix spec.init shall offer to scaffold a local Skill for Spec Led Development and write it when the prompt is accepted.",
+        "subject_id": "specled.mix_tasks"
+      },
       {
         "file": ".spec/specs/mix_tasks.spec.md",
         "id": "specled.tasks.init_scaffold",
@@ -240,14 +53,6 @@
       },
       {
         "file": ".spec/specs/mix_tasks.spec.md",
-        "id": "specled.tasks.verify_findings",
-        "priority": "must",
-        "stability": "stable",
-        "statement": "mix spec.verify shall validate specs, derive findings, and write .spec/state.json with a verification report before returning.",
-        "subject_id": "specled.mix_tasks"
-      },
-      {
-        "file": ".spec/specs/mix_tasks.spec.md",
         "id": "specled.tasks.verify_exit_status",
         "priority": "must",
         "stability": "stable",
@@ -256,11 +61,19 @@
       },
       {
         "file": ".spec/specs/mix_tasks.spec.md",
-        "id": "specled.tasks.check_strict_gate",
+        "id": "specled.tasks.verify_findings",
         "priority": "must",
         "stability": "stable",
-        "statement": "mix spec.check shall run planning and strict verification, failing on any errors or warnings.",
+        "statement": "mix spec.verify shall validate specs, derive findings, and write .spec/state.json with a verification report before returning.",
         "subject_id": "specled.mix_tasks"
+      },
+      {
+        "file": ".spec/specs/package.spec.md",
+        "id": "specled.package.index_and_state",
+        "priority": "must",
+        "stability": "stable",
+        "statement": "The package shall index authored spec files and write derived state to .spec/state.json.",
+        "subject_id": "specled.package"
       },
       {
         "file": ".spec/specs/package.spec.md",
@@ -271,12 +84,12 @@
         "subject_id": "specled.package"
       },
       {
-        "file": ".spec/specs/package.spec.md",
-        "id": "specled.package.index_and_state",
+        "file": ".spec/specs/parser.spec.md",
+        "id": "specled.parser.resilient_errors",
         "priority": "must",
         "stability": "stable",
-        "statement": "The package shall index authored spec files and write derived state to .spec/state.json.",
-        "subject_id": "specled.package"
+        "statement": "The parser shall continue parsing and collect parse errors when a block cannot be decoded, when a structured block appears more than once, or when block items fail schema validation.",
+        "subject_id": "specled.parser"
       },
       {
         "file": ".spec/specs/parser.spec.md",
@@ -295,28 +108,20 @@
         "subject_id": "specled.parser"
       },
       {
-        "file": ".spec/specs/parser.spec.md",
-        "id": "specled.parser.resilient_errors",
+        "file": ".spec/specs/verification.spec.md",
+        "id": "specled.verify.coverage_warnings",
         "priority": "must",
         "stability": "stable",
-        "statement": "The parser shall continue parsing and collect parse errors when a block cannot be decoded, when a structured block appears more than once, or when block items fail schema validation.",
-        "subject_id": "specled.parser"
+        "statement": "Verification shall warn when a requirement has no covering verification entry.",
+        "subject_id": "specled.verification"
       },
       {
-        "file": ".spec/specs/spec_system.spec.md",
-        "id": "spec.workspace.readme_present",
+        "file": ".spec/specs/verification.spec.md",
+        "id": "specled.verify.malformed_entries_nonfatal",
         "priority": "must",
         "stability": "stable",
-        "statement": "The repository shall include a .spec/README.md that explains purpose, layout, and workflow.",
-        "subject_id": "spec.system"
-      },
-      {
-        "file": ".spec/specs/spec_system.spec.md",
-        "id": "spec.workspace.state_generated",
-        "priority": "must",
-        "stability": "stable",
-        "statement": "When planning and verification run, the workspace shall generate .spec/state.json containing index and verification state.",
-        "subject_id": "spec.system"
+        "statement": "Verification shall ignore malformed non-map parsed block entries, rely on recorded parse errors, and continue producing a report.",
+        "subject_id": "specled.verification"
       },
       {
         "file": ".spec/specs/verification.spec.md",
@@ -336,48 +141,14 @@
       },
       {
         "file": ".spec/specs/verification.spec.md",
-        "id": "specled.verify.coverage_warnings",
-        "priority": "must",
-        "stability": "stable",
-        "statement": "Verification shall warn when a requirement has no covering verification entry.",
-        "subject_id": "specled.verification"
-      },
-      {
-        "file": ".spec/specs/verification.spec.md",
         "id": "specled.verify.target_existence",
         "priority": "should",
         "stability": "stable",
         "statement": "Verification shall warn when a file-based verification target does not exist on disk.",
         "subject_id": "specled.verification"
-      },
-      {
-        "file": ".spec/specs/verification.spec.md",
-        "id": "specled.verify.malformed_entries_nonfatal",
-        "priority": "must",
-        "stability": "stable",
-        "statement": "Verification shall ignore malformed non-map parsed block entries, rely on recorded parse errors, and continue producing a report.",
-        "subject_id": "specled.verification"
       }
     ],
     "scenarios": [
-      {
-        "covers": [
-          "specled.parser.resilient_errors"
-        ],
-        "file": ".spec/specs/parser.spec.md",
-        "given": [
-          "a spec file with invalid JSON in a spec-meta block"
-        ],
-        "id": "specled.parser.malformed_json",
-        "subject_id": "specled.parser",
-        "then": [
-          "the result includes a parse error",
-          "the parser does not crash"
-        ],
-        "when": [
-          "the parser processes the file"
-        ]
-      },
       {
         "covers": [
           "specled.parser.resilient_errors"
@@ -398,16 +169,35 @@
       },
       {
         "covers": [
-          "specled.verify.coverage_warnings"
+          "specled.parser.resilient_errors"
+        ],
+        "file": ".spec/specs/parser.spec.md",
+        "given": [
+          "a spec file with invalid JSON in a spec-meta block"
+        ],
+        "id": "specled.parser.malformed_json",
+        "subject_id": "specled.parser",
+        "then": [
+          "the result includes a parse error",
+          "the parser does not crash"
+        ],
+        "when": [
+          "the parser processes the file"
+        ]
+      },
+      {
+        "covers": [
+          "specled.verify.malformed_entries_nonfatal"
         ],
         "file": ".spec/specs/verification.spec.md",
         "given": [
-          "a spec with a requirement that has no covering verification"
+          "an indexed subject containing malformed parsed block entries and parse errors"
         ],
-        "id": "specled.verify.uncovered_requirement",
+        "id": "specled.verify.malformed_entry_report",
         "subject_id": "specled.verification",
         "then": [
-          "a warning finding is produced for the uncovered requirement"
+          "the report includes the parse error finding",
+          "verification does not crash"
         ],
         "when": [
           "verification runs"
@@ -432,17 +222,16 @@
       },
       {
         "covers": [
-          "specled.verify.malformed_entries_nonfatal"
+          "specled.verify.coverage_warnings"
         ],
         "file": ".spec/specs/verification.spec.md",
         "given": [
-          "an indexed subject containing malformed parsed block entries and parse errors"
+          "a spec with a requirement that has no covering verification"
         ],
-        "id": "specled.verify.malformed_entry_report",
+        "id": "specled.verify.uncovered_requirement",
         "subject_id": "specled.verification",
         "then": [
-          "the report includes the parse error finding",
-          "verification does not crash"
+          "a warning finding is produced for the uncovered requirement"
         ],
         "when": [
           "verification runs"
@@ -463,7 +252,8 @@
             "lib/mix/tasks/spec.plan.ex",
             "lib/mix/tasks/spec.verify.ex",
             "lib/mix/tasks/spec.check.ex"
-          ]
+          ],
+          "verification_minimum_strength": null
         },
         "title": "Mix Tasks"
       },
@@ -478,7 +268,8 @@
           "surface": [
             "mix.exs",
             "lib/specled_ex.ex"
-          ]
+          ],
+          "verification_minimum_strength": null
         },
         "title": "specled_ex"
       },
@@ -492,7 +283,8 @@
           "summary": "Extracts structured spec blocks from authored Markdown files.",
           "surface": [
             "lib/specled_ex/parser.ex"
-          ]
+          ],
+          "verification_minimum_strength": null
         },
         "title": "Parser"
       },
@@ -508,7 +300,8 @@
             ".spec/README.md",
             ".spec/specs/*.spec.md",
             ".spec/state.json"
-          ]
+          ],
+          "verification_minimum_strength": null
         },
         "title": "Spec System"
       },
@@ -524,7 +317,8 @@
             "lib/specled_ex/verifier.ex",
             "lib/specled_ex/index.ex",
             "lib/specled_ex.ex"
-          ]
+          ],
+          "verification_minimum_strength": null
         },
         "title": "Verification"
       }
@@ -532,118 +326,8 @@
     "verifications": [
       {
         "covers": [
-          "specled.tasks.init_scaffold"
-        ],
-        "execute": null,
-        "file": ".spec/specs/mix_tasks.spec.md",
-        "kind": "source_file",
-        "subject_id": "specled.mix_tasks",
-        "target": "lib/mix/tasks/spec.init.ex"
-      },
-      {
-        "covers": [
-          "specled.tasks.plan_writes_state"
-        ],
-        "execute": null,
-        "file": ".spec/specs/mix_tasks.spec.md",
-        "kind": "source_file",
-        "subject_id": "specled.mix_tasks",
-        "target": "lib/mix/tasks/spec.plan.ex"
-      },
-      {
-        "covers": [
-          "specled.tasks.verify_findings",
-          "specled.tasks.verify_exit_status"
-        ],
-        "execute": null,
-        "file": ".spec/specs/mix_tasks.spec.md",
-        "kind": "source_file",
-        "subject_id": "specled.mix_tasks",
-        "target": "lib/mix/tasks/spec.verify.ex"
-      },
-      {
-        "covers": [
-          "specled.tasks.check_strict_gate"
-        ],
-        "execute": null,
-        "file": ".spec/specs/mix_tasks.spec.md",
-        "kind": "source_file",
-        "subject_id": "specled.mix_tasks",
-        "target": "lib/mix/tasks/spec.check.ex"
-      },
-      {
-        "covers": [
-          "specled.tasks.init_scaffold",
-          "specled.tasks.plan_writes_state",
-          "specled.tasks.verify_findings",
-          "specled.tasks.verify_exit_status",
-          "specled.tasks.check_strict_gate"
-        ],
-        "execute": null,
-        "file": ".spec/specs/mix_tasks.spec.md",
-        "kind": "test_file",
-        "subject_id": "specled.mix_tasks",
-        "target": "test/mix/tasks/spec_tasks_test.exs"
-      },
-      {
-        "covers": [
-          "specled.package.index_and_state"
-        ],
-        "execute": null,
-        "file": ".spec/specs/package.spec.md",
-        "kind": "source_file",
-        "subject_id": "specled.package",
-        "target": "lib/specled_ex.ex"
-      },
-      {
-        "covers": [
-          "specled.package.mix_tasks"
-        ],
-        "execute": null,
-        "file": ".spec/specs/package.spec.md",
-        "kind": "source_file",
-        "subject_id": "specled.package",
-        "target": "lib/mix/tasks/spec.init.ex"
-      },
-      {
-        "covers": [
-          "specled.package.mix_tasks"
-        ],
-        "execute": null,
-        "file": ".spec/specs/package.spec.md",
-        "kind": "source_file",
-        "subject_id": "specled.package",
-        "target": "lib/mix/tasks/spec.verify.ex"
-      },
-      {
-        "covers": [
-          "specled.parser.standard_blocks",
-          "specled.parser.title_extraction",
-          "specled.parser.resilient_errors"
-        ],
-        "execute": null,
-        "file": ".spec/specs/parser.spec.md",
-        "kind": "source_file",
-        "subject_id": "specled.parser",
-        "target": "lib/specled_ex/parser.ex"
-      },
-      {
-        "covers": [
-          "specled.parser.standard_blocks",
-          "specled.parser.title_extraction",
-          "specled.parser.resilient_errors"
-        ],
-        "execute": null,
-        "file": ".spec/specs/parser.spec.md",
-        "kind": "test_file",
-        "subject_id": "specled.parser",
-        "target": "test/specled_ex/parser_test.exs"
-      },
-      {
-        "covers": [
           "spec.workspace.readme_present"
         ],
-        "execute": null,
         "file": ".spec/specs/spec_system.spec.md",
         "kind": "source_file",
         "subject_id": "spec.system",
@@ -653,7 +337,6 @@
         "covers": [
           "spec.workspace.state_generated"
         ],
-        "execute": null,
         "file": ".spec/specs/spec_system.spec.md",
         "kind": "command",
         "subject_id": "spec.system",
@@ -663,7 +346,6 @@
         "covers": [
           "spec.workspace.state_generated"
         ],
-        "execute": null,
         "file": ".spec/specs/spec_system.spec.md",
         "kind": "command",
         "subject_id": "spec.system",
@@ -671,55 +353,298 @@
       },
       {
         "covers": [
+          "specled.tasks.init_scaffold",
+          "specled.tasks.init_local_skill",
+          "specled.tasks.plan_writes_state",
+          "specled.tasks.verify_findings",
+          "specled.tasks.verify_exit_status",
+          "specled.tasks.check_strict_gate"
+        ],
+        "execute": true,
+        "file": ".spec/specs/mix_tasks.spec.md",
+        "kind": "command",
+        "subject_id": "specled.mix_tasks",
+        "target": "mix test test/mix/tasks/spec_tasks_test.exs"
+      },
+      {
+        "covers": [
+          "specled.package.index_and_state"
+        ],
+        "execute": true,
+        "file": ".spec/specs/package.spec.md",
+        "kind": "command",
+        "subject_id": "specled.package",
+        "target": "mix test test/specled_ex_test.exs test/specled_ex/index_state_test.exs"
+      },
+      {
+        "covers": [
+          "specled.package.mix_tasks"
+        ],
+        "execute": true,
+        "file": ".spec/specs/package.spec.md",
+        "kind": "command",
+        "subject_id": "specled.package",
+        "target": "mix run -e 'Mix.Task.load_all(); Enum.each(~w(spec.init spec.plan spec.verify spec.check), fn task -> Mix.Task.get(task) || raise(\"missing #{task}\") end)'"
+      },
+      {
+        "covers": [
+          "specled.parser.standard_blocks",
+          "specled.parser.title_extraction",
+          "specled.parser.resilient_errors"
+        ],
+        "execute": true,
+        "file": ".spec/specs/parser.spec.md",
+        "kind": "command",
+        "subject_id": "specled.parser",
+        "target": "mix test test/specled_ex/parser_test.exs"
+      },
+      {
+        "covers": [
           "specled.verify.meta_required",
           "specled.verify.reference_checks",
           "specled.verify.coverage_warnings",
           "specled.verify.target_existence",
           "specled.verify.malformed_entries_nonfatal"
         ],
-        "execute": null,
+        "execute": true,
         "file": ".spec/specs/verification.spec.md",
-        "kind": "source_file",
+        "kind": "command",
         "subject_id": "specled.verification",
-        "target": "lib/specled_ex/verifier.ex"
-      },
-      {
-        "covers": [
-          "specled.verify.reference_checks"
-        ],
-        "execute": null,
-        "file": ".spec/specs/verification.spec.md",
-        "kind": "source_file",
-        "subject_id": "specled.verification",
-        "target": "lib/specled_ex/index.ex"
-      },
-      {
-        "covers": [
-          "specled.verify.meta_required",
-          "specled.verify.reference_checks",
-          "specled.verify.coverage_warnings",
-          "specled.verify.target_existence",
-          "specled.verify.malformed_entries_nonfatal"
-        ],
-        "execute": null,
-        "file": ".spec/specs/verification.spec.md",
-        "kind": "test_file",
-        "subject_id": "specled.verification",
-        "target": "test/specled_ex/verifier_test.exs"
+        "target": "mix test test/specled_ex/verifier_test.exs"
       }
     ]
   },
   "specification_version": "1.0",
   "summary": {
     "exceptions": 0,
-    "findings": 31,
-    "requirements": 17,
+    "findings": 0,
+    "requirements": 18,
     "scenarios": 5,
     "subjects": 5,
-    "verifications": 16
+    "verifications": 8
+  },
+  "verification": {
+    "claims": [
+      {
+        "cover_id": "spec.workspace.readme_present",
+        "file": ".spec/specs/spec_system.spec.md",
+        "kind": "source_file",
+        "meets_minimum": true,
+        "required_strength": "claimed",
+        "strength": "linked",
+        "subject_id": "spec.system",
+        "target": ".spec/README.md",
+        "verification_index": 0
+      },
+      {
+        "cover_id": "spec.workspace.state_generated",
+        "file": ".spec/specs/spec_system.spec.md",
+        "kind": "command",
+        "meets_minimum": true,
+        "required_strength": "claimed",
+        "strength": "claimed",
+        "subject_id": "spec.system",
+        "target": "mix spec.plan",
+        "verification_index": 1
+      },
+      {
+        "cover_id": "spec.workspace.state_generated",
+        "file": ".spec/specs/spec_system.spec.md",
+        "kind": "command",
+        "meets_minimum": true,
+        "required_strength": "claimed",
+        "strength": "claimed",
+        "subject_id": "spec.system",
+        "target": "mix spec.verify",
+        "verification_index": 2
+      },
+      {
+        "cover_id": "specled.tasks.check_strict_gate",
+        "file": ".spec/specs/mix_tasks.spec.md",
+        "kind": "command",
+        "meets_minimum": true,
+        "required_strength": "claimed",
+        "strength": "executed",
+        "subject_id": "specled.mix_tasks",
+        "target": "mix test test/mix/tasks/spec_tasks_test.exs",
+        "verification_index": 0
+      },
+      {
+        "cover_id": "specled.tasks.init_local_skill",
+        "file": ".spec/specs/mix_tasks.spec.md",
+        "kind": "command",
+        "meets_minimum": true,
+        "required_strength": "claimed",
+        "strength": "executed",
+        "subject_id": "specled.mix_tasks",
+        "target": "mix test test/mix/tasks/spec_tasks_test.exs",
+        "verification_index": 0
+      },
+      {
+        "cover_id": "specled.tasks.init_scaffold",
+        "file": ".spec/specs/mix_tasks.spec.md",
+        "kind": "command",
+        "meets_minimum": true,
+        "required_strength": "claimed",
+        "strength": "executed",
+        "subject_id": "specled.mix_tasks",
+        "target": "mix test test/mix/tasks/spec_tasks_test.exs",
+        "verification_index": 0
+      },
+      {
+        "cover_id": "specled.tasks.plan_writes_state",
+        "file": ".spec/specs/mix_tasks.spec.md",
+        "kind": "command",
+        "meets_minimum": true,
+        "required_strength": "claimed",
+        "strength": "executed",
+        "subject_id": "specled.mix_tasks",
+        "target": "mix test test/mix/tasks/spec_tasks_test.exs",
+        "verification_index": 0
+      },
+      {
+        "cover_id": "specled.tasks.verify_exit_status",
+        "file": ".spec/specs/mix_tasks.spec.md",
+        "kind": "command",
+        "meets_minimum": true,
+        "required_strength": "claimed",
+        "strength": "executed",
+        "subject_id": "specled.mix_tasks",
+        "target": "mix test test/mix/tasks/spec_tasks_test.exs",
+        "verification_index": 0
+      },
+      {
+        "cover_id": "specled.tasks.verify_findings",
+        "file": ".spec/specs/mix_tasks.spec.md",
+        "kind": "command",
+        "meets_minimum": true,
+        "required_strength": "claimed",
+        "strength": "executed",
+        "subject_id": "specled.mix_tasks",
+        "target": "mix test test/mix/tasks/spec_tasks_test.exs",
+        "verification_index": 0
+      },
+      {
+        "cover_id": "specled.package.index_and_state",
+        "file": ".spec/specs/package.spec.md",
+        "kind": "command",
+        "meets_minimum": true,
+        "required_strength": "claimed",
+        "strength": "executed",
+        "subject_id": "specled.package",
+        "target": "mix test test/specled_ex_test.exs test/specled_ex/index_state_test.exs",
+        "verification_index": 0
+      },
+      {
+        "cover_id": "specled.package.mix_tasks",
+        "file": ".spec/specs/package.spec.md",
+        "kind": "command",
+        "meets_minimum": true,
+        "required_strength": "claimed",
+        "strength": "executed",
+        "subject_id": "specled.package",
+        "target": "mix run -e 'Mix.Task.load_all(); Enum.each(~w(spec.init spec.plan spec.verify spec.check), fn task -> Mix.Task.get(task) || raise(\"missing #{task}\") end)'",
+        "verification_index": 1
+      },
+      {
+        "cover_id": "specled.parser.resilient_errors",
+        "file": ".spec/specs/parser.spec.md",
+        "kind": "command",
+        "meets_minimum": true,
+        "required_strength": "claimed",
+        "strength": "executed",
+        "subject_id": "specled.parser",
+        "target": "mix test test/specled_ex/parser_test.exs",
+        "verification_index": 0
+      },
+      {
+        "cover_id": "specled.parser.standard_blocks",
+        "file": ".spec/specs/parser.spec.md",
+        "kind": "command",
+        "meets_minimum": true,
+        "required_strength": "claimed",
+        "strength": "executed",
+        "subject_id": "specled.parser",
+        "target": "mix test test/specled_ex/parser_test.exs",
+        "verification_index": 0
+      },
+      {
+        "cover_id": "specled.parser.title_extraction",
+        "file": ".spec/specs/parser.spec.md",
+        "kind": "command",
+        "meets_minimum": true,
+        "required_strength": "claimed",
+        "strength": "executed",
+        "subject_id": "specled.parser",
+        "target": "mix test test/specled_ex/parser_test.exs",
+        "verification_index": 0
+      },
+      {
+        "cover_id": "specled.verify.coverage_warnings",
+        "file": ".spec/specs/verification.spec.md",
+        "kind": "command",
+        "meets_minimum": true,
+        "required_strength": "claimed",
+        "strength": "executed",
+        "subject_id": "specled.verification",
+        "target": "mix test test/specled_ex/verifier_test.exs",
+        "verification_index": 0
+      },
+      {
+        "cover_id": "specled.verify.malformed_entries_nonfatal",
+        "file": ".spec/specs/verification.spec.md",
+        "kind": "command",
+        "meets_minimum": true,
+        "required_strength": "claimed",
+        "strength": "executed",
+        "subject_id": "specled.verification",
+        "target": "mix test test/specled_ex/verifier_test.exs",
+        "verification_index": 0
+      },
+      {
+        "cover_id": "specled.verify.meta_required",
+        "file": ".spec/specs/verification.spec.md",
+        "kind": "command",
+        "meets_minimum": true,
+        "required_strength": "claimed",
+        "strength": "executed",
+        "subject_id": "specled.verification",
+        "target": "mix test test/specled_ex/verifier_test.exs",
+        "verification_index": 0
+      },
+      {
+        "cover_id": "specled.verify.reference_checks",
+        "file": ".spec/specs/verification.spec.md",
+        "kind": "command",
+        "meets_minimum": true,
+        "required_strength": "claimed",
+        "strength": "executed",
+        "subject_id": "specled.verification",
+        "target": "mix test test/specled_ex/verifier_test.exs",
+        "verification_index": 0
+      },
+      {
+        "cover_id": "specled.verify.target_existence",
+        "file": ".spec/specs/verification.spec.md",
+        "kind": "command",
+        "meets_minimum": true,
+        "required_strength": "claimed",
+        "strength": "executed",
+        "subject_id": "specled.verification",
+        "target": "mix test test/specled_ex/verifier_test.exs",
+        "verification_index": 0
+      }
+    ],
+    "cli_minimum_strength": null,
+    "default_minimum_strength": "claimed",
+    "strength_summary": {
+      "claimed": 2,
+      "executed": 16,
+      "linked": 1
+    },
+    "threshold_failures": 0
   },
   "workspace": {
-    "root": "/Users/mhostetler/Source/SpecLedDev/specled_ex",
     "spec_count": 5
   }
 }

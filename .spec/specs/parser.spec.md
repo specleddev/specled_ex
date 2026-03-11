@@ -62,14 +62,9 @@ surface:
 ## Verification
 
 ```spec-verification
-- kind: source_file
-  target: lib/specled_ex/parser.ex
-  covers:
-    - specled.parser.standard_blocks
-    - specled.parser.title_extraction
-    - specled.parser.resilient_errors
-- kind: test_file
-  target: test/specled_ex/parser_test.exs
+- kind: command
+  target: mix test test/specled_ex/parser_test.exs
+  execute: true
   covers:
     - specled.parser.standard_blocks
     - specled.parser.title_extraction

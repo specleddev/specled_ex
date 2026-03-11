@@ -27,6 +27,7 @@ Author `.spec/specs/*.spec.md` files that match this package's parser and verifi
    - Put normative statements in `spec-requirements`.
    - Add `spec-scenarios` only when behavior is easier to understand as `given` / `when` / `then`.
    - Add `spec-verification` entries for the evidence that covers each requirement or scenario.
+   - Prefer command verifications for behavioral proof when the target file does not already carry stable `covers:` markers for the ids it names.
    - Add `spec-exceptions` only when a requirement is intentionally not verified yet and the reason should suppress the uncovered-requirement warning.
 5. Validate and tighten.
    - Run `mix spec.verify --debug` after edits.

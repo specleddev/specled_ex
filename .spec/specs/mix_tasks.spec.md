@@ -26,6 +26,10 @@ surface:
   statement: mix spec.init shall create the canonical .spec/ workspace with README.md, spec_system.spec.md, and package.spec.md.
   priority: must
   stability: stable
+- id: specled.tasks.init_local_skill
+  statement: In interactive runs, mix spec.init shall offer to scaffold a local Skill for Spec Led Development and write it when the prompt is accepted.
+  priority: should
+  stability: evolving
 - id: specled.tasks.plan_writes_state
   statement: mix spec.plan shall build the authored index and write .spec/state.json.
   priority: must
@@ -47,27 +51,12 @@ surface:
 ## Verification
 
 ```spec-verification
-- kind: source_file
-  target: lib/mix/tasks/spec.init.ex
+- kind: command
+  target: mix test test/mix/tasks/spec_tasks_test.exs
+  execute: true
   covers:
     - specled.tasks.init_scaffold
-- kind: source_file
-  target: lib/mix/tasks/spec.plan.ex
-  covers:
-    - specled.tasks.plan_writes_state
-- kind: source_file
-  target: lib/mix/tasks/spec.verify.ex
-  covers:
-    - specled.tasks.verify_findings
-    - specled.tasks.verify_exit_status
-- kind: source_file
-  target: lib/mix/tasks/spec.check.ex
-  covers:
-    - specled.tasks.check_strict_gate
-- kind: test_file
-  target: test/mix/tasks/spec_tasks_test.exs
-  covers:
-    - specled.tasks.init_scaffold
+    - specled.tasks.init_local_skill
     - specled.tasks.plan_writes_state
     - specled.tasks.verify_findings
     - specled.tasks.verify_exit_status

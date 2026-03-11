@@ -4,6 +4,8 @@ defmodule Mix.Tasks.SpecTasksTest do
   test "spec.init scaffolds files, keeps existing content, and overwrites with force", %{
     root: root
   } do
+    answer_shell_yes(false, 3)
+
     Mix.Tasks.Spec.Init.run(["--root", root])
 
     readme = Path.join(root, ".spec/README.md")
@@ -28,7 +30,35 @@ defmodule Mix.Tasks.SpecTasksTest do
     assert message_contains?(messages, "wrote")
   end
 
+  @tag :spec_init_local_skill
+  test "spec.init scaffolds the local Skill when accepted", %{root: root} do
+    answer_shell_yes(true)
+
+    Mix.Tasks.Spec.Init.run(["--root", root])
+
+    skill_path = Path.join(root, ".agents/skills/spec-led-development/SKILL.md")
+    messages = drain_shell_messages()
+
+    assert File.exists?(skill_path)
+
+    assert File.read!(skill_path) ==
+             render_spec_init_template("agents/skills/spec-led-development/SKILL.md.eex")
+
+    assert message_contains?(messages, "Add a local Skill to help with Spec Led Development?")
+    assert message_contains?(messages, "wrote #{skill_path}")
+  end
+
+  test "spec.init skips the local Skill when declined", %{root: root} do
+    answer_shell_yes(false)
+
+    Mix.Tasks.Spec.Init.run(["--root", root])
+
+    refute File.exists?(Path.join(root, ".agents/skills/spec-led-development/SKILL.md"))
+  end
+
   test "spec.init scaffold passes spec.check", %{root: root} do
+    answer_shell_yes(false)
+
     Mix.Tasks.Spec.Init.run(["--root", root])
 
     drain_shell_messages()
@@ -107,7 +137,11 @@ defmodule Mix.Tasks.SpecTasksTest do
 
     assert message_contains?(messages, "spec.verify wrote")
     assert message_contains?(messages, "status=fail errors=0 warnings=1")
-    assert message_contains?(messages, "[WARNING] warning.subject requirement_without_verification")
+
+    assert message_contains?(
+             messages,
+             "[WARNING] warning.subject requirement_without_verification"
+           )
   end
 
   test "spec.verify rejects invalid CLI options", %{root: root} do

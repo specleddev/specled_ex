@@ -85,7 +85,9 @@ surface:
 - Point each verification `covers` entry at a requirement id and any scenario ids it demonstrates.
 - Make every requirement appear in at least one verification `covers` list or one exception `covers` list. Otherwise verification emits `requirement_without_verification`.
 - Use repository-root-relative file paths in verification `target`.
-- Prefer `source_file`, `test_file`, `guide_file`, `readme_file`, and `workflow_file` for file-backed evidence. `command` is also supported.
+- Prefer `source_file`, `test_file`, `guide_file`, `readme_file`, and `workflow_file` only when the target file can literally mention each covered id, usually with a nearby `covers:` comment or HTML comment marker.
+- Prefer `command` verifications for behavioral checks when adding literal ids to the target file would be noisy or unstable.
+- File-backed verifications only reach linked strength when the target content contains the covered id string.
 
 ## Common Findings And Fixes
 
