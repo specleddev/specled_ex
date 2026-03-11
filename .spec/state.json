@@ -5,6 +5,14 @@
     "requirements": [
       {
         "file": ".spec/specs/spec_system.spec.md",
+        "id": "spec.workspace.agents_present",
+        "priority": "must",
+        "stability": "stable",
+        "statement": "The repository shall include a .spec/AGENTS.md that gives local operating guidance for agents working inside the .spec workspace.",
+        "subject_id": "spec.system"
+      },
+      {
+        "file": ".spec/specs/spec_system.spec.md",
         "id": "spec.workspace.readme_present",
         "priority": "must",
         "stability": "stable",
@@ -40,7 +48,7 @@
         "id": "specled.tasks.init_scaffold",
         "priority": "must",
         "stability": "stable",
-        "statement": "mix spec.init shall create the canonical .spec/ workspace with README.md, spec_system.spec.md, and package.spec.md.",
+        "statement": "mix spec.init shall create the canonical .spec/ workspace with README.md, AGENTS.md, spec_system.spec.md, and package.spec.md.",
         "subject_id": "specled.mix_tasks"
       },
       {
@@ -298,6 +306,7 @@
           "summary": "Canonical workspace contract for authored specs and generated Spec Led state.",
           "surface": [
             ".spec/README.md",
+            ".spec/AGENTS.md",
             ".spec/specs/*.spec.md",
             ".spec/state.json"
           ],
@@ -332,6 +341,15 @@
         "kind": "source_file",
         "subject_id": "spec.system",
         "target": ".spec/README.md"
+      },
+      {
+        "covers": [
+          "spec.workspace.agents_present"
+        ],
+        "file": ".spec/specs/spec_system.spec.md",
+        "kind": "source_file",
+        "subject_id": "spec.system",
+        "target": ".spec/AGENTS.md"
       },
       {
         "covers": [
@@ -418,10 +436,10 @@
   "summary": {
     "exceptions": 0,
     "findings": 0,
-    "requirements": 18,
+    "requirements": 19,
     "scenarios": 5,
     "subjects": 5,
-    "verifications": 8
+    "verifications": 9
   },
   "verification": {
     "claims": [
@@ -437,14 +455,14 @@
         "verification_index": 0
       },
       {
-        "cover_id": "spec.workspace.state_generated",
+        "cover_id": "spec.workspace.agents_present",
         "file": ".spec/specs/spec_system.spec.md",
-        "kind": "command",
+        "kind": "source_file",
         "meets_minimum": true,
         "required_strength": "claimed",
-        "strength": "claimed",
+        "strength": "linked",
         "subject_id": "spec.system",
-        "target": "mix spec.plan",
+        "target": ".spec/AGENTS.md",
         "verification_index": 1
       },
       {
@@ -455,8 +473,19 @@
         "required_strength": "claimed",
         "strength": "claimed",
         "subject_id": "spec.system",
-        "target": "mix spec.verify",
+        "target": "mix spec.plan",
         "verification_index": 2
+      },
+      {
+        "cover_id": "spec.workspace.state_generated",
+        "file": ".spec/specs/spec_system.spec.md",
+        "kind": "command",
+        "meets_minimum": true,
+        "required_strength": "claimed",
+        "strength": "claimed",
+        "subject_id": "spec.system",
+        "target": "mix spec.verify",
+        "verification_index": 3
       },
       {
         "cover_id": "specled.tasks.check_strict_gate",
@@ -640,7 +669,7 @@
     "strength_summary": {
       "claimed": 2,
       "executed": 16,
-      "linked": 1
+      "linked": 2
     },
     "threshold_failures": 0
   },

@@ -9,6 +9,7 @@ This project uses its own tooling to specify itself.
 ## Layout
 
 - `README.md` — this file (authored)
+- `AGENTS.md` — local operating guidance for agents working in `.spec/` (authored)
 - `specs/spec_system.spec.md` — meta-spec for this workspace (authored)
 - `specs/package.spec.md` — package-level contract (authored)
 - `specs/parser.spec.md` — parser module spec (authored)

@@ -5,7 +5,7 @@ Local helper package for Spec Led Development repositories.
 It provides canonical `mix spec.*` tasks:
 
 - `mix spec.init`
-  - scaffolds `.spec/` with starter files
+  - scaffolds `.spec/` with starter files, including `README.md` and `AGENTS.md`
   - in interactive runs, can also scaffold a local Skill for Spec Led Development
 - `mix spec.plan`
   - reads `.spec/specs/*.spec.md` and updates `.spec/state.json` with index data

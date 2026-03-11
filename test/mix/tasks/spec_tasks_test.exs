@@ -9,18 +9,24 @@ defmodule Mix.Tasks.SpecTasksTest do
     Mix.Tasks.Spec.Init.run(["--root", root])
 
     readme = Path.join(root, ".spec/README.md")
+    agents = Path.join(root, ".spec/AGENTS.md")
     package_spec = Path.join(root, ".spec/specs/package.spec.md")
 
     assert File.exists?(readme)
+    assert File.exists?(agents)
     assert File.exists?(package_spec)
     assert File.read!(readme) == render_spec_init_template("README.md.eex")
+    assert File.read!(agents) == render_spec_init_template("AGENTS.md.eex")
 
+    File.write!(agents, "# Custom Spec Agents\n")
     File.write!(package_spec, "# Custom Package Spec\n")
 
     Mix.Tasks.Spec.Init.run(["--root", root])
+    assert File.read!(agents) == "# Custom Spec Agents\n"
     assert File.read!(package_spec) == "# Custom Package Spec\n"
 
     Mix.Tasks.Spec.Init.run(["--root", root, "--force"])
+    assert File.read!(agents) == render_spec_init_template("AGENTS.md.eex")
     assert File.read!(package_spec) == render_spec_init_template("specs/package.spec.md.eex")
 
     messages = drain_shell_messages()

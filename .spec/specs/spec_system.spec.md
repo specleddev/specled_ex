@@ -9,6 +9,7 @@ status: active
 summary: Canonical workspace contract for authored specs and generated Spec Led state.
 surface:
   - .spec/README.md
+  - .spec/AGENTS.md
   - .spec/specs/*.spec.md
   - .spec/state.json
 ```
@@ -18,6 +19,10 @@ surface:
 ```spec-requirements
 - id: spec.workspace.readme_present
   statement: The repository shall include a .spec/README.md that explains purpose, layout, and workflow.
+  priority: must
+  stability: stable
+- id: spec.workspace.agents_present
+  statement: The repository shall include a .spec/AGENTS.md that gives local operating guidance for agents working inside the .spec workspace.
   priority: must
   stability: stable
 - id: spec.workspace.state_generated
@@ -33,6 +38,10 @@ surface:
   target: .spec/README.md
   covers:
     - spec.workspace.readme_present
+- kind: source_file
+  target: .spec/AGENTS.md
+  covers:
+    - spec.workspace.agents_present
 - kind: command
   target: mix spec.plan
   covers:

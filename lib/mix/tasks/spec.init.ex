@@ -4,6 +4,7 @@ defmodule Mix.Tasks.Spec.Init do
   @shortdoc "Scaffolds a canonical .spec/ workspace"
   @templates [
     {"README.md.eex", "README.md"},
+    {"AGENTS.md.eex", "AGENTS.md"},
     {"specs/spec_system.spec.md.eex", "specs/spec_system.spec.md"},
     {"specs/package.spec.md.eex", "specs/package.spec.md"}
   ]

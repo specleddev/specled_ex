@@ -7,6 +7,7 @@ This folder is the package-local Spec Led layer.
 ## Canonical Layout
 
 - `README.md` (authored)
+- `AGENTS.md` (authored, local operating guidance for agents working in this folder)
 - `specs/spec_system.spec.md` (authored, meta-spec for this folder)
 - `specs/package.spec.md` (authored, package-level intent)
 - `specs/*.spec.md` (authored subject specs)

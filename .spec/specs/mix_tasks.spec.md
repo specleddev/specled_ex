@@ -23,7 +23,7 @@ surface:
 
 ```spec-requirements
 - id: specled.tasks.init_scaffold
-  statement: mix spec.init shall create the canonical .spec/ workspace with README.md, spec_system.spec.md, and package.spec.md.
+  statement: mix spec.init shall create the canonical .spec/ workspace with README.md, AGENTS.md, spec_system.spec.md, and package.spec.md.
   priority: must
   stability: stable
 - id: specled.tasks.init_local_skill
