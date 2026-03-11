@@ -18,7 +18,7 @@ It provides canonical `mix spec.*` tasks:
 Add as a path dependency in another project:
 
 ```elixir
-{:spec_led_ex, path: "../spec_led_ex", only: [:dev, :test], runtime: false}
+{:spec_led_ex, path: "../specled_ex", only: [:dev, :test], runtime: false}
 ```
 
 Then run:

@@ -72,12 +72,12 @@ defmodule SpecLedEx do
     %{
       "subjects" =>
         Enum.map(subjects, fn s ->
-          meta = map_or_nil(s["meta"])
+          meta = string_key_map(value_for(s, "meta"))
 
           %{
-            "id" => if(meta, do: meta["id"], else: nil),
-            "file" => s["file"],
-            "title" => s["title"],
+            "id" => value_for(meta, "id"),
+            "file" => value_for(s, "file"),
+            "title" => value_for(s, "title"),
             "meta" => meta
           }
         end),
@@ -111,15 +111,15 @@ defmodule SpecLedEx do
 
   defp flatten_subject_items(subjects, key) do
     Enum.flat_map(subjects, fn subject ->
-      file = subject["file"]
-      meta = map_or_nil(subject["meta"])
-      subject_id = if(meta, do: meta["id"], else: nil)
+      file = value_for(subject, "file")
+      meta = string_key_map(value_for(subject, "meta"))
+      subject_id = value_for(meta, "id")
 
       subject
       |> list_or_empty(key)
       |> Enum.flat_map(fn
         item when is_map(item) ->
-          [Map.merge(item, %{"file" => file, "subject_id" => subject_id})]
+          [item |> string_key_map() |> Map.merge(%{"file" => file, "subject_id" => subject_id})]
 
         _ ->
           []
@@ -128,7 +128,7 @@ defmodule SpecLedEx do
   end
 
   defp list_or_empty(map, key) when is_map(map) do
-    case map[key] do
+    case value_for(map, key) do
       value when is_list(value) -> value
       _ -> []
     end
@@ -136,6 +136,33 @@ defmodule SpecLedEx do
 
   defp list_or_empty(_value, _key), do: []
 
-  defp map_or_nil(value) when is_map(value), do: value
-  defp map_or_nil(_value), do: nil
+  defp string_key_map(value) when is_map(value) do
+    value
+    |> maybe_from_struct()
+    |> Enum.reduce(%{}, fn {key, item}, acc ->
+      Map.put(acc, to_string(key), normalize_value(item))
+    end)
+  end
+
+  defp string_key_map(_value), do: nil
+
+  defp normalize_value(value) when is_map(value), do: string_key_map(value)
+  defp normalize_value(value) when is_list(value), do: Enum.map(value, &normalize_value/1)
+  defp normalize_value(value), do: value
+
+  defp maybe_from_struct(%{__struct__: _} = value), do: Map.from_struct(value)
+  defp maybe_from_struct(value), do: value
+
+  defp value_for(map, key) when is_map(map) and is_binary(key) do
+    atom_key =
+      try do
+        String.to_existing_atom(key)
+      rescue
+        ArgumentError -> nil
+      end
+
+    Map.get(map, key, if(atom_key, do: Map.get(map, atom_key)))
+  end
+
+  defp value_for(_map, _key), do: nil
 end

@@ -94,17 +94,28 @@ defmodule Mix.Tasks.Spec.Init do
     priority: must
     stability: evolving
   ```
+
+  ## Exceptions
+
+  ```spec-exceptions
+  - id: package.todo.bootstrap_waiver
+    covers:
+      - package.todo.requirement
+    reason: Starter scaffold leaves package-specific requirements for the author to refine.
+  ```
   """
 
   @impl true
   def run(args) do
     Mix.Task.run("app.start")
 
-    {opts, _rest, _invalid} =
+    {opts, rest, invalid} =
       OptionParser.parse(args,
-        switches: [root: :string, force: :boolean],
+        strict: [root: :string, force: :boolean],
         aliases: [r: :root, f: :force]
       )
+
+    validate_args!(rest, invalid)
 
     root = opts[:root] || File.cwd!()
     force? = opts[:force] || false
@@ -134,5 +145,14 @@ defmodule Mix.Tasks.Spec.Init do
         File.write!(path, content)
         Mix.shell().info("wrote #{path}")
     end
+  end
+
+  defp validate_args!([], []), do: :ok
+
+  defp validate_args!(rest, invalid) do
+    invalid_flags = Enum.map(invalid, fn {flag, _value} -> flag end)
+    extra_args = Enum.map(rest, &inspect/1)
+    details = Enum.join(invalid_flags ++ extra_args, ", ")
+    Mix.raise("Invalid arguments for spec.init: #{details}")
   end
 end

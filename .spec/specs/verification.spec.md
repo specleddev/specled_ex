@@ -14,9 +14,9 @@ kind: workflow
 status: active
 summary: Validates authored specs, checks references, derives findings, and writes state.
 surface:
-  - lib/spec_led_ex/verifier.ex
-  - lib/spec_led_ex/index.ex
-  - lib/spec_led_ex.ex
+  - lib/specled_ex/verifier.ex
+  - lib/specled_ex/index.ex
+  - lib/specled_ex.ex
 ```
 
 ## Requirements
@@ -81,7 +81,7 @@ surface:
 
 ```spec-verification
 - kind: source_file
-  target: lib/spec_led_ex/verifier.ex
+  target: lib/specled_ex/verifier.ex
   covers:
     - specled.verify.meta_required
     - specled.verify.reference_checks
@@ -89,11 +89,11 @@ surface:
     - specled.verify.target_existence
     - specled.verify.malformed_entries_nonfatal
 - kind: source_file
-  target: lib/spec_led_ex/index.ex
+  target: lib/specled_ex/index.ex
   covers:
     - specled.verify.reference_checks
 - kind: test_file
-  target: test/spec_led_ex/verifier_test.exs
+  target: test/specled_ex/verifier_test.exs
   covers:
     - specled.verify.meta_required
     - specled.verify.reference_checks

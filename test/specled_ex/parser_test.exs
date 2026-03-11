@@ -2,6 +2,7 @@ defmodule SpecLedEx.ParserTest do
   use SpecLedEx.Case
 
   alias SpecLedEx.Parser
+  alias SpecLedEx.Schema.{Exception, Meta, Requirement, Scenario, Verification}
 
   test "parse_file extracts all supported blocks and title", %{root: root} do
     path =
@@ -55,11 +56,11 @@ defmodule SpecLedEx.ParserTest do
 
     assert spec["file"] == ".spec/specs/example.spec.md"
     assert spec["title"] == "Example Subject"
-    assert spec["meta"]["summary"] == "Example summary"
-    assert [%{"id" => "example.requirement"}] = spec["requirements"]
-    assert [%{"id" => "example.scenario"}] = spec["scenarios"]
-    assert [%{"kind" => "source_file", "target" => "lib/example.ex"}] = spec["verification"]
-    assert [%{"id" => "example.exception", "reason" => "accepted gap"}] = spec["exceptions"]
+    assert %Meta{summary: "Example summary"} = spec["meta"]
+    assert [%Requirement{id: "example.requirement"}] = spec["requirements"]
+    assert [%Scenario{id: "example.scenario"}] = spec["scenarios"]
+    assert [%Verification{kind: "source_file", target: "lib/example.ex"}] = spec["verification"]
+    assert [%Exception{id: "example.exception", reason: "accepted gap"}] = spec["exceptions"]
     assert spec["parse_errors"] == []
   end
 

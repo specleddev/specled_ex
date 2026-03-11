@@ -14,7 +14,7 @@ status: active
 summary: Elixir package for Spec Led Development. Provides Mix tasks to scaffold, index, verify, and check authored specs.
 surface:
   - mix.exs
-  - lib/spec_led_ex.ex
+  - lib/specled_ex.ex
 ```
 
 ## Requirements
@@ -34,7 +34,7 @@ surface:
 
 ```spec-verification
 - kind: source_file
-  target: lib/spec_led_ex.ex
+  target: lib/specled_ex.ex
   covers:
     - specled.package.index_and_state
 - kind: source_file

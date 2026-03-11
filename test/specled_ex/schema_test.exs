@@ -2,8 +2,9 @@ defmodule SpecLedEx.SchemaTest do
   use SpecLedEx.Case
 
   alias SpecLedEx.Schema
+  alias SpecLedEx.Schema.{Exception, Meta, Requirement, Scenario, Verification}
 
-  test "validate_block accepts valid spec-meta and preserves extra keys" do
+  test "validate_block accepts valid spec-meta as a Zoi-backed struct" do
     assert {:ok, meta} =
              Schema.validate_block("spec-meta", %{
                "id" => "example.subject",
@@ -12,12 +13,14 @@ defmodule SpecLedEx.SchemaTest do
                "summary" => "preserved"
              })
 
-    assert meta["summary"] == "preserved"
+    assert %Meta{} = meta
+    assert meta.summary == "preserved"
+    assert Schema.meta() == Meta.schema()
   end
 
-  for {tag, item, assertion} <- [
+  for {tag, item, module, assertion} <- [
         {"spec-requirements", %{"id" => "example.requirement", "statement" => "Requirement"},
-         {"id", "example.requirement"}},
+         Requirement, {:id, "example.requirement"}},
         {"spec-scenarios",
          %{
            "id" => "example.scenario",
@@ -25,28 +28,30 @@ defmodule SpecLedEx.SchemaTest do
            "given" => ["given"],
            "when" => ["when"],
            "then" => ["then"]
-         }, {"id", "example.scenario"}},
+         }, Scenario, {:id, "example.scenario"}},
         {"spec-verification",
          %{
            "kind" => "source_file",
            "target" => "lib/example.ex",
            "covers" => ["example.requirement"]
-         }, {"target", "lib/example.ex"}},
+         }, Verification, {:target, "lib/example.ex"}},
         {"spec-exceptions",
          %{
            "id" => "example.exception",
            "covers" => ["example.requirement"],
            "reason" => "accepted"
-         }, {"reason", "accepted"}}
+         }, Exception, {:reason, "accepted"}}
       ] do
     @schema_tag tag
     @schema_item item
+    @schema_module module
     @schema_assertion assertion
 
-    test "#{tag} accepts valid list items" do
+    test "#{tag} accepts valid list items as structs" do
       assert {:ok, [validated]} = Schema.validate_block(@schema_tag, [@schema_item])
       {field, expected} = @schema_assertion
-      assert validated[field] == expected
+      assert validated.__struct__ == @schema_module
+      assert Map.fetch!(validated, field) == expected
     end
   end
 
@@ -69,5 +74,18 @@ defmodule SpecLedEx.SchemaTest do
              ])
 
     assert message =~ "spec-requirements[0] validation failed"
+  end
+
+  test "validate_block rejects unknown verification kinds" do
+    assert {:error, message} =
+             Schema.validate_block("spec-verification", [
+               %{
+                 "kind" => "typo_kind",
+                 "target" => "ignored",
+                 "covers" => ["example.requirement"]
+               }
+             ])
+
+    assert message =~ "spec-verification[0] validation failed"
   end
 end

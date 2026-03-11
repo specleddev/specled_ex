@@ -1,6 +1,6 @@
 {
   "findings": [],
-  "generated_at": "2026-03-10T15:54:32Z",
+  "generated_at": "2026-03-11T05:24:59Z",
   "index": {
     "exceptions": [],
     "requirements": [
@@ -259,7 +259,7 @@
           "summary": "Elixir package for Spec Led Development. Provides Mix tasks to scaffold, index, verify, and check authored specs.",
           "surface": [
             "mix.exs",
-            "lib/spec_led_ex.ex"
+            "lib/specled_ex.ex"
           ]
         },
         "title": "specled_ex"
@@ -273,7 +273,7 @@
           "status": "active",
           "summary": "Extracts structured spec blocks from authored Markdown files.",
           "surface": [
-            "lib/spec_led_ex/parser.ex"
+            "lib/specled_ex/parser.ex"
           ]
         },
         "title": "Parser"
@@ -303,9 +303,9 @@
           "status": "active",
           "summary": "Validates authored specs, checks references, derives findings, and writes state.",
           "surface": [
-            "lib/spec_led_ex/verifier.ex",
-            "lib/spec_led_ex/index.ex",
-            "lib/spec_led_ex.ex"
+            "lib/specled_ex/verifier.ex",
+            "lib/specled_ex/index.ex",
+            "lib/specled_ex.ex"
           ]
         },
         "title": "Verification"
@@ -316,6 +316,7 @@
         "covers": [
           "specled.tasks.init_scaffold"
         ],
+        "execute": null,
         "file": ".spec/specs/mix_tasks.spec.md",
         "kind": "source_file",
         "subject_id": "specled.mix_tasks",
@@ -325,6 +326,7 @@
         "covers": [
           "specled.tasks.plan_writes_state"
         ],
+        "execute": null,
         "file": ".spec/specs/mix_tasks.spec.md",
         "kind": "source_file",
         "subject_id": "specled.mix_tasks",
@@ -335,6 +337,7 @@
           "specled.tasks.verify_findings",
           "specled.tasks.verify_exit_status"
         ],
+        "execute": null,
         "file": ".spec/specs/mix_tasks.spec.md",
         "kind": "source_file",
         "subject_id": "specled.mix_tasks",
@@ -344,6 +347,7 @@
         "covers": [
           "specled.tasks.check_strict_gate"
         ],
+        "execute": null,
         "file": ".spec/specs/mix_tasks.spec.md",
         "kind": "source_file",
         "subject_id": "specled.mix_tasks",
@@ -357,6 +361,7 @@
           "specled.tasks.verify_exit_status",
           "specled.tasks.check_strict_gate"
         ],
+        "execute": null,
         "file": ".spec/specs/mix_tasks.spec.md",
         "kind": "test_file",
         "subject_id": "specled.mix_tasks",
@@ -366,15 +371,17 @@
         "covers": [
           "specled.package.index_and_state"
         ],
+        "execute": null,
         "file": ".spec/specs/package.spec.md",
         "kind": "source_file",
         "subject_id": "specled.package",
-        "target": "lib/spec_led_ex.ex"
+        "target": "lib/specled_ex.ex"
       },
       {
         "covers": [
           "specled.package.mix_tasks"
         ],
+        "execute": null,
         "file": ".spec/specs/package.spec.md",
         "kind": "source_file",
         "subject_id": "specled.package",
@@ -384,6 +391,7 @@
         "covers": [
           "specled.package.mix_tasks"
         ],
+        "execute": null,
         "file": ".spec/specs/package.spec.md",
         "kind": "source_file",
         "subject_id": "specled.package",
@@ -395,10 +403,11 @@
           "specled.parser.title_extraction",
           "specled.parser.resilient_errors"
         ],
+        "execute": null,
         "file": ".spec/specs/parser.spec.md",
         "kind": "source_file",
         "subject_id": "specled.parser",
-        "target": "lib/spec_led_ex/parser.ex"
+        "target": "lib/specled_ex/parser.ex"
       },
       {
         "covers": [
@@ -406,15 +415,17 @@
           "specled.parser.title_extraction",
           "specled.parser.resilient_errors"
         ],
+        "execute": null,
         "file": ".spec/specs/parser.spec.md",
         "kind": "test_file",
         "subject_id": "specled.parser",
-        "target": "test/spec_led_ex/parser_test.exs"
+        "target": "test/specled_ex/parser_test.exs"
       },
       {
         "covers": [
           "spec.workspace.readme_present"
         ],
+        "execute": null,
         "file": ".spec/specs/spec_system.spec.md",
         "kind": "source_file",
         "subject_id": "spec.system",
@@ -424,6 +435,7 @@
         "covers": [
           "spec.workspace.state_generated"
         ],
+        "execute": null,
         "file": ".spec/specs/spec_system.spec.md",
         "kind": "command",
         "subject_id": "spec.system",
@@ -433,6 +445,7 @@
         "covers": [
           "spec.workspace.state_generated"
         ],
+        "execute": null,
         "file": ".spec/specs/spec_system.spec.md",
         "kind": "command",
         "subject_id": "spec.system",
@@ -446,19 +459,21 @@
           "specled.verify.target_existence",
           "specled.verify.malformed_entries_nonfatal"
         ],
+        "execute": null,
         "file": ".spec/specs/verification.spec.md",
         "kind": "source_file",
         "subject_id": "specled.verification",
-        "target": "lib/spec_led_ex/verifier.ex"
+        "target": "lib/specled_ex/verifier.ex"
       },
       {
         "covers": [
           "specled.verify.reference_checks"
         ],
+        "execute": null,
         "file": ".spec/specs/verification.spec.md",
         "kind": "source_file",
         "subject_id": "specled.verification",
-        "target": "lib/spec_led_ex/index.ex"
+        "target": "lib/specled_ex/index.ex"
       },
       {
         "covers": [
@@ -468,10 +483,11 @@
           "specled.verify.target_existence",
           "specled.verify.malformed_entries_nonfatal"
         ],
+        "execute": null,
         "file": ".spec/specs/verification.spec.md",
         "kind": "test_file",
         "subject_id": "specled.verification",
-        "target": "test/spec_led_ex/verifier_test.exs"
+        "target": "test/specled_ex/verifier_test.exs"
       }
     ]
   },

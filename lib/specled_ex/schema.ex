@@ -1,6 +1,8 @@
 defmodule SpecLedEx.Schema do
   @moduledoc false
 
+  alias SpecLedEx.Schema.{Exception, Meta, Requirement, Scenario, Verification}
+
   @id_pattern ~r/^[a-z0-9][a-z0-9._-]*$/
 
   def id do
@@ -11,59 +13,23 @@ defmodule SpecLedEx.Schema do
   end
 
   def meta do
-    Zoi.map(
-      %{
-        "id" => id(),
-        "kind" => Zoi.string(),
-        "status" => Zoi.string()
-      },
-      unrecognized_keys: :preserve
-    )
+    Meta.schema()
   end
 
   def requirement do
-    Zoi.map(
-      %{
-        "id" => id(),
-        "statement" => Zoi.string()
-      },
-      unrecognized_keys: :preserve
-    )
+    Requirement.schema()
   end
 
   def scenario do
-    Zoi.map(
-      %{
-        "id" => id(),
-        "covers" => Zoi.list(Zoi.string()),
-        "given" => Zoi.list(Zoi.string()),
-        "when" => Zoi.list(Zoi.string()),
-        "then" => Zoi.list(Zoi.string())
-      },
-      unrecognized_keys: :preserve
-    )
+    Scenario.schema()
   end
 
   def verification do
-    Zoi.map(
-      %{
-        "kind" => Zoi.string(),
-        "target" => Zoi.string(),
-        "covers" => Zoi.list(Zoi.string())
-      },
-      unrecognized_keys: :preserve
-    )
+    Verification.schema()
   end
 
   def exception do
-    Zoi.map(
-      %{
-        "id" => id(),
-        "covers" => Zoi.list(Zoi.string()),
-        "reason" => Zoi.string()
-      },
-      unrecognized_keys: :preserve
-    )
+    Exception.schema()
   end
 
   @doc """

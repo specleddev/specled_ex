@@ -4,7 +4,7 @@ defmodule SpecLedExTest do
   test "build_index returns an index map" do
     root =
       System.tmp_dir!()
-      |> Path.join("spec_led_ex_test_#{System.unique_integer([:positive])}")
+      |> Path.join("specled_ex_test_#{System.unique_integer([:positive])}")
 
     on_exit(fn -> File.rm_rf(root) end)
 

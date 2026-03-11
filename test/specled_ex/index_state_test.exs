@@ -85,6 +85,30 @@ defmodule SpecLedEx.IndexStateTest do
     end
   end
 
+  test "build_index supports absolute spec_dir paths", %{root: root} do
+    abs_spec_dir = Path.join(root, "custom_spec")
+
+    write_files(root, %{
+      "custom_spec/specs/absolute.spec.md" => """
+      # Absolute
+
+      ```spec-meta
+      id: absolute.subject
+      kind: module
+      status: active
+      ```
+      """
+    })
+
+    assert Index.detect_authored_dir(root, abs_spec_dir) == Path.join(abs_spec_dir, "specs")
+
+    index = SpecLedEx.build_index(root, spec_dir: abs_spec_dir)
+
+    assert index["spec_dir"] == abs_spec_dir
+    assert index["authored_dir"] == Path.join(abs_spec_dir, "specs")
+    assert index["summary"]["subjects"] == 1
+  end
+
   test "write_state skips malformed items and normalizes findings", %{root: root} do
     write_spec(
       root,

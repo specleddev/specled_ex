@@ -14,7 +14,7 @@ kind: module
 status: active
 summary: Extracts structured spec blocks from authored Markdown files.
 surface:
-  - lib/spec_led_ex/parser.ex
+  - lib/specled_ex/parser.ex
 ```
 
 ## Requirements
@@ -63,13 +63,13 @@ surface:
 
 ```spec-verification
 - kind: source_file
-  target: lib/spec_led_ex/parser.ex
+  target: lib/specled_ex/parser.ex
   covers:
     - specled.parser.standard_blocks
     - specled.parser.title_extraction
     - specled.parser.resilient_errors
 - kind: test_file
-  target: test/spec_led_ex/parser_test.exs
+  target: test/specled_ex/parser_test.exs
   covers:
     - specled.parser.standard_blocks
     - specled.parser.title_extraction

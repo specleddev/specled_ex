@@ -214,9 +214,10 @@ defmodule SpecLedEx.VerifierTest do
                 },
                 %{"kind" => "command", "target" => "", "covers" => []},
                 %{
-                  "kind" => "http",
-                  "target" => "https://example.com",
-                  "covers" => ["unknown.claim"]
+                  "kind" => "command",
+                  "target" => "printf noop",
+                  "covers" => ["unknown.claim"],
+                  "execute" => false
                 }
               ],
               "exceptions" => [
@@ -263,11 +264,6 @@ defmodule SpecLedEx.VerifierTest do
 
     assert Enum.any?(
              report["checks"],
-             &(&1["code"] == "verification_kind_seen" and &1["status"] == "pass")
-           )
-
-    assert Enum.any?(
-             report["checks"],
              &(&1["code"] == "verification_cover_valid" and &1["status"] == "pass")
            )
 
@@ -275,6 +271,66 @@ defmodule SpecLedEx.VerifierTest do
              report["checks"],
              &(&1["code"] == "verification_cover_unknown" and &1["status"] == "warning")
            )
+  end
+
+  test "verify reports unknown verification kinds and excludes them from coverage", %{root: root} do
+    report =
+      Verifier.verify(
+        %{
+          "subjects" => [
+            base_subject(%{
+              "requirements" => [%{"id" => "req.typo", "statement" => "Must be covered"}],
+              "verification" => [
+                %{"kind" => "typo_kind", "target" => "ignored", "covers" => ["req.typo"]}
+              ]
+            })
+          ]
+        },
+        root,
+        debug: true
+      )
+
+    assert report["status"] == "fail"
+    assert report["summary"]["errors"] == 1
+    assert report["summary"]["warnings"] == 1
+
+    assert finding_codes(report) ==
+             MapSet.new([
+               "verification_unknown_kind",
+               "requirement_without_verification"
+             ])
+
+    assert Enum.any?(
+             report["checks"],
+             &(&1["code"] == "verification_kind_invalid" and &1["status"] == "error")
+           )
+  end
+
+  test "verify only executes command verifications once in debug mode", %{root: root} do
+    report =
+      Verifier.verify(
+        %{
+          "subjects" => [
+            base_subject(%{
+              "requirements" => [%{"id" => "req.run", "statement" => "Run exactly once"}],
+              "verification" => [
+                %{
+                  "kind" => "command",
+                  "target" => "printf run >> runs.txt",
+                  "covers" => ["req.run"],
+                  "execute" => true
+                }
+              ]
+            })
+          ]
+        },
+        root,
+        debug: true,
+        run_commands: true
+      )
+
+    assert report["status"] == "pass"
+    assert File.read!(Path.join(root, "runs.txt")) == "run"
   end
 
   test "verify only fails warnings in strict mode", %{root: root} do

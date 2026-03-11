@@ -8,8 +8,9 @@ defmodule SpecLedEx.Index do
     authored_dir = opts[:authored_dir] || detect_authored_dir(root, spec_dir)
 
     spec_files =
-      root
-      |> Path.join("#{authored_dir}/**/*.spec.md")
+      authored_dir
+      |> expand_path(root)
+      |> Path.join("**/*.spec.md")
       |> Path.wildcard()
       |> Enum.sort()
 
@@ -34,12 +35,28 @@ defmodule SpecLedEx.Index do
   end
 
   def detect_authored_dir(root, spec_dir) do
-    authored = "#{spec_dir}/specs"
+    authored = join_dir(spec_dir, "specs")
 
-    if File.dir?(Path.join(root, authored)) do
+    if File.dir?(expand_path(authored, root)) do
       authored
     else
       raise "#{authored} directory not found in #{root}. Run mix spec.init."
+    end
+  end
+
+  defp join_dir(dir, child) do
+    if Path.type(dir) == :absolute do
+      Path.join(dir, child)
+    else
+      "#{dir}/#{child}"
+    end
+  end
+
+  defp expand_path(path, root) do
+    if Path.type(path) == :absolute do
+      path
+    else
+      Path.join(root, path)
     end
   end
 

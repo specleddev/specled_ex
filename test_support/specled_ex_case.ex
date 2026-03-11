@@ -15,7 +15,7 @@ defmodule SpecLedEx.Case do
 
     root =
       System.tmp_dir!()
-      |> Path.join("spec_led_ex_#{System.unique_integer([:positive])}")
+      |> Path.join("specled_ex_#{System.unique_integer([:positive])}")
 
     File.rm_rf(root)
     File.mkdir_p!(root)
@@ -41,6 +41,31 @@ defmodule SpecLedEx.Case do
     Path.join(root, relative_path)
   end
 
+  def write_subject_spec(root, name, opts \\ []) do
+    title = Keyword.get(opts, :title, default_spec_title(name))
+
+    meta =
+      Keyword.get(opts, :meta, %{
+        "id" => "#{name}.subject",
+        "kind" => "module",
+        "status" => "active"
+      })
+
+    content =
+      build_spec_document(
+        title,
+        [
+          {"spec-meta", meta},
+          {"spec-requirements", Keyword.get(opts, :requirements)},
+          {"spec-scenarios", Keyword.get(opts, :scenarios)},
+          {"spec-verification", Keyword.get(opts, :verification)},
+          {"spec-exceptions", Keyword.get(opts, :exceptions)}
+        ]
+      )
+
+    write_spec(root, name, content)
+  end
+
   def read_state(root, output_path \\ ".spec/state.json") do
     SpecLedEx.read_state(root, output_path)
   end
@@ -62,5 +87,37 @@ defmodule SpecLedEx.Case do
     after
       0 -> Enum.reverse(messages)
     end
+  end
+
+  defp build_spec_document(title, sections) do
+    body =
+      sections
+      |> Enum.flat_map(fn
+        {_tag, nil} ->
+          []
+
+        {tag, data} ->
+          [
+            "```#{tag}",
+            encode_block(data),
+            "```"
+          ]
+      end)
+      |> Enum.join("\n\n")
+
+    "# #{title}\n\n#{body}\n"
+  end
+
+  defp encode_block(data) do
+    data
+    |> Jason.encode_to_iodata!(pretty: true)
+    |> IO.iodata_to_binary()
+  end
+
+  defp default_spec_title(name) do
+    name
+    |> String.replace(~r/[-_]+/, " ")
+    |> String.split()
+    |> Enum.map_join(" ", &String.capitalize/1)
   end
 end

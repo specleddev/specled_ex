@@ -1,7 +1,11 @@
 defmodule SpecLedEx.Verifier do
   @moduledoc false
 
+  alias SpecLedEx.Schema.Verification, as: VerificationSchema
+
+  @command_kind "command"
   @file_kinds ~w(file source_file test_file guide_file readme_file workflow_file test doc workflow contract)
+  @known_verification_kinds VerificationSchema.kinds()
   @id_pattern ~r/^[a-z0-9][a-z0-9._-]*$/
 
   def verify(index, root, opts \\ []) do
@@ -9,10 +13,11 @@ defmodule SpecLedEx.Verifier do
     debug? = Keyword.get(opts, :debug, false)
     run_commands? = Keyword.get(opts, :run_commands, false)
     subjects = index["subjects"] || []
+    command_results = build_command_results(subjects, root, run_commands?)
 
     findings =
       subjects
-      |> Enum.flat_map(&verify_subject(&1, root, run_commands?))
+      |> Enum.flat_map(&verify_subject(&1, root, command_results))
       |> then(&(&1 ++ duplicate_subject_id_findings(subjects)))
       |> then(&(&1 ++ duplicate_requirement_id_findings(subjects)))
       |> then(&(&1 ++ duplicate_scenario_id_findings(subjects)))
@@ -21,7 +26,7 @@ defmodule SpecLedEx.Verifier do
 
     checks =
       if debug? do
-        build_debug_checks(subjects, root, run_commands?)
+        build_debug_checks(subjects, root, run_commands?, command_results)
       else
         []
       end
@@ -51,15 +56,15 @@ defmodule SpecLedEx.Verifier do
     end
   end
 
-  defp verify_subject(subject, root, run_commands?) do
-    file = subject["file"]
+  defp verify_subject(subject, root, command_results) do
+    file = string_field(subject, "file")
     meta = subject_meta(subject)
     subject_id = id_of(meta, "id") || file
-    reqs = map_items(subject["requirements"])
-    scenarios = map_items(subject["scenarios"])
-    verifications = map_items(subject["verification"])
-    exceptions = map_items(subject["exceptions"])
-    parse_errors = subject["parse_errors"] || []
+    reqs = map_items(field(subject, "requirements"))
+    scenarios = map_items(field(subject, "scenarios"))
+    verifications = verification_entries(subject, subject_id, file, command_results)
+    exceptions = map_items(field(subject, "exceptions"))
+    parse_errors = list_field(subject, "parse_errors")
     requirement_ids = reqs |> Enum.map(&id_of(&1, "id")) |> Enum.reject(&is_nil/1)
     scenario_ids = scenarios |> Enum.map(&id_of(&1, "id")) |> Enum.reject(&is_nil/1)
     claim_ids = MapSet.new(requirement_ids ++ scenario_ids)
@@ -71,7 +76,7 @@ defmodule SpecLedEx.Verifier do
     |> add_missing_scenario_id_findings(scenarios, subject_id, file)
     |> add_scenario_cover_findings(scenarios, MapSet.new(requirement_ids), subject_id, file)
     |> add_scenario_structure_findings(scenarios, subject_id, file)
-    |> add_verification_findings(verifications, claim_ids, root, subject_id, file, run_commands?)
+    |> add_verification_findings(verifications, claim_ids, root, subject_id, file)
     |> add_requirement_coverage_findings(
       requirement_ids,
       verifications,
@@ -85,7 +90,7 @@ defmodule SpecLedEx.Verifier do
     required = ["id", "kind", "status"]
 
     Enum.reduce(required, findings, fn key, acc ->
-      if is_binary(meta[key]) and String.trim(meta[key]) != "" do
+      if present_string?(meta, key) do
         acc
       else
         [
@@ -201,37 +206,51 @@ defmodule SpecLedEx.Verifier do
          claim_ids,
          root,
          subject_id,
-         file,
-         run_commands?
+         file
        ) do
-    Enum.reduce(verifications, findings, fn verification, acc ->
+    Enum.reduce(verifications, findings, fn entry, acc ->
+      verification = entry.item
+
       acc
+      |> add_verification_kind_findings(verification, subject_id, file)
       |> add_verification_target_findings(verification, root, subject_id, file)
       |> add_verification_cover_findings(verification, claim_ids, subject_id, file)
-      |> add_verification_command_runtime_findings(
-        verification,
-        root,
-        subject_id,
-        file,
-        run_commands?
-      )
+      |> add_verification_command_runtime_findings(verification, entry.command_result, subject_id, file)
     end)
+  end
+
+  defp add_verification_kind_findings(findings, verification, subject_id, file) do
+    kind = string_field(verification, "kind")
+
+    if known_verification_kind?(kind) do
+      findings
+    else
+      [
+        finding(
+          "error",
+          "verification_unknown_kind",
+          "Unknown verification kind: #{display_kind(kind)}",
+          subject_id,
+          file
+        )
+        | findings
+      ]
+    end
   end
 
   defp add_verification_command_runtime_findings(
          findings,
          verification,
-         root,
+         command_result,
          subject_id,
-         file,
-         run_commands?
+         file
        ) do
     kind = string_field(verification, "kind")
     target = string_field(verification, "target")
-    execute? = verification["execute"] == true
+    execute? = bool_field(verification, "execute")
 
-    if run_commands? and kind == "command" and execute? and target != "" do
-      {output, exit_code} = System.cmd("sh", ["-lc", target], cd: root, stderr_to_stdout: true)
+    if kind == @command_kind and execute? and target != "" and command_result do
+      %{output: output, exit_code: exit_code} = command_result
 
       if exit_code == 0 do
         findings
@@ -333,7 +352,7 @@ defmodule SpecLedEx.Verifier do
          file
        ) do
     covered_ids =
-      (verifications ++ exceptions)
+      coverage_items(verifications, exceptions)
       |> Enum.flat_map(&list_field(&1, "covers"))
       |> MapSet.new()
 
@@ -355,10 +374,10 @@ defmodule SpecLedEx.Verifier do
     end)
   end
 
-  defp build_debug_checks(subjects, root, run_commands?) do
+  defp build_debug_checks(subjects, root, run_commands?, command_results) do
     subject_checks =
       subjects
-      |> Enum.flat_map(&build_subject_debug_checks(&1, root, run_commands?))
+      |> Enum.flat_map(&build_subject_debug_checks(&1, root, run_commands?, command_results))
 
     global_checks =
       []
@@ -368,15 +387,15 @@ defmodule SpecLedEx.Verifier do
     subject_checks ++ global_checks
   end
 
-  defp build_subject_debug_checks(subject, root, run_commands?) do
-    file = subject["file"]
+  defp build_subject_debug_checks(subject, root, run_commands?, command_results) do
+    file = string_field(subject, "file")
     meta = subject_meta(subject)
     subject_id = id_of(meta, "id") || file
-    requirements = map_items(subject["requirements"])
-    scenarios = map_items(subject["scenarios"])
-    verifications = map_items(subject["verification"])
-    exceptions = map_items(subject["exceptions"])
-    parse_errors = subject["parse_errors"] || []
+    requirements = map_items(field(subject, "requirements"))
+    scenarios = map_items(field(subject, "scenarios"))
+    verifications = verification_entries(subject, subject_id, file, command_results)
+    exceptions = map_items(field(subject, "exceptions"))
+    parse_errors = list_field(subject, "parse_errors")
     requirement_ids = requirements |> Enum.map(&id_of(&1, "id")) |> Enum.reject(&is_nil/1)
     scenario_ids = scenarios |> Enum.map(&id_of(&1, "id")) |> Enum.reject(&is_nil/1)
     claim_ids = MapSet.new(requirement_ids ++ scenario_ids)
@@ -408,7 +427,7 @@ defmodule SpecLedEx.Verifier do
     required = ["id", "kind", "status"]
 
     Enum.reduce(required, checks, fn key, acc ->
-      if is_binary(meta[key]) and String.trim(meta[key]) != "" do
+      if present_string?(meta, key) do
         [
           check("pass", "meta_field_present", "spec-meta field present: #{key}", subject_id, file)
           | acc
@@ -537,14 +556,28 @@ defmodule SpecLedEx.Verifier do
          file,
          run_commands?
        ) do
-    Enum.reduce(verifications, checks, fn verification, acc ->
+    Enum.reduce(verifications, checks, fn entry, acc ->
+      verification = entry.item
       kind = string_field(verification, "kind")
       target = string_field(verification, "target")
       covers = list_field(verification, "covers")
-      execute? = verification["execute"] == true
+      execute? = bool_field(verification, "execute")
+      command_result = entry.command_result
 
       acc =
         cond do
+          not known_verification_kind?(kind) ->
+            [
+              check(
+                "error",
+                "verification_kind_invalid",
+                "Unknown verification kind: #{display_kind(kind)}",
+                subject_id,
+                file
+              )
+              | acc
+            ]
+
           kind in @file_kinds and target == "" ->
             [
               check(
@@ -581,7 +614,7 @@ defmodule SpecLedEx.Verifier do
               | acc
             ]
 
-          kind == "command" and target == "" ->
+          kind == @command_kind and target == "" ->
             [
               check(
                 "error",
@@ -593,9 +626,8 @@ defmodule SpecLedEx.Verifier do
               | acc
             ]
 
-          kind == "command" and run_commands? and execute? ->
-            {output, exit_code} =
-              System.cmd("sh", ["-lc", target], cd: root, stderr_to_stdout: true)
+          kind == @command_kind and run_commands? and execute? and command_result ->
+            %{output: output, exit_code: exit_code} = command_result
 
             if exit_code == 0 do
               [
@@ -626,7 +658,7 @@ defmodule SpecLedEx.Verifier do
               ]
             end
 
-          kind == "command" and run_commands? and not execute? ->
+          kind == @command_kind and run_commands? and not execute? ->
             [
               check(
                 "pass",
@@ -638,7 +670,7 @@ defmodule SpecLedEx.Verifier do
               | acc
             ]
 
-          kind == "command" ->
+          kind == @command_kind ->
             [
               check(
                 "pass",
@@ -700,7 +732,7 @@ defmodule SpecLedEx.Verifier do
          file
        ) do
     covered_ids =
-      (verifications ++ exceptions)
+      coverage_items(verifications, exceptions)
       |> Enum.flat_map(&list_field(&1, "covers"))
       |> MapSet.new()
 
@@ -750,7 +782,7 @@ defmodule SpecLedEx.Verifier do
   defp add_duplicate_requirement_debug_checks(checks, subjects) do
     duplicates =
       subjects
-      |> Enum.flat_map(fn subject -> subject["requirements"] || [] end)
+      |> Enum.flat_map(fn subject -> list_field(subject, "requirements") end)
       |> Enum.map(&id_of(&1, "id"))
       |> Enum.reject(&is_nil/1)
       |> duplicates()
@@ -782,7 +814,7 @@ defmodule SpecLedEx.Verifier do
 
   defp duplicate_requirement_id_findings(subjects) do
     subjects
-    |> Enum.flat_map(fn subject -> subject["requirements"] || [] end)
+    |> Enum.flat_map(fn subject -> list_field(subject, "requirements") end)
     |> Enum.map(&id_of(&1, "id"))
     |> Enum.reject(&is_nil/1)
     |> duplicates()
@@ -793,7 +825,7 @@ defmodule SpecLedEx.Verifier do
 
   defp duplicate_scenario_id_findings(subjects) do
     subjects
-    |> Enum.flat_map(fn subject -> subject["scenarios"] || [] end)
+    |> Enum.flat_map(fn subject -> list_field(subject, "scenarios") end)
     |> Enum.map(&id_of(&1, "id"))
     |> Enum.reject(&is_nil/1)
     |> duplicates()
@@ -804,7 +836,7 @@ defmodule SpecLedEx.Verifier do
 
   defp duplicate_exception_id_findings(subjects) do
     subjects
-    |> Enum.flat_map(fn subject -> subject["exceptions"] || [] end)
+    |> Enum.flat_map(fn subject -> list_field(subject, "exceptions") end)
     |> Enum.map(&id_of(&1, "id"))
     |> Enum.reject(&is_nil/1)
     |> duplicates()
@@ -817,13 +849,13 @@ defmodule SpecLedEx.Verifier do
     Enum.flat_map(subjects, fn subject ->
       meta = subject_meta(subject)
       subject_id = id_of(meta, "id")
-      file = subject["file"]
+      file = string_field(subject, "file")
 
       all_ids =
         [{subject_id, "subject"}] ++
-          ids_from(subject["requirements"], "requirement") ++
-          ids_from(subject["scenarios"], "scenario") ++
-          ids_from(subject["exceptions"], "exception")
+          ids_from(field(subject, "requirements"), "requirement") ++
+          ids_from(field(subject, "scenarios"), "scenario") ++
+          ids_from(field(subject, "exceptions"), "exception")
 
       all_ids
       |> Enum.reject(fn {id, _kind} -> is_nil(id) end)
@@ -846,11 +878,82 @@ defmodule SpecLedEx.Verifier do
 
   defp ids_from(_, _kind), do: []
 
+  defp build_command_results(_subjects, _root, false), do: %{}
+
+  defp build_command_results(subjects, root, true) do
+    Enum.reduce(subjects, %{}, fn subject, acc ->
+      file = string_field(subject, "file")
+      meta = subject_meta(subject)
+      subject_id = id_of(meta, "id") || file
+
+      subject
+      |> field("verification")
+      |> map_items()
+      |> Enum.with_index()
+      |> Enum.reduce(acc, fn {verification, idx}, inner_acc ->
+        case command_result(verification, root) do
+          nil -> inner_acc
+          result -> Map.put(inner_acc, verification_key(subject_id, file, idx), result)
+        end
+      end)
+    end)
+  end
+
+  defp command_result(verification, root) do
+    if runnable_command_verification?(verification) do
+      target = string_field(verification, "target")
+      {output, exit_code} = System.cmd("sh", ["-lc", target], cd: root, stderr_to_stdout: true)
+      %{output: output, exit_code: exit_code}
+    end
+  end
+
+  defp verification_entries(subject, subject_id, file, command_results) do
+    subject
+    |> field("verification")
+    |> map_items()
+    |> Enum.with_index()
+    |> Enum.map(fn {verification, idx} ->
+      %{
+        index: idx,
+        item: verification,
+        command_result: Map.get(command_results, verification_key(subject_id, file, idx))
+      }
+    end)
+  end
+
+  defp verification_key(subject_id, file, idx), do: {subject_id, file, idx}
+
+  defp coverage_counting_verification?(verification) do
+    known_verification_kind?(string_field(verification, "kind"))
+  end
+
+  defp runnable_command_verification?(verification) do
+    kind = string_field(verification, "kind")
+    target = string_field(verification, "target")
+    execute? = bool_field(verification, "execute")
+
+    kind == @command_kind and execute? and target != "" and valid_covers_field?(verification)
+  end
+
+  defp valid_covers_field?(verification) do
+    case field(verification, "covers") do
+      covers when is_list(covers) -> Enum.all?(covers, &is_binary/1)
+      _ -> false
+    end
+  end
+
+  defp coverage_items(verifications, exceptions) do
+    verifications
+    |> Enum.filter(&coverage_counting_verification?(&1.item))
+    |> Enum.map(& &1.item)
+    |> Kernel.++(exceptions)
+  end
+
   defp map_items(items) when is_list(items), do: Enum.filter(items, &is_map/1)
   defp map_items(_items), do: []
 
   defp list_field(item, key) when is_map(item) do
-    case item[key] do
+    case field(item, key) do
       value when is_list(value) -> value
       _ -> []
     end
@@ -859,13 +962,21 @@ defmodule SpecLedEx.Verifier do
   defp list_field(_item, _key), do: []
 
   defp string_field(item, key) when is_map(item) do
-    case item[key] do
+    case field(item, key) do
       value when is_binary(value) -> value
       _ -> ""
     end
   end
 
   defp string_field(_item, _key), do: ""
+
+  defp bool_field(item, key) when is_map(item), do: field(item, key) == true
+  defp bool_field(_item, _key), do: false
+
+  defp known_verification_kind?(kind), do: kind in @known_verification_kinds
+
+  defp display_kind(""), do: "<empty>"
+  defp display_kind(kind), do: kind
 
   defp present_string?(item, key) do
     case string_field(item, key) do
@@ -875,7 +986,7 @@ defmodule SpecLedEx.Verifier do
   end
 
   defp subject_meta(subject) when is_map(subject) do
-    case subject["meta"] do
+    case field(subject, "meta") do
       meta when is_map(meta) -> meta
       _ -> %{}
     end
@@ -891,13 +1002,26 @@ defmodule SpecLedEx.Verifier do
   end
 
   defp id_of(item, key) when is_map(item) do
-    case item[key] do
+    case field(item, key) do
       id when is_binary(id) and id != "" -> id
       _ -> nil
     end
   end
 
   defp id_of(_item, _key), do: nil
+
+  defp field(item, key) when is_map(item) and is_binary(key) do
+    atom_key =
+      try do
+        String.to_existing_atom(key)
+      rescue
+        ArgumentError -> nil
+      end
+
+    Map.get(item, key, if(atom_key, do: Map.get(item, atom_key)))
+  end
+
+  defp field(_item, _key), do: nil
 
   defp finding(severity, code, message, subject_id, file) do
     %{

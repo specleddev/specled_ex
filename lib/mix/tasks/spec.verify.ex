@@ -7,10 +7,10 @@ defmodule Mix.Tasks.Spec.Verify do
   def run(args) do
     Mix.Task.run("app.start")
 
-    {opts, _rest, _invalid} =
+    {opts, rest, invalid} =
       OptionParser.parse(
         args,
-        switches: [
+        strict: [
           root: :string,
           output: :string,
           strict: :boolean,
@@ -20,6 +20,8 @@ defmodule Mix.Tasks.Spec.Verify do
         ],
         aliases: [r: :root, o: :output, s: :strict, d: :debug]
       )
+
+    validate_args!(rest, invalid)
 
     root = opts[:root] || File.cwd!()
     spec_dir = opts[:spec_dir] || SpecLedEx.detect_spec_dir(root)
@@ -70,5 +72,14 @@ defmodule Mix.Tasks.Spec.Verify do
 
       Mix.raise("Spec verify failed: #{length(report["findings"] || [])} finding(s)")
     end
+  end
+
+  defp validate_args!([], []), do: :ok
+
+  defp validate_args!(rest, invalid) do
+    invalid_flags = Enum.map(invalid, fn {flag, _value} -> flag end)
+    extra_args = Enum.map(rest, &inspect/1)
+    details = Enum.join(invalid_flags ++ extra_args, ", ")
+    Mix.raise("Invalid arguments for spec.verify: #{details}")
   end
 end

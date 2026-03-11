@@ -7,12 +7,14 @@ defmodule Mix.Tasks.Spec.Plan do
   def run(args) do
     Mix.Task.run("app.start")
 
-    {opts, _rest, _invalid} =
+    {opts, rest, invalid} =
       OptionParser.parse(
         args,
-        switches: [root: :string, output: :string, spec_dir: :string],
+        strict: [root: :string, output: :string, spec_dir: :string],
         aliases: [r: :root, o: :output]
       )
+
+    validate_args!(rest, invalid)
 
     root = opts[:root] || File.cwd!()
     spec_dir = opts[:spec_dir] || SpecLedEx.detect_spec_dir(root)
@@ -27,5 +29,14 @@ defmodule Mix.Tasks.Spec.Plan do
     Mix.shell().info(
       "authored_dir=#{index["authored_dir"]} subjects=#{index["summary"]["subjects"]} requirements=#{index["summary"]["requirements"]}"
     )
+  end
+
+  defp validate_args!([], []), do: :ok
+
+  defp validate_args!(rest, invalid) do
+    invalid_flags = Enum.map(invalid, fn {flag, _value} -> flag end)
+    extra_args = Enum.map(rest, &inspect/1)
+    details = Enum.join(invalid_flags ++ extra_args, ", ")
+    Mix.raise("Invalid arguments for spec.plan: #{details}")
   end
 end
