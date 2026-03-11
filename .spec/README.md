@@ -14,6 +14,8 @@ This project uses its own tooling to specify itself.
 - `decisions/*.md` — accepted or superseded ADRs for the current workspace (authored)
 - `specs/spec_system.spec.md` — meta-spec for this workspace (authored)
 - `specs/package.spec.md` — package-level contract (authored)
+- `specs/index_state.spec.md` — index building and canonical state rules (authored)
+- `specs/block_schema.spec.md` — structured block schema rules (authored)
 - `specs/parser.spec.md` — parser module spec (authored)
 - `specs/verification.spec.md` — verification workflow spec (authored)
 - `specs/mix_tasks.spec.md` — Mix task workflow spec (authored)

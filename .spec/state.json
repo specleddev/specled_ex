@@ -19,6 +19,21 @@
       {
         "affects": [
           "repo.governance",
+          "specled.package",
+          "specled.index_state",
+          "specled.block_schema",
+          "specled.verification",
+          "specled.reporting"
+        ],
+        "date": "2026-03-11",
+        "file": ".spec/decisions/specled.decision.explicit_subject_ownership.md",
+        "id": "specled.decision.explicit_subject_ownership",
+        "status": "accepted",
+        "title": "Explicit Subject Ownership For Self-Hosted Internals"
+      },
+      {
+        "affects": [
+          "repo.governance",
           "specled.verification",
           "specled.parser"
         ],
@@ -79,6 +94,30 @@
         "subject_id": "spec.system"
       },
       {
+        "file": ".spec/specs/block_schema.spec.md",
+        "id": "specled.schema.block_structs",
+        "priority": "must",
+        "stability": "stable",
+        "statement": "Requirements, scenarios, verifications, and exceptions shall validate into Zoi-backed structs with the expected required fields.",
+        "subject_id": "specled.block_schema"
+      },
+      {
+        "file": ".spec/specs/block_schema.spec.md",
+        "id": "specled.schema.meta_contract",
+        "priority": "must",
+        "stability": "stable",
+        "statement": "The `spec-meta` contract shall accept stable ids, kind, status, optional summary and surface, optional ADR references, and optional verification minimum strength.",
+        "subject_id": "specled.block_schema"
+      },
+      {
+        "file": ".spec/specs/block_schema.spec.md",
+        "id": "specled.schema.validation_errors",
+        "priority": "must",
+        "stability": "stable",
+        "statement": "Block validation shall reject invalid ids, invalid verification kinds or strengths, and malformed list items with indexed error messages.",
+        "subject_id": "specled.block_schema"
+      },
+      {
         "file": ".spec/specs/decision_governance.spec.md",
         "id": "specled.decisions.frontmatter_contract",
         "priority": "must",
@@ -109,6 +148,30 @@
         "stability": "evolving",
         "statement": "spec.diffcheck shall fail when changed code, docs, or tests are not matched by current-truth subject spec updates for the impacted subjects.",
         "subject_id": "specled.diffcheck"
+      },
+      {
+        "file": ".spec/specs/index_state.spec.md",
+        "id": "specled.index.canonical_state_output",
+        "priority": "must",
+        "stability": "stable",
+        "statement": "State writing shall normalize indexed entities, findings, verification data, and decisions into a canonical `.spec/state.json` artifact with stable ordering and no volatile persisted fields.",
+        "subject_id": "specled.index_state"
+      },
+      {
+        "file": ".spec/specs/index_state.spec.md",
+        "id": "specled.index.json_resilience",
+        "priority": "must",
+        "stability": "stable",
+        "statement": "JSON state helpers shall return an empty map for missing or invalid files, create parent directories on write, and skip rewriting identical canonical bytes.",
+        "subject_id": "specled.index_state"
+      },
+      {
+        "file": ".spec/specs/index_state.spec.md",
+        "id": "specled.index.subject_and_decision_index",
+        "priority": "must",
+        "stability": "stable",
+        "statement": "Index building shall discover authored subject specs and authored ADRs, detect the canonical workspace directories, and summarize indexed counts without treating `decisions/README.md` as an ADR.",
+        "subject_id": "specled.index_state"
       },
       {
         "file": ".spec/specs/mix_tasks.spec.md",
@@ -163,7 +226,7 @@
         "id": "specled.tasks.report_summary",
         "priority": "should",
         "stability": "evolving",
-        "statement": "mix spec.report shall summarize coverage, verification strength, weak spots, and ADR usage for the current workspace.",
+        "statement": "mix spec.report shall summarize coverage, verification strength, weak spots, and ADR usage for the current workspace, executing command verifications by default unless explicitly opted out.",
         "subject_id": "specled.mix_tasks"
       },
       {
@@ -235,7 +298,7 @@
         "id": "specled.reporting.coverage_summary",
         "priority": "should",
         "stability": "evolving",
-        "statement": "spec.report shall summarize source, guide, and test coverage plus weak spots by subject from the current workspace.",
+        "statement": "spec.report shall summarize source, guide, and test coverage plus weak spots by subject from the current workspace, using executed command proof by default unless explicitly disabled.",
         "subject_id": "specled.reporting"
       },
       {
@@ -284,6 +347,14 @@
         "priority": "must",
         "stability": "stable",
         "statement": "Verification shall detect duplicate subject ids, duplicate requirement ids, unresolved scenario covers, and unresolved verification covers.",
+        "subject_id": "specled.verification"
+      },
+      {
+        "file": ".spec/specs/verification.spec.md",
+        "id": "specled.verify.strength_semantics",
+        "priority": "must",
+        "stability": "stable",
+        "statement": "Verification strength ordering shall treat `claimed`, `linked`, and `executed` as an ordered proof scale and use that ordering to enforce effective minimum strength thresholds.",
         "subject_id": "specled.verification"
       },
       {
@@ -387,6 +458,29 @@
     ],
     "subjects": [
       {
+        "file": ".spec/specs/block_schema.spec.md",
+        "id": "specled.block_schema",
+        "meta": {
+          "decisions": [
+            "specled.decision.explicit_subject_ownership"
+          ],
+          "id": "specled.block_schema",
+          "kind": "contract",
+          "status": "active",
+          "summary": "Validates authored block payloads into Zoi-backed structs with precise validation errors.",
+          "surface": [
+            "lib/specled_ex/schema.ex",
+            "lib/specled_ex/schema/meta.ex",
+            "lib/specled_ex/schema/requirement.ex",
+            "lib/specled_ex/schema/scenario.ex",
+            "lib/specled_ex/schema/verification.ex",
+            "lib/specled_ex/schema/exception.ex"
+          ],
+          "verification_minimum_strength": null
+        },
+        "title": "Block Schema"
+      },
+      {
         "file": ".spec/specs/decision_governance.spec.md",
         "id": "specled.decisions",
         "meta": {
@@ -427,6 +521,27 @@
         "title": "Diffcheck"
       },
       {
+        "file": ".spec/specs/index_state.spec.md",
+        "id": "specled.index_state",
+        "meta": {
+          "decisions": [
+            "specled.decision.declarative_current_truth",
+            "specled.decision.explicit_subject_ownership"
+          ],
+          "id": "specled.index_state",
+          "kind": "workflow",
+          "status": "active",
+          "summary": "Builds the authored index and writes canonical derived state for the workspace.",
+          "surface": [
+            "lib/specled_ex/index.ex",
+            "lib/specled_ex.ex",
+            "lib/specled_ex/json.ex"
+          ],
+          "verification_minimum_strength": null
+        },
+        "title": "Index And State"
+      },
+      {
         "file": ".spec/specs/mix_tasks.spec.md",
         "id": "specled.mix_tasks",
         "meta": {
@@ -457,7 +572,8 @@
         "meta": {
           "decisions": [
             "specled.decision.declarative_current_truth",
-            "specled.decision.local_skill_scaffold"
+            "specled.decision.local_skill_scaffold",
+            "specled.decision.explicit_subject_ownership"
           ],
           "id": "specled.package",
           "kind": "package",
@@ -483,9 +599,7 @@
           "status": "active",
           "summary": "Extracts structured spec blocks from authored Markdown files.",
           "surface": [
-            "lib/specled_ex/parser.ex",
-            "lib/specled_ex/schema.ex",
-            "lib/specled_ex/schema/meta.ex"
+            "lib/specled_ex/parser.ex"
           ],
           "verification_minimum_strength": null
         },
@@ -496,7 +610,8 @@
         "id": "specled.reporting",
         "meta": {
           "decisions": [
-            "specled.decision.declarative_current_truth"
+            "specled.decision.declarative_current_truth",
+            "specled.decision.explicit_subject_ownership"
           ],
           "id": "specled.reporting",
           "kind": "workflow",
@@ -542,7 +657,8 @@
         "meta": {
           "decisions": [
             "specled.decision.declarative_current_truth",
-            "specled.decision.file_backed_linked_strength"
+            "specled.decision.file_backed_linked_strength",
+            "specled.decision.explicit_subject_ownership"
           ],
           "id": "specled.verification",
           "kind": "workflow",
@@ -550,8 +666,7 @@
           "summary": "Validates authored specs, checks references, derives findings, and writes state.",
           "surface": [
             "lib/specled_ex/verifier.ex",
-            "lib/specled_ex/index.ex",
-            "lib/specled_ex.ex",
+            "lib/specled_ex/verification_strength.ex",
             "lib/specled_ex/decision_parser.ex",
             "lib/specled_ex/schema/decision.ex"
           ],
@@ -608,6 +723,18 @@
       },
       {
         "covers": [
+          "specled.schema.meta_contract",
+          "specled.schema.block_structs",
+          "specled.schema.validation_errors"
+        ],
+        "execute": true,
+        "file": ".spec/specs/block_schema.spec.md",
+        "kind": "command",
+        "subject_id": "specled.block_schema",
+        "target": "mix test test/specled_ex/schema_test.exs test/specled_ex/parser_test.exs"
+      },
+      {
+        "covers": [
           "specled.decisions.frontmatter_contract",
           "specled.decisions.reference_validation"
         ],
@@ -630,6 +757,18 @@
       },
       {
         "covers": [
+          "specled.index.subject_and_decision_index",
+          "specled.index.canonical_state_output",
+          "specled.index.json_resilience"
+        ],
+        "execute": true,
+        "file": ".spec/specs/index_state.spec.md",
+        "kind": "command",
+        "subject_id": "specled.index_state",
+        "target": "mix test test/specled_ex_test.exs test/specled_ex/index_state_test.exs test/specled_ex/json_test.exs"
+      },
+      {
+        "covers": [
           "specled.tasks.init_scaffold",
           "specled.tasks.init_local_skill",
           "specled.tasks.adr_new_scaffold",
@@ -644,7 +783,7 @@
         "file": ".spec/specs/mix_tasks.spec.md",
         "kind": "command",
         "subject_id": "specled.mix_tasks",
-        "target": "mix test test/mix/tasks/spec_tasks_test.exs"
+        "target": "mix test test/mix/tasks/spec_tasks_test.exs test/mix/tasks/spec_report_task_test.exs"
       },
       {
         "covers": [
@@ -688,7 +827,7 @@
         "file": ".spec/specs/reporting.spec.md",
         "kind": "command",
         "subject_id": "specled.reporting",
-        "target": "mix test test/specled_ex/index_state_test.exs test/mix/tasks/spec_tasks_test.exs"
+        "target": "mix test test/specled_ex/index_state_test.exs test/mix/tasks/spec_tasks_test.exs test/mix/tasks/spec_report_task_test.exs"
       },
       {
         "covers": [
@@ -697,26 +836,27 @@
           "specled.verify.coverage_warnings",
           "specled.verify.target_existence",
           "specled.verify.malformed_entries_nonfatal",
-          "specled.verify.decision_governance"
+          "specled.verify.decision_governance",
+          "specled.verify.strength_semantics"
         ],
         "execute": true,
         "file": ".spec/specs/verification.spec.md",
         "kind": "command",
         "subject_id": "specled.verification",
-        "target": "mix test test/specled_ex/verifier_test.exs"
+        "target": "mix test test/specled_ex/verifier_test.exs test/specled_ex/verification_strength_test.exs"
       }
     ]
   },
   "specification_version": "1.0",
   "summary": {
     "decision_parse_errors": 0,
-    "decisions": 3,
+    "decisions": 4,
     "exceptions": 0,
     "findings": 0,
-    "requirements": 31,
+    "requirements": 38,
     "scenarios": 5,
-    "subjects": 8,
-    "verifications": 13
+    "subjects": 10,
+    "verifications": 15
   },
   "verification": {
     "claims": [
@@ -776,6 +916,39 @@
         "verification_index": 4
       },
       {
+        "cover_id": "specled.schema.block_structs",
+        "file": ".spec/specs/block_schema.spec.md",
+        "kind": "command",
+        "meets_minimum": true,
+        "required_strength": "claimed",
+        "strength": "executed",
+        "subject_id": "specled.block_schema",
+        "target": "mix test test/specled_ex/schema_test.exs test/specled_ex/parser_test.exs",
+        "verification_index": 0
+      },
+      {
+        "cover_id": "specled.schema.meta_contract",
+        "file": ".spec/specs/block_schema.spec.md",
+        "kind": "command",
+        "meets_minimum": true,
+        "required_strength": "claimed",
+        "strength": "executed",
+        "subject_id": "specled.block_schema",
+        "target": "mix test test/specled_ex/schema_test.exs test/specled_ex/parser_test.exs",
+        "verification_index": 0
+      },
+      {
+        "cover_id": "specled.schema.validation_errors",
+        "file": ".spec/specs/block_schema.spec.md",
+        "kind": "command",
+        "meets_minimum": true,
+        "required_strength": "claimed",
+        "strength": "executed",
+        "subject_id": "specled.block_schema",
+        "target": "mix test test/specled_ex/schema_test.exs test/specled_ex/parser_test.exs",
+        "verification_index": 0
+      },
+      {
         "cover_id": "specled.decisions.frontmatter_contract",
         "file": ".spec/specs/decision_governance.spec.md",
         "kind": "command",
@@ -820,6 +993,39 @@
         "verification_index": 0
       },
       {
+        "cover_id": "specled.index.canonical_state_output",
+        "file": ".spec/specs/index_state.spec.md",
+        "kind": "command",
+        "meets_minimum": true,
+        "required_strength": "claimed",
+        "strength": "executed",
+        "subject_id": "specled.index_state",
+        "target": "mix test test/specled_ex_test.exs test/specled_ex/index_state_test.exs test/specled_ex/json_test.exs",
+        "verification_index": 0
+      },
+      {
+        "cover_id": "specled.index.json_resilience",
+        "file": ".spec/specs/index_state.spec.md",
+        "kind": "command",
+        "meets_minimum": true,
+        "required_strength": "claimed",
+        "strength": "executed",
+        "subject_id": "specled.index_state",
+        "target": "mix test test/specled_ex_test.exs test/specled_ex/index_state_test.exs test/specled_ex/json_test.exs",
+        "verification_index": 0
+      },
+      {
+        "cover_id": "specled.index.subject_and_decision_index",
+        "file": ".spec/specs/index_state.spec.md",
+        "kind": "command",
+        "meets_minimum": true,
+        "required_strength": "claimed",
+        "strength": "executed",
+        "subject_id": "specled.index_state",
+        "target": "mix test test/specled_ex_test.exs test/specled_ex/index_state_test.exs test/specled_ex/json_test.exs",
+        "verification_index": 0
+      },
+      {
         "cover_id": "specled.tasks.adr_new_scaffold",
         "file": ".spec/specs/mix_tasks.spec.md",
         "kind": "command",
@@ -827,7 +1033,7 @@
         "required_strength": "claimed",
         "strength": "executed",
         "subject_id": "specled.mix_tasks",
-        "target": "mix test test/mix/tasks/spec_tasks_test.exs",
+        "target": "mix test test/mix/tasks/spec_tasks_test.exs test/mix/tasks/spec_report_task_test.exs",
         "verification_index": 0
       },
       {
@@ -838,7 +1044,7 @@
         "required_strength": "claimed",
         "strength": "executed",
         "subject_id": "specled.mix_tasks",
-        "target": "mix test test/mix/tasks/spec_tasks_test.exs",
+        "target": "mix test test/mix/tasks/spec_tasks_test.exs test/mix/tasks/spec_report_task_test.exs",
         "verification_index": 0
       },
       {
@@ -849,7 +1055,7 @@
         "required_strength": "claimed",
         "strength": "executed",
         "subject_id": "specled.mix_tasks",
-        "target": "mix test test/mix/tasks/spec_tasks_test.exs",
+        "target": "mix test test/mix/tasks/spec_tasks_test.exs test/mix/tasks/spec_report_task_test.exs",
         "verification_index": 0
       },
       {
@@ -860,7 +1066,7 @@
         "required_strength": "claimed",
         "strength": "executed",
         "subject_id": "specled.mix_tasks",
-        "target": "mix test test/mix/tasks/spec_tasks_test.exs",
+        "target": "mix test test/mix/tasks/spec_tasks_test.exs test/mix/tasks/spec_report_task_test.exs",
         "verification_index": 0
       },
       {
@@ -871,7 +1077,7 @@
         "required_strength": "claimed",
         "strength": "executed",
         "subject_id": "specled.mix_tasks",
-        "target": "mix test test/mix/tasks/spec_tasks_test.exs",
+        "target": "mix test test/mix/tasks/spec_tasks_test.exs test/mix/tasks/spec_report_task_test.exs",
         "verification_index": 0
       },
       {
@@ -882,7 +1088,7 @@
         "required_strength": "claimed",
         "strength": "executed",
         "subject_id": "specled.mix_tasks",
-        "target": "mix test test/mix/tasks/spec_tasks_test.exs",
+        "target": "mix test test/mix/tasks/spec_tasks_test.exs test/mix/tasks/spec_report_task_test.exs",
         "verification_index": 0
       },
       {
@@ -893,7 +1099,7 @@
         "required_strength": "claimed",
         "strength": "executed",
         "subject_id": "specled.mix_tasks",
-        "target": "mix test test/mix/tasks/spec_tasks_test.exs",
+        "target": "mix test test/mix/tasks/spec_tasks_test.exs test/mix/tasks/spec_report_task_test.exs",
         "verification_index": 0
       },
       {
@@ -904,7 +1110,7 @@
         "required_strength": "claimed",
         "strength": "executed",
         "subject_id": "specled.mix_tasks",
-        "target": "mix test test/mix/tasks/spec_tasks_test.exs",
+        "target": "mix test test/mix/tasks/spec_tasks_test.exs test/mix/tasks/spec_report_task_test.exs",
         "verification_index": 0
       },
       {
@@ -915,7 +1121,7 @@
         "required_strength": "claimed",
         "strength": "executed",
         "subject_id": "specled.mix_tasks",
-        "target": "mix test test/mix/tasks/spec_tasks_test.exs",
+        "target": "mix test test/mix/tasks/spec_tasks_test.exs test/mix/tasks/spec_report_task_test.exs",
         "verification_index": 0
       },
       {
@@ -992,7 +1198,7 @@
         "required_strength": "claimed",
         "strength": "executed",
         "subject_id": "specled.reporting",
-        "target": "mix test test/specled_ex/index_state_test.exs test/mix/tasks/spec_tasks_test.exs",
+        "target": "mix test test/specled_ex/index_state_test.exs test/mix/tasks/spec_tasks_test.exs test/mix/tasks/spec_report_task_test.exs",
         "verification_index": 0
       },
       {
@@ -1003,7 +1209,7 @@
         "required_strength": "claimed",
         "strength": "executed",
         "subject_id": "specled.reporting",
-        "target": "mix test test/specled_ex/index_state_test.exs test/mix/tasks/spec_tasks_test.exs",
+        "target": "mix test test/specled_ex/index_state_test.exs test/mix/tasks/spec_tasks_test.exs test/mix/tasks/spec_report_task_test.exs",
         "verification_index": 0
       },
       {
@@ -1014,7 +1220,7 @@
         "required_strength": "claimed",
         "strength": "executed",
         "subject_id": "specled.verification",
-        "target": "mix test test/specled_ex/verifier_test.exs",
+        "target": "mix test test/specled_ex/verifier_test.exs test/specled_ex/verification_strength_test.exs",
         "verification_index": 0
       },
       {
@@ -1025,7 +1231,7 @@
         "required_strength": "claimed",
         "strength": "executed",
         "subject_id": "specled.verification",
-        "target": "mix test test/specled_ex/verifier_test.exs",
+        "target": "mix test test/specled_ex/verifier_test.exs test/specled_ex/verification_strength_test.exs",
         "verification_index": 0
       },
       {
@@ -1036,7 +1242,7 @@
         "required_strength": "claimed",
         "strength": "executed",
         "subject_id": "specled.verification",
-        "target": "mix test test/specled_ex/verifier_test.exs",
+        "target": "mix test test/specled_ex/verifier_test.exs test/specled_ex/verification_strength_test.exs",
         "verification_index": 0
       },
       {
@@ -1047,7 +1253,7 @@
         "required_strength": "claimed",
         "strength": "executed",
         "subject_id": "specled.verification",
-        "target": "mix test test/specled_ex/verifier_test.exs",
+        "target": "mix test test/specled_ex/verifier_test.exs test/specled_ex/verification_strength_test.exs",
         "verification_index": 0
       },
       {
@@ -1058,7 +1264,18 @@
         "required_strength": "claimed",
         "strength": "executed",
         "subject_id": "specled.verification",
-        "target": "mix test test/specled_ex/verifier_test.exs",
+        "target": "mix test test/specled_ex/verifier_test.exs test/specled_ex/verification_strength_test.exs",
+        "verification_index": 0
+      },
+      {
+        "cover_id": "specled.verify.strength_semantics",
+        "file": ".spec/specs/verification.spec.md",
+        "kind": "command",
+        "meets_minimum": true,
+        "required_strength": "claimed",
+        "strength": "executed",
+        "subject_id": "specled.verification",
+        "target": "mix test test/specled_ex/verifier_test.exs test/specled_ex/verification_strength_test.exs",
         "verification_index": 0
       },
       {
@@ -1069,7 +1286,7 @@
         "required_strength": "claimed",
         "strength": "executed",
         "subject_id": "specled.verification",
-        "target": "mix test test/specled_ex/verifier_test.exs",
+        "target": "mix test test/specled_ex/verifier_test.exs test/specled_ex/verification_strength_test.exs",
         "verification_index": 0
       }
     ],
@@ -1077,13 +1294,13 @@
     "default_minimum_strength": "claimed",
     "strength_summary": {
       "claimed": 2,
-      "executed": 27,
+      "executed": 34,
       "linked": 3
     },
     "threshold_failures": 0
   },
   "workspace": {
-    "decision_count": 3,
-    "spec_count": 8
+    "decision_count": 4,
+    "spec_count": 10
   }
 }

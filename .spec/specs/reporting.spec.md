@@ -18,13 +18,14 @@ surface:
   - lib/mix/tasks/spec.report.ex
 decisions:
   - specled.decision.declarative_current_truth
+  - specled.decision.explicit_subject_ownership
 ```
 
 ## Requirements
 
 ```spec-requirements
 - id: specled.reporting.coverage_summary
-  statement: spec.report shall summarize source, guide, and test coverage plus weak spots by subject from the current workspace.
+  statement: spec.report shall summarize source, guide, and test coverage plus weak spots by subject from the current workspace, using executed command proof by default unless explicitly disabled.
   priority: should
   stability: evolving
 - id: specled.reporting.decision_index
@@ -37,7 +38,7 @@ decisions:
 
 ```spec-verification
 - kind: command
-  target: mix test test/specled_ex/index_state_test.exs test/mix/tasks/spec_tasks_test.exs
+  target: mix test test/specled_ex/index_state_test.exs test/mix/tasks/spec_tasks_test.exs test/mix/tasks/spec_report_task_test.exs
   execute: true
   covers:
     - specled.reporting.coverage_summary

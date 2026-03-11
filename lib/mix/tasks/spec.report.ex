@@ -5,6 +5,13 @@ defmodule Mix.Tasks.Spec.Report do
   alias SpecLedEx.VerificationStrength
 
   @shortdoc "Summarizes current-truth spec coverage, verification strength, and ADR usage"
+  @moduledoc """
+  Summarizes current-truth spec coverage, verification strength, and ADR usage.
+
+  `mix spec.report` executes eligible `kind: command` verifications by default so
+  the summary reflects the same proof strength a maintainer usually cares about.
+  Use `--no-run-commands` to force a structural-only report for a given run.
+  """
 
   @impl true
   def run(args) do
@@ -32,7 +39,7 @@ defmodule Mix.Tasks.Spec.Report do
 
     verification_report =
       SpecLedEx.verify(index, root,
-        run_commands: opts[:run_commands] || false,
+        run_commands: report_run_commands?(opts),
         min_strength: validate_min_strength!(opts[:min_strength])
       )
 
@@ -63,6 +70,13 @@ defmodule Mix.Tasks.Spec.Report do
 
       {:error, message} ->
         Mix.raise("Invalid value for --min-strength: #{message}")
+    end
+  end
+
+  defp report_run_commands?(opts) do
+    case Keyword.fetch(opts, :run_commands) do
+      {:ok, false} -> false
+      _ -> true
     end
   end
 end

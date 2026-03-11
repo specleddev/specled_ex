@@ -15,8 +15,6 @@ status: active
 summary: Extracts structured spec blocks from authored Markdown files.
 surface:
   - lib/specled_ex/parser.ex
-  - lib/specled_ex/schema.ex
-  - lib/specled_ex/schema/meta.ex
 ```
 
 ## Requirements

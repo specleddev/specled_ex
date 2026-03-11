@@ -20,6 +20,7 @@ surface:
 decisions:
   - specled.decision.declarative_current_truth
   - specled.decision.local_skill_scaffold
+  - specled.decision.explicit_subject_ownership
 ```
 
 ## Requirements

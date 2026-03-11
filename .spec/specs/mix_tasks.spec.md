@@ -57,7 +57,7 @@ decisions:
   priority: must
   stability: stable
 - id: specled.tasks.report_summary
-  statement: mix spec.report shall summarize coverage, verification strength, weak spots, and ADR usage for the current workspace.
+  statement: mix spec.report shall summarize coverage, verification strength, weak spots, and ADR usage for the current workspace, executing command verifications by default unless explicitly opted out.
   priority: should
   stability: evolving
 - id: specled.tasks.diffcheck_gate
@@ -70,7 +70,7 @@ decisions:
 
 ```spec-verification
 - kind: command
-  target: mix test test/mix/tasks/spec_tasks_test.exs
+  target: mix test test/mix/tasks/spec_tasks_test.exs test/mix/tasks/spec_report_task_test.exs
   execute: true
   covers:
     - specled.tasks.init_scaffold

@@ -11,11 +11,13 @@ defmodule SpecLedEx.SchemaTest do
                "kind" => "module",
                "status" => "active",
                "summary" => "preserved",
+               "decisions" => ["repo.policy"],
                "verification_minimum_strength" => "linked"
              })
 
     assert %Meta{} = meta
     assert meta.summary == "preserved"
+    assert meta.decisions == ["repo.policy"]
     assert meta.verification_minimum_strength == "linked"
     assert Schema.meta() == Meta.schema()
   end

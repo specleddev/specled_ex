@@ -15,13 +15,13 @@ status: active
 summary: Validates authored specs, checks references, derives findings, and writes state.
 surface:
   - lib/specled_ex/verifier.ex
-  - lib/specled_ex/index.ex
-  - lib/specled_ex.ex
+  - lib/specled_ex/verification_strength.ex
   - lib/specled_ex/decision_parser.ex
   - lib/specled_ex/schema/decision.ex
 decisions:
   - specled.decision.declarative_current_truth
   - specled.decision.file_backed_linked_strength
+  - specled.decision.explicit_subject_ownership
 ```
 
 ## Requirements
@@ -51,6 +51,10 @@ decisions:
   statement: Verification shall validate ADR frontmatter, required ADR sections, ADR affects references, supersession links, and subject decision references.
   priority: must
   stability: evolving
+- id: specled.verify.strength_semantics
+  statement: Verification strength ordering shall treat `claimed`, `linked`, and `executed` as an ordered proof scale and use that ordering to enforce effective minimum strength thresholds.
+  priority: must
+  stability: stable
 ```
 
 ## Scenarios
@@ -90,7 +94,7 @@ decisions:
 
 ```spec-verification
 - kind: command
-  target: mix test test/specled_ex/verifier_test.exs
+  target: mix test test/specled_ex/verifier_test.exs test/specled_ex/verification_strength_test.exs
   execute: true
   covers:
     - specled.verify.meta_required
@@ -99,4 +103,5 @@ decisions:
     - specled.verify.target_existence
     - specled.verify.malformed_entries_nonfatal
     - specled.verify.decision_governance
+    - specled.verify.strength_semantics
 ```
