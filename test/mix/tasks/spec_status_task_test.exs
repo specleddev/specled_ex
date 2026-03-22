@@ -1,12 +1,14 @@
-defmodule Mix.Tasks.SpecReportTaskTest do
+defmodule Mix.Tasks.SpecStatusTaskTest do
   use SpecLedEx.Case
 
-  test "spec.report executes commands by default and allows opting out", %{root: root} do
+  test "spec.status executes commands by default and allows opting out", %{root: root} do
     write_subject_spec(
       root,
       "report_commands",
       meta: %{"id" => "report.commands", "kind" => "module", "status" => "active"},
-      requirements: [%{"id" => "report.commands.requirement", "statement" => "Covered by command"}],
+      requirements: [
+        %{"id" => "report.commands.requirement", "statement" => "Covered by command"}
+      ],
       verification: [
         %{
           "kind" => "command",
@@ -17,14 +19,14 @@ defmodule Mix.Tasks.SpecReportTaskTest do
       ]
     )
 
-    Mix.Tasks.Spec.Report.run(["--root", root])
+    Mix.Tasks.Spec.Status.run(["--root", root])
 
     assert File.read!(Path.join(root, "reported.txt")) == "reported"
 
     File.rm!(Path.join(root, "reported.txt"))
-    reenable_tasks(["spec.report"])
+    reenable_tasks(["spec.status"])
 
-    Mix.Tasks.Spec.Report.run(["--root", root, "--no-run-commands"])
+    Mix.Tasks.Spec.Status.run(["--root", root, "--no-run-commands"])
 
     refute File.exists?(Path.join(root, "reported.txt"))
   end

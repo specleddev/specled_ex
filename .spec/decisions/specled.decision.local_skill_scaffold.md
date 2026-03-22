@@ -16,7 +16,7 @@ Initialized repositories need local guidance that helps agents maintain `.spec` 
 
 ## Decision
 
-`mix spec.init` scaffolds a thin local Skill for Spec Led Development when the interactive prompt is accepted. The local Skill explains repo usage, when to update current-truth subjects, when to add an ADR, and when `mix spec.diffcheck` should fail.
+`mix spec.init` scaffolds a thin local Skill for Spec Led Development when the interactive prompt is accepted. The local Skill explains repo usage, when to update current-truth subjects, when to add an ADR, and when `mix spec.check --base ...` should fail.
 
 ## Consequences
 

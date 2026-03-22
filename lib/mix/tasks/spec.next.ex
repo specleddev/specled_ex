@@ -1,7 +1,5 @@
-defmodule Mix.Tasks.Spec.Assist do
+defmodule Mix.Tasks.Spec.Next do
   use Mix.Task
-
-  alias SpecLedEx.Assist
 
   @shortdoc "Guides the next current-truth update for the current Git change set"
 
@@ -21,10 +19,10 @@ defmodule Mix.Tasks.Spec.Assist do
     root = opts[:root] || File.cwd!()
     spec_dir = opts[:spec_dir] || SpecLedEx.detect_spec_dir(root)
     authored_dir = SpecLedEx.detect_authored_dir(root, spec_dir)
-    index = SpecLedEx.build_index(root, spec_dir: spec_dir, authored_dir: authored_dir)
-    report = SpecLedEx.assist(index, root, base: opts[:base], bugfix: opts[:bugfix])
+    index = SpecLedEx.index(root, spec_dir: spec_dir, authored_dir: authored_dir)
+    report = SpecLedEx.next(index, root, base: opts[:base], bugfix: opts[:bugfix])
 
-    Mix.shell().info(Assist.format_human(report))
+    Mix.shell().info(SpecLedEx.Next.format_human(report))
   end
 
   defp validate_args!([], []), do: :ok
@@ -33,6 +31,6 @@ defmodule Mix.Tasks.Spec.Assist do
     invalid_flags = Enum.map(invalid, fn {flag, _value} -> flag end)
     extra_args = Enum.map(rest, &inspect/1)
     details = Enum.join(invalid_flags ++ extra_args, ", ")
-    Mix.raise("Invalid arguments for spec.assist: #{details}")
+    Mix.raise("Invalid arguments for spec.next: #{details}")
   end
 end

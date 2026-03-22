@@ -5,6 +5,16 @@ Local helper package for Spec Led Development repositories.
 The commands make the most sense when you group them by job instead of reading
 them as one flat list.
 
+## Session-Start Command
+
+Use this when you are entering a repository, handing work to an agent, or
+getting your bearings on an in-flight branch:
+
+- `mix spec.prime`
+  - prints one read-only session-start snapshot
+  - combines workspace health, current-branch guidance, and the default local loop
+  - skips `kind: command` execution by default; add `--run-commands` when you want executed proof in the embedded status summary
+
 ## Core Commands
 
 These are the commands most maintainers should learn first:
@@ -13,27 +23,23 @@ These are the commands most maintainers should learn first:
   - scaffolds `.spec/` with starter files, including `README.md`, `AGENTS.md`, and `decisions/README.md`
   - in interactive runs, can also scaffold a local Skill for Spec Led Development
   - keeps `.spec` declarative and current-state only
-- `mix spec.assist`
+- `mix spec.next`
   - reads the current Git change set and points at the next subject, proof, or ADR update to make
   - stays read-only in this release
   - supports `--bugfix` for regression-first guidance
 - `mix spec.check`
-  - runs the strict package check before you finish
-  - updates derived state and fails on errors or warnings
+  - runs the full local gate before you finish
+  - updates derived state, validates current truth, and enforces branch coherence
   - enables `kind: command` execution by default; use `--no-run-commands` to opt out
-- `mix spec.diffcheck`
-  - acts as the branch guard
-  - fails when code, docs, or tests moved ahead of current-truth subject or ADR updates
-  - most useful before merge and in CI
 
 ## Occasional Commands
 
 These are helpful, but they are not part of the default local loop:
 
-- `mix spec.report`
+- `mix spec.status`
   - summarizes source, guide, and test coverage, verification strength, weak spots, and ADR usage
   - useful for brownfield adoption and maintenance review
-- `mix spec.adr.new`
+- `mix spec.decision.new`
   - scaffolds a durable ADR under `.spec/decisions/`
   - use it only when the change is durable and cross-cutting
 
@@ -42,10 +48,10 @@ These are helpful, but they are not part of the default local loop:
 These are low-level plumbing commands. They are useful for debugging and tooling,
 but they are not where a junior developer should start:
 
-- `mix spec.plan`
+- `mix spec.index`
   - reads `.spec/specs/*.spec.md` and `.spec/decisions/*.md`
   - updates `.spec/state.json` with subject and ADR index data
-- `mix spec.verify`
+- `mix spec.validate`
   - validates authored specs, updates `.spec/state.json`, and exits non-zero when the verification report fails
   - keeps `kind: command` verification execution off by default for fast local runs
 
@@ -55,18 +61,18 @@ but they are not where a junior developer should start:
 
 Use one small loop by default:
 
-1. make the code, test, or docs change
-2. add or tighten the smallest test when behavior changed
-3. run `mix spec.assist`
-4. if it says `needs subject updates`, update the named subject
-5. if it says `needs decision update`, add or revise an ADR only when the change is durable and cross-cutting
-6. when it says `ready for check`, run `mix spec.check`
-7. run `mix spec.diffcheck --base ...` when the branch should be ready for review or merge
+1. if you are entering the repo or handing work to an agent, run `mix spec.prime --base HEAD`
+2. make the code, test, or docs change
+3. add or tighten the smallest test when behavior changed
+4. run `mix spec.next`
+5. if it says `needs subject updates`, update the named subject
+6. if it says `needs decision update`, add or revise an ADR only when the change is durable and cross-cutting
+7. when it says `ready for check`, run `mix spec.check --base ...`
 
 For bug fixes:
 
 ```bash
-mix spec.assist --bugfix
+mix spec.next --bugfix
 ```
 
 ## Local Usage
@@ -80,38 +86,33 @@ Add as a path dependency in another project:
 Then run:
 
 ```bash
-mix spec.assist
-mix spec.check
+mix spec.prime --base HEAD
+mix spec.next
+mix spec.check --base HEAD
 ```
 
 When a cross-cutting policy needs to stay durable:
 
 ```bash
-mix spec.adr.new repo.policy --title "Repository Policy"
+mix spec.decision.new repo.policy --title "Repository Policy"
 ```
 
 For coverage and brownfield frontier checks:
 
 ```bash
-mix spec.report
-```
-
-For diff-aware governance enforcement:
-
-```bash
-mix spec.diffcheck
+mix spec.status
 ```
 
 For a fast local structural pass or package debugging:
 
 ```bash
-mix spec.verify
+mix spec.validate
 ```
 
 For stronger local or CI proof requirements:
 
 ```bash
-mix spec.verify --min-strength linked
+mix spec.validate --min-strength linked
 mix spec.check --min-strength executed
 ```
 
@@ -132,7 +133,7 @@ Minimum strength precedence is:
 2. `spec-meta.verification_minimum_strength`
 3. default `claimed`
 
-If a claim is below its effective minimum, `spec.verify` emits
+If a claim is below its effective minimum, `spec.validate` emits
 `verification_strength_below_minimum` as an error.
 
 ## Canonical State

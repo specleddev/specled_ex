@@ -1,7 +1,7 @@
-defmodule Mix.Tasks.SpecAssistTaskTest do
+defmodule Mix.Tasks.SpecNextTaskTest do
   use SpecLedEx.Case
 
-  test "spec.assist guides a covered local change", %{root: root} do
+  test "spec.next guides a covered local change", %{root: root} do
     init_git_repo(root)
 
     write_files(root, %{
@@ -25,7 +25,7 @@ defmodule Mix.Tasks.SpecAssistTaskTest do
       "lib/example.ex" => "defmodule Example do\n  def run, do: :ok\nend\n"
     })
 
-    Mix.Tasks.Spec.Assist.run(["--root", root, "--base", "HEAD"])
+    Mix.Tasks.Spec.Next.run(["--root", root, "--base", "HEAD"])
     messages = drain_shell_messages()
 
     assert message_contains?(messages, "classification=covered local change")
@@ -37,11 +37,10 @@ defmodule Mix.Tasks.SpecAssistTaskTest do
              "Update .spec/specs/example.spec.md if the change affects current truth."
            )
 
-    assert message_contains?(messages, "mix spec.check")
-    assert message_contains?(messages, "mix spec.diffcheck --base HEAD")
+    assert message_contains?(messages, "mix spec.check --base HEAD")
   end
 
-  test "spec.assist guides a covered cross-cutting change", %{root: root} do
+  test "spec.next guides a covered cross-cutting change", %{root: root} do
     init_git_repo(root)
 
     write_files(root, %{
@@ -78,7 +77,7 @@ defmodule Mix.Tasks.SpecAssistTaskTest do
       "lib/b.ex" => "defmodule B do\n  def run, do: :ok\nend\n"
     })
 
-    Mix.Tasks.Spec.Assist.run(["--root", root, "--base", "HEAD"])
+    Mix.Tasks.Spec.Next.run(["--root", root, "--base", "HEAD"])
     messages = drain_shell_messages()
 
     assert message_contains?(messages, "classification=covered cross-cutting change")
@@ -88,7 +87,7 @@ defmodule Mix.Tasks.SpecAssistTaskTest do
     assert message_contains?(messages, "add or revise an ADR")
   end
 
-  test "spec.assist guides uncovered frontier changes without failing", %{root: root} do
+  test "spec.next guides uncovered frontier changes without failing", %{root: root} do
     init_git_repo(root)
     File.mkdir_p!(Path.join(root, ".spec/specs"))
 
@@ -99,7 +98,7 @@ defmodule Mix.Tasks.SpecAssistTaskTest do
       "lib/uncovered.ex" => "defmodule Uncovered do\nend\n"
     })
 
-    Mix.Tasks.Spec.Assist.run(["--root", root, "--base", "HEAD"])
+    Mix.Tasks.Spec.Next.run(["--root", root, "--base", "HEAD"])
     messages = drain_shell_messages()
 
     assert message_contains?(messages, "classification=uncovered frontier change")
@@ -108,7 +107,7 @@ defmodule Mix.Tasks.SpecAssistTaskTest do
     assert message_contains?(messages, "Create or expand one subject in `.spec/specs/`")
   end
 
-  test "spec.assist --bugfix teaches the regression-first local loop", %{root: root} do
+  test "spec.next --bugfix teaches the regression-first local loop", %{root: root} do
     init_git_repo(root)
 
     write_files(root, %{
@@ -145,17 +144,17 @@ defmodule Mix.Tasks.SpecAssistTaskTest do
       "test/example_test.exs" => "# bug.example.response\n# regression\n"
     })
 
-    Mix.Tasks.Spec.Assist.run(["--root", root, "--base", "HEAD", "--bugfix"])
+    Mix.Tasks.Spec.Next.run(["--root", root, "--base", "HEAD", "--bugfix"])
     messages = drain_shell_messages()
 
     assert message_contains?(messages, "classification=covered local change")
     assert message_contains?(messages, "reconciliation=needs subject updates")
     assert message_contains?(messages, "regression test")
     assert message_contains?(messages, "Review .spec/specs/example.spec.md")
-    assert message_contains?(messages, "mix spec.check")
+    assert message_contains?(messages, "mix spec.check --base HEAD")
   end
 
-  test "spec.assist says ready for check when current truth and ADR updates are already present", %{
+  test "spec.next says ready for check when current truth and ADR updates are already present", %{
     root: root
   } do
     init_git_repo(root)
@@ -239,7 +238,7 @@ defmodule Mix.Tasks.SpecAssistTaskTest do
       File.read!(Path.join(root, ".spec/decisions/policy.md")) <> "\n"
     )
 
-    Mix.Tasks.Spec.Assist.run(["--root", root, "--base", "HEAD"])
+    Mix.Tasks.Spec.Next.run(["--root", root, "--base", "HEAD"])
     messages = drain_shell_messages()
 
     assert message_contains?(messages, "classification=covered cross-cutting change")

@@ -1,4 +1,4 @@
-defmodule SpecLedEx.Diffcheck do
+defmodule SpecLedEx.BranchCheck do
   @moduledoc false
 
   alias SpecLedEx.ChangeAnalysis
@@ -12,11 +12,15 @@ defmodule SpecLedEx.Diffcheck do
         impacted_subjects = Map.get(analysis.impacted_by_file, path, []) |> MapSet.new()
 
         cond do
+          MapSet.size(impacted_subjects) == 0 and
+              ChangeAnalysis.ignorable_deleted_policy_file?(root, path, changed_subject_ids) ->
+            []
+
           MapSet.size(impacted_subjects) == 0 ->
             [
               finding(
                 "error",
-                "diffcheck_unmapped_change",
+                "branch_guard_unmapped_change",
                 "Changed file is not covered by any current-truth subject: #{path}",
                 path
               )
@@ -35,7 +39,7 @@ defmodule SpecLedEx.Diffcheck do
               [
                 finding(
                   "error",
-                  "diffcheck_missing_spec_update",
+                  "branch_guard_missing_subject_update",
                   "Changed file #{path} impacts subject specs that were not updated: #{Enum.join(missing_subject_ids, ", ")}",
                   path
                 )
@@ -52,7 +56,7 @@ defmodule SpecLedEx.Diffcheck do
         [
           finding(
             "error",
-            "diffcheck_missing_decision_update",
+            "branch_guard_missing_decision_update",
             "Cross-cutting change spans multiple subjects but no decision file changed",
             nil
           )
@@ -94,7 +98,7 @@ defmodule SpecLedEx.Diffcheck do
       "change_type" => change_type,
       "impacted_subject_ids" => analysis.impacted_subject_ids,
       "uncovered_policy_files" => analysis.uncovered_policy_files,
-      "suggested_command" => "mix spec.assist --base #{analysis.base}"
+      "suggested_command" => "mix spec.next --base #{analysis.base}"
     }
   end
 

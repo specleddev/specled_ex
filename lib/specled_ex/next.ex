@@ -1,4 +1,4 @@
-defmodule SpecLedEx.Assist do
+defmodule SpecLedEx.Next do
   @moduledoc false
 
   alias SpecLedEx.ChangeAnalysis
@@ -32,7 +32,7 @@ defmodule SpecLedEx.Assist do
   def format_human(report) do
     lines =
       [
-        "Spec Led Assist",
+        "Spec Led Next",
         "base=#{report["base"]} changed_files=#{length(report["changed_files"] || [])} policy_files=#{length(report["policy_files"] || [])}",
         "classification=#{report["classification_label"]}",
         "reconciliation=#{report["reconciliation_label"]}",
@@ -92,6 +92,10 @@ defmodule SpecLedEx.Assist do
     "These changed files are outside current subject coverage: #{Enum.join(analysis.uncovered_policy_files, ", ")}."
   end
 
+  defp rationale("likely_non_contract_change", %{git_repo?: false}, _subject_refs) do
+    "Git is not initialized, so the current change set could not be inspected."
+  end
+
   defp rationale("likely_non_contract_change", _analysis, _subject_refs) do
     "The current change set does not clearly point at a covered runtime contract."
   end
@@ -131,7 +135,13 @@ defmodule SpecLedEx.Assist do
       ]
   end
 
-  defp next_steps("covered_cross_cutting_change", "ready_for_check", analysis, subject_refs, _opts) do
+  defp next_steps(
+         "covered_cross_cutting_change",
+         "ready_for_check",
+         analysis,
+         subject_refs,
+         _opts
+       ) do
     [
       "Current truth is already updated across: #{Enum.map_join(subject_refs, ", ", & &1["file"])}.",
       review_decision_step(analysis),
@@ -139,7 +149,13 @@ defmodule SpecLedEx.Assist do
     ]
   end
 
-  defp next_steps("covered_cross_cutting_change", "needs_subject_updates", analysis, subject_refs, _opts) do
+  defp next_steps(
+         "covered_cross_cutting_change",
+         "needs_subject_updates",
+         analysis,
+         subject_refs,
+         _opts
+       ) do
     [
       "Update the impacted subjects together: #{Enum.map_join(subject_refs, ", ", & &1["file"])}.",
       "Add or tighten the smallest proof that covers the cross-subject behavior.",
@@ -148,7 +164,13 @@ defmodule SpecLedEx.Assist do
     ]
   end
 
-  defp next_steps("covered_cross_cutting_change", "needs_decision_update", _analysis, subject_refs, _opts) do
+  defp next_steps(
+         "covered_cross_cutting_change",
+         "needs_decision_update",
+         _analysis,
+         subject_refs,
+         _opts
+       ) do
     [
       "The subject updates are already in the change set: #{Enum.map_join(subject_refs, ", ", & &1["file"])}.",
       "Add or revise an ADR if this branch changes durable cross-cutting policy.",
@@ -181,6 +203,11 @@ defmodule SpecLedEx.Assist do
           "You already changed subject files. Review those authored updates and run `mix spec.check`."
         ]
 
+      analysis.changed_files == [] and not analysis.git_repo? ->
+        [
+          "Git is not initialized yet, so review the nearest subject manually or start a repository before relying on change-set guidance."
+        ]
+
       analysis.changed_files == [] ->
         ["No changed files were detected, so there is nothing to reconcile right now."]
 
@@ -203,7 +230,8 @@ defmodule SpecLedEx.Assist do
       focused_subject_ids != [] and
         Enum.all?(focused_subject_ids, &Enum.member?(analysis.changed_subject_ids, &1))
 
-    decision_needed? = ChangeAnalysis.decision_update_needed?(analysis.policy_files, focused_subject_ids)
+    decision_needed? =
+      ChangeAnalysis.decision_update_needed?(analysis.policy_files, focused_subject_ids)
 
     cond do
       not subjects_updated? ->
@@ -218,23 +246,23 @@ defmodule SpecLedEx.Assist do
   end
 
   defp suggested_commands("needs_new_subject", analysis) do
-    ["mix spec.check", "mix spec.diffcheck --base #{analysis.base}"]
+    [check_command(analysis)]
   end
 
   defp suggested_commands("needs_subject_updates", analysis) do
-    ["mix spec.check", "mix spec.diffcheck --base #{analysis.base}"]
+    [check_command(analysis)]
   end
 
   defp suggested_commands("needs_decision_update", analysis) do
-    ["mix spec.check", "mix spec.diffcheck --base #{analysis.base}"]
+    [check_command(analysis)]
   end
 
   defp suggested_commands("ready_for_check", analysis) do
-    ["mix spec.check", "mix spec.diffcheck --base #{analysis.base}"]
+    [check_command(analysis)]
   end
 
-  defp suggested_commands("no_contract_update_needed", _analysis) do
-    ["mix spec.check"]
+  defp suggested_commands("no_contract_update_needed", analysis) do
+    [check_command(analysis)]
   end
 
   defp focused_subject_ids(analysis) do
@@ -283,4 +311,7 @@ defmodule SpecLedEx.Assist do
       "If this branch changes durable cross-cutting policy, add or revise an ADR before you finish."
     end
   end
+
+  defp check_command(%{git_repo?: true, base: base}), do: "mix spec.check --base #{base}"
+  defp check_command(_analysis), do: "mix spec.check"
 end

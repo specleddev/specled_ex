@@ -3,7 +3,7 @@ defmodule SpecLedEx do
   Local tooling for Spec Led Development repositories.
   """
 
-  alias SpecLedEx.{Assist, Diffcheck, Index, Json, Report, VerificationStrength, Verifier}
+  alias SpecLedEx.{BranchCheck, Index, Json, Next, Prime, Status, VerificationStrength, Verifier}
 
   @default_state ".spec/state.json"
 
@@ -11,20 +11,44 @@ defmodule SpecLedEx do
     Index.build(root, opts)
   end
 
+  def index(root \\ File.cwd!(), opts \\ []) do
+    build_index(root, opts)
+  end
+
   def verify(index, root \\ File.cwd!(), opts \\ []) do
     Verifier.verify(index, root, opts)
   end
 
+  def validate(index, root \\ File.cwd!(), opts \\ []) do
+    verify(index, root, opts)
+  end
+
   def report(index, verification_report, root \\ File.cwd!()) do
-    Report.build(index, verification_report, root)
+    Status.build(index, verification_report, root)
+  end
+
+  def status(index, verification_report, root \\ File.cwd!()) do
+    report(index, verification_report, root)
   end
 
   def diffcheck(index, root \\ File.cwd!(), opts \\ []) do
-    Diffcheck.run(index, root, opts)
+    BranchCheck.run(index, root, opts)
+  end
+
+  def branch_check(index, root \\ File.cwd!(), opts \\ []) do
+    diffcheck(index, root, opts)
   end
 
   def assist(index, root \\ File.cwd!(), opts \\ []) do
-    Assist.run(index, root, opts)
+    Next.run(index, root, opts)
+  end
+
+  def next(index, root \\ File.cwd!(), opts \\ []) do
+    assist(index, root, opts)
+  end
+
+  def prime(index, verification_report, root \\ File.cwd!(), opts \\ []) do
+    Prime.build(index, verification_report, root, opts)
   end
 
   def read_state(root \\ File.cwd!(), output_path \\ @default_state) do

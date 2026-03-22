@@ -8,7 +8,7 @@ affects:
   - specled.index_state
   - specled.block_schema
   - specled.verification
-  - specled.reporting
+  - specled.status
 ---
 
 # Explicit Subject Ownership For Self-Hosted Internals

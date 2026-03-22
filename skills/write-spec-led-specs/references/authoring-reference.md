@@ -79,7 +79,7 @@ decisions:
 - Use `spec-meta.decisions` only for ADR ids that exist in `.spec/decisions/*.md`.
 - Make requirement entries include `id` and `statement`.
 - Make scenario entries include `id`, `covers`, `given`, `when`, and `then`. Keep `given`, `when`, and `then` non-empty to avoid warnings.
-- Make verification entries include `kind`, `target`, and `covers`. Add `execute: true` only when the command is intended to run under `mix spec.verify --run_commands`.
+- Make verification entries include `kind`, `target`, and `covers`. Add `execute: true` only when the command is intended to run under `mix spec.validate --run-commands`.
 - Make exception entries include `id`, `covers`, and `reason`.
 
 ## Coverage Rules

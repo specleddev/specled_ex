@@ -1,4 +1,4 @@
-defmodule Mix.Tasks.Spec.Verify do
+defmodule Mix.Tasks.Spec.Validate do
   use Mix.Task
 
   alias SpecLedEx.VerificationStrength
@@ -44,10 +44,10 @@ defmodule Mix.Tasks.Spec.Verify do
     debug? = opts[:debug] || false
     run_commands? = opts[:run_commands] || false
 
-    index = SpecLedEx.build_index(root, spec_dir: spec_dir, authored_dir: authored_dir)
+    index = SpecLedEx.index(root, spec_dir: spec_dir, authored_dir: authored_dir)
 
     report =
-      SpecLedEx.verify(index, root,
+      SpecLedEx.validate(index, root,
         strict: strict?,
         debug: debug?,
         run_commands: run_commands?,
@@ -56,7 +56,7 @@ defmodule Mix.Tasks.Spec.Verify do
 
     path = SpecLedEx.write_state(index, report, root, output)
 
-    Mix.shell().info("spec.verify wrote #{path}")
+    Mix.shell().info("spec.validate wrote #{path}")
 
     summary = report["summary"]
 
@@ -88,7 +88,7 @@ defmodule Mix.Tasks.Spec.Verify do
         Mix.shell().info("[#{severity}] #{subject_id} #{code} #{file} :: #{message}")
       end)
 
-      Mix.raise("Spec verify failed: #{length(report["findings"] || [])} finding(s)")
+      Mix.raise("Spec validate failed: #{length(report["findings"] || [])} finding(s)")
     end
   end
 
@@ -98,7 +98,7 @@ defmodule Mix.Tasks.Spec.Verify do
     invalid_flags = Enum.map(invalid, fn {flag, _value} -> flag end)
     extra_args = Enum.map(rest, &inspect/1)
     details = Enum.join(invalid_flags ++ extra_args, ", ")
-    Mix.raise("Invalid arguments for spec.verify: #{details}")
+    Mix.raise("Invalid arguments for spec.validate: #{details}")
   end
 
   defp validate_min_strength!(nil), do: nil

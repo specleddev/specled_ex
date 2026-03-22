@@ -1,4 +1,4 @@
-defmodule SpecLedEx.Report do
+defmodule SpecLedEx.Status do
   @moduledoc false
 
   alias SpecLedEx.ChangeAnalysis
@@ -46,7 +46,7 @@ defmodule SpecLedEx.Report do
 
     lines =
       [
-        "Spec Led Development Report",
+        "Spec Led Status",
         "subjects=#{report["summary"]["subjects"]} decisions=#{report["summary"]["decisions"]} requirements=#{report["summary"]["requirements"]}",
         "findings errors=#{report["summary"]["errors"]} warnings=#{report["summary"]["warnings"]}",
         "verification claimed=#{strength_summary["claimed"] || 0} linked=#{strength_summary["linked"] || 0} executed=#{strength_summary["executed"] || 0}",

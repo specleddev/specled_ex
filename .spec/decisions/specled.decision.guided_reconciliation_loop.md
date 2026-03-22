@@ -7,9 +7,10 @@ affects:
   - spec.system
   - specled.package
   - specled.mix_tasks
-  - specled.assist
-  - specled.diffcheck
-  - specled.reporting
+  - specled.prime
+  - specled.next
+  - specled.branch_guard
+  - specled.status
 ---
 
 # Guided Reconciliation Before Strict Enforcement
@@ -24,15 +25,17 @@ Strict drift enforcement alone catches missing co-changes, but it does not tell 
 
 Add a read-only guided reconciliation step before strict enforcement.
 
-Use `mix spec.assist` to inspect the current Git change set, point at the impacted subject or uncovered frontier, and suggest the next spec, proof, or ADR action.
+Use `mix spec.prime` at session start to combine workspace health, current-branch guidance, and the default local loop in one read-only output.
+
+Use `mix spec.next` to inspect the current Git change set, point at the impacted subject or uncovered frontier, and suggest the next spec, proof, or ADR action.
 
 Keep `.spec` authored and deterministic.
 
-Use additive guidance in `mix spec.diffcheck` and frontier reporting in `mix spec.report`, but do not let those commands auto-edit current truth.
+Keep branch guarding inside `mix spec.check` and use `mix spec.status` for frontier reporting, but do not let those commands auto-edit current truth.
 
 ## Consequences
 
-The default local loop becomes: make the change, tighten the proof, run `mix spec.assist`, update current truth, then run `mix spec.check`.
+The default local loop becomes: orient with `mix spec.prime` when entering a branch, make the change, tighten the proof, run `mix spec.next`, update current truth, then run `mix spec.check --base ...`.
 
 Brownfield adoption becomes easier because uncovered frontier files are reported explicitly instead of being left implicit.
 

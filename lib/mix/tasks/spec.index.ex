@@ -1,7 +1,7 @@
-defmodule Mix.Tasks.Spec.Plan do
+defmodule Mix.Tasks.Spec.Index do
   use Mix.Task
 
-  @shortdoc "Builds plan index and writes .spec/state.json"
+  @shortdoc "Builds index state and writes .spec/state.json"
 
   @impl true
   def run(args) do
@@ -21,10 +21,10 @@ defmodule Mix.Tasks.Spec.Plan do
     authored_dir = SpecLedEx.detect_authored_dir(root, spec_dir)
     output = opts[:output] || "#{spec_dir}/state.json"
 
-    index = SpecLedEx.build_index(root, spec_dir: spec_dir, authored_dir: authored_dir)
+    index = SpecLedEx.index(root, spec_dir: spec_dir, authored_dir: authored_dir)
     path = SpecLedEx.write_state(index, nil, root, output)
 
-    Mix.shell().info("spec.plan wrote #{path}")
+    Mix.shell().info("spec.index wrote #{path}")
 
     Mix.shell().info(
       "authored_dir=#{index["authored_dir"]} subjects=#{index["summary"]["subjects"]} requirements=#{index["summary"]["requirements"]}"
@@ -37,6 +37,6 @@ defmodule Mix.Tasks.Spec.Plan do
     invalid_flags = Enum.map(invalid, fn {flag, _value} -> flag end)
     extra_args = Enum.map(rest, &inspect/1)
     details = Enum.join(invalid_flags ++ extra_args, ", ")
-    Mix.raise("Invalid arguments for spec.plan: #{details}")
+    Mix.raise("Invalid arguments for spec.index: #{details}")
   end
 end

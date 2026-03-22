@@ -11,7 +11,7 @@ adopt Spec Led Development with a single dependency.
 id: specled.package
 kind: package
 status: active
-summary: Elixir package for Spec Led Development. Provides Mix tasks to scaffold, index, guide, verify, report on, and diff-check authored specs.
+summary: Elixir package for Spec Led Development. Provides Mix tasks to scaffold, orient, index, guide, validate, summarize, and strictly check authored specs.
 surface:
   - README.md
   - CHANGELOG.md
@@ -28,11 +28,11 @@ decisions:
 
 ```spec-requirements
 - id: specled.package.mix_tasks
-  statement: The package shall provide mix spec.init, mix spec.plan, mix spec.assist, mix spec.verify, mix spec.check, mix spec.adr.new, mix spec.report, and mix spec.diffcheck as user-facing commands.
+  statement: The package shall provide mix spec.init, mix spec.prime, mix spec.next, mix spec.check, mix spec.status, mix spec.decision.new, mix spec.index, and mix spec.validate as user-facing commands.
   priority: must
   stability: stable
 - id: specled.package.default_local_loop
-  statement: The package README shall teach a default local loop centered on mix spec.assist, mix spec.check, and mix spec.diffcheck, explain the ready-for-check decision, reserve ADRs for durable cross-cutting policy, and present mix spec.plan and mix spec.verify as advanced plumbing rather than the beginner path.
+  statement: The package README shall teach mix spec.prime as the session-start context command, a default local loop centered on mix spec.next and mix spec.check, explain the ready-for-check decision, reserve ADRs for durable cross-cutting policy, and present mix spec.status as occasional plus mix spec.index and mix spec.validate as advanced plumbing.
   priority: should
   stability: evolving
 - id: specled.package.index_and_state
@@ -60,7 +60,7 @@ decisions:
     - specled.package.default_local_loop
 - kind: command
   target: >-
-    mix run -e 'Mix.Task.load_all(); Enum.each(~w(spec.init spec.plan spec.assist spec.verify spec.check spec.adr.new spec.report spec.diffcheck), fn task -> Mix.Task.get(task) || raise("missing #{task}") end)'
+    mix run -e 'Mix.Task.load_all(); Enum.each(~w(spec.init spec.prime spec.next spec.check spec.status spec.decision.new spec.index spec.validate), fn task -> Mix.Task.get(task) || raise("missing #{task}") end)'
   execute: true
   covers:
     - specled.package.mix_tasks

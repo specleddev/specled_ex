@@ -7,8 +7,8 @@
           "spec.system",
           "specled.package",
           "specled.mix_tasks",
-          "specled.reporting",
-          "specled.diffcheck"
+          "specled.status",
+          "specled.branch_guard"
         ],
         "date": "2026-03-11",
         "file": ".spec/decisions/specled.decision.declarative_current_truth.md",
@@ -23,7 +23,7 @@
           "specled.index_state",
           "specled.block_schema",
           "specled.verification",
-          "specled.reporting"
+          "specled.status"
         ],
         "date": "2026-03-11",
         "file": ".spec/decisions/specled.decision.explicit_subject_ownership.md",
@@ -49,9 +49,10 @@
           "spec.system",
           "specled.package",
           "specled.mix_tasks",
-          "specled.assist",
-          "specled.diffcheck",
-          "specled.reporting"
+          "specled.prime",
+          "specled.next",
+          "specled.branch_guard",
+          "specled.status"
         ],
         "date": "2026-03-20",
         "file": ".spec/decisions/specled.decision.guided_reconciliation_loop.md",
@@ -77,6 +78,14 @@
   "index": {
     "exceptions": [],
     "requirements": [
+      {
+        "file": ".spec/specs/spec_system.spec.md",
+        "id": "spec.workspace.agent_prime_context",
+        "priority": "should",
+        "stability": "evolving",
+        "statement": "The repository shall include a .spec/AGENTS.md that tells agents to start a session with mix spec.prime before editing current truth.",
+        "subject_id": "spec.system"
+      },
       {
         "file": ".spec/specs/spec_system.spec.md",
         "id": "spec.workspace.agents_present",
@@ -106,7 +115,7 @@
         "id": "spec.workspace.reconcile_loop",
         "priority": "should",
         "stability": "evolving",
-        "statement": "The workspace guidance files shall teach the default local reconcile loop: change the code, tighten the proof, run mix spec.assist, update current-truth subjects, use ADRs only for durable cross-cutting policy, and then run mix spec.check.",
+        "statement": "The workspace guidance files shall teach the default local reconcile loop: change the code, tighten the proof, run mix spec.next, update current-truth subjects, use ADRs only for durable cross-cutting policy, and then run mix spec.check --base <ref>.",
         "subject_id": "spec.system"
       },
       {
@@ -114,40 +123,8 @@
         "id": "spec.workspace.state_generated",
         "priority": "must",
         "stability": "stable",
-        "statement": "When planning and verification run, the workspace shall generate .spec/state.json containing indexed subjects, indexed decisions, and verification state.",
+        "statement": "When indexing and validation run, the workspace shall generate .spec/state.json containing indexed subjects, indexed decisions, and verification state.",
         "subject_id": "spec.system"
-      },
-      {
-        "file": ".spec/specs/assist.spec.md",
-        "id": "specled.assist.bugfix_guidance",
-        "priority": "should",
-        "stability": "evolving",
-        "statement": "mix spec.assist --bugfix shall prefer regression proof first and direct the maintainer to confirm whether the current subject wording already captures the fix before adding new spec churn.",
-        "subject_id": "specled.assist"
-      },
-      {
-        "file": ".spec/specs/assist.spec.md",
-        "id": "specled.assist.change_classification",
-        "priority": "must",
-        "stability": "evolving",
-        "statement": "mix spec.assist shall inspect the current Git change set, classify it as covered local, covered cross-cutting, uncovered frontier, or likely non-contract, and list the impacted subjects or uncovered policy files plus the next suggested commands.",
-        "subject_id": "specled.assist"
-      },
-      {
-        "file": ".spec/specs/assist.spec.md",
-        "id": "specled.assist.read_only",
-        "priority": "must",
-        "stability": "evolving",
-        "statement": "mix spec.assist shall stay read-only and return guidance output without writing current-truth files or derived state.",
-        "subject_id": "specled.assist"
-      },
-      {
-        "file": ".spec/specs/assist.spec.md",
-        "id": "specled.assist.reconciliation_status",
-        "priority": "should",
-        "stability": "evolving",
-        "statement": "mix spec.assist shall report whether the branch is ready for check, still needs subject updates, still needs a durable ADR update, or needs a new subject.",
-        "subject_id": "specled.assist"
       },
       {
         "file": ".spec/specs/block_schema.spec.md",
@@ -174,6 +151,38 @@
         "subject_id": "specled.block_schema"
       },
       {
+        "file": ".spec/specs/branch_guard.spec.md",
+        "id": "specled.branch_guard.cross_cutting_decision",
+        "priority": "must",
+        "stability": "evolving",
+        "statement": "The branch guard inside mix spec.check shall fail with an error finding when a cross-cutting change spans multiple impacted subjects without a matching ADR update.",
+        "subject_id": "specled.branch_guard"
+      },
+      {
+        "file": ".spec/specs/branch_guard.spec.md",
+        "id": "specled.branch_guard.guidance_output",
+        "priority": "should",
+        "stability": "evolving",
+        "statement": "The branch guard inside mix spec.check shall append additive guidance that reports the change type, impacted subjects or uncovered policy files, and the suggested mix spec.next command without changing its enforcement semantics.",
+        "subject_id": "specled.branch_guard"
+      },
+      {
+        "file": ".spec/specs/branch_guard.spec.md",
+        "id": "specled.branch_guard.plan_docs_excluded",
+        "priority": "should",
+        "stability": "evolving",
+        "statement": "The branch guard inside mix spec.check shall ignore branch-local planning notes under docs/plans/ when evaluating policy co-changes.",
+        "subject_id": "specled.branch_guard"
+      },
+      {
+        "file": ".spec/specs/branch_guard.spec.md",
+        "id": "specled.branch_guard.subject_cochange",
+        "priority": "must",
+        "stability": "evolving",
+        "statement": "The branch guard inside mix spec.check shall fail when changed code, tests, guides, templates, skills, or governed package files are not matched by current-truth subject spec updates for the impacted subjects, including unmapped changed policy files outside current subject coverage.",
+        "subject_id": "specled.branch_guard"
+      },
+      {
         "file": ".spec/specs/decision_governance.spec.md",
         "id": "specled.decisions.frontmatter_contract",
         "priority": "must",
@@ -188,38 +197,6 @@
         "stability": "evolving",
         "statement": "The verifier shall reject ADR affects or supersession links that do not resolve and shall warn when a subject references an unknown ADR id.",
         "subject_id": "specled.decisions"
-      },
-      {
-        "file": ".spec/specs/diffcheck.spec.md",
-        "id": "specled.diffcheck.cross_cutting_decision",
-        "priority": "must",
-        "stability": "evolving",
-        "statement": "spec.diffcheck shall fail with an error finding when a cross-cutting change spans multiple impacted subjects without a matching ADR update.",
-        "subject_id": "specled.diffcheck"
-      },
-      {
-        "file": ".spec/specs/diffcheck.spec.md",
-        "id": "specled.diffcheck.guidance_output",
-        "priority": "should",
-        "stability": "evolving",
-        "statement": "spec.diffcheck shall append additive guidance that reports the change type, impacted subjects or uncovered policy files, and the suggested mix spec.assist command without changing its enforcement semantics.",
-        "subject_id": "specled.diffcheck"
-      },
-      {
-        "file": ".spec/specs/diffcheck.spec.md",
-        "id": "specled.diffcheck.plan_docs_excluded",
-        "priority": "should",
-        "stability": "evolving",
-        "statement": "spec.diffcheck shall ignore branch-local planning notes under docs/plans/ when evaluating policy co-changes.",
-        "subject_id": "specled.diffcheck"
-      },
-      {
-        "file": ".spec/specs/diffcheck.spec.md",
-        "id": "specled.diffcheck.subject_cochange",
-        "priority": "must",
-        "stability": "evolving",
-        "statement": "spec.diffcheck shall fail when changed code, tests, guides, templates, skills, or governed package files are not matched by current-truth subject spec updates for the impacted subjects, including unmapped changed policy files outside current subject coverage.",
-        "subject_id": "specled.diffcheck"
       },
       {
         "file": ".spec/specs/index_state.spec.md",
@@ -247,34 +224,26 @@
       },
       {
         "file": ".spec/specs/mix_tasks.spec.md",
-        "id": "specled.tasks.adr_new_scaffold",
-        "priority": "should",
-        "stability": "evolving",
-        "statement": "mix spec.adr.new shall scaffold an ADR under .spec/decisions with the required frontmatter and body sections.",
-        "subject_id": "specled.mix_tasks"
-      },
-      {
-        "file": ".spec/specs/mix_tasks.spec.md",
-        "id": "specled.tasks.assist_guidance",
-        "priority": "should",
-        "stability": "evolving",
-        "statement": "mix spec.assist shall provide a read-only guided reconciliation step that points at the next subject, proof, or ADR update for the current Git change set and tell the maintainer when the branch is ready for the strict check.",
-        "subject_id": "specled.mix_tasks"
-      },
-      {
-        "file": ".spec/specs/mix_tasks.spec.md",
         "id": "specled.tasks.check_strict_gate",
         "priority": "must",
         "stability": "stable",
-        "statement": "mix spec.check shall run planning and strict verification, failing on any errors or warnings.",
+        "statement": "mix spec.check shall run indexing, strict validation, and branch-aware co-change enforcement, failing on any errors or warnings.",
         "subject_id": "specled.mix_tasks"
       },
       {
         "file": ".spec/specs/mix_tasks.spec.md",
-        "id": "specled.tasks.diffcheck_gate",
-        "priority": "must",
+        "id": "specled.tasks.decision_new_scaffold",
+        "priority": "should",
         "stability": "evolving",
-        "statement": "mix spec.diffcheck shall inspect the current Git diff and fail when changed code, docs, or tests are missing required subject or ADR co-changes.",
+        "statement": "mix spec.decision.new shall scaffold an ADR under .spec/decisions with the required frontmatter and body sections.",
+        "subject_id": "specled.mix_tasks"
+      },
+      {
+        "file": ".spec/specs/mix_tasks.spec.md",
+        "id": "specled.tasks.index_writes_state",
+        "priority": "must",
+        "stability": "stable",
+        "statement": "mix spec.index shall build the authored subject and decision index and write .spec/state.json.",
         "subject_id": "specled.mix_tasks"
       },
       {
@@ -295,35 +264,83 @@
       },
       {
         "file": ".spec/specs/mix_tasks.spec.md",
-        "id": "specled.tasks.plan_writes_state",
-        "priority": "must",
-        "stability": "stable",
-        "statement": "mix spec.plan shall build the authored subject and decision index and write .spec/state.json.",
-        "subject_id": "specled.mix_tasks"
-      },
-      {
-        "file": ".spec/specs/mix_tasks.spec.md",
-        "id": "specled.tasks.report_summary",
+        "id": "specled.tasks.next_guidance",
         "priority": "should",
         "stability": "evolving",
-        "statement": "mix spec.report shall summarize coverage, verification strength, weak spots, and ADR usage for the current workspace, executing command verifications by default unless explicitly opted out.",
+        "statement": "mix spec.next shall provide a read-only guided reconciliation step that points at the next subject, proof, or ADR update for the current Git change set and tell the maintainer when the branch is ready for the full local check.",
         "subject_id": "specled.mix_tasks"
       },
       {
         "file": ".spec/specs/mix_tasks.spec.md",
-        "id": "specled.tasks.verify_exit_status",
-        "priority": "must",
-        "stability": "stable",
-        "statement": "mix spec.verify shall exit non-zero whenever the generated verification report status is fail.",
+        "id": "specled.tasks.prime_context",
+        "priority": "should",
+        "stability": "evolving",
+        "statement": "mix spec.prime shall provide a read-only session-start summary that combines workspace status, current-branch guidance, and the default local loop without writing current-truth files or derived state.",
         "subject_id": "specled.mix_tasks"
       },
       {
         "file": ".spec/specs/mix_tasks.spec.md",
-        "id": "specled.tasks.verify_findings",
+        "id": "specled.tasks.prime_json",
+        "priority": "should",
+        "stability": "evolving",
+        "statement": "mix spec.prime shall support JSON output for agent consumption and shall only execute eligible command verifications when --run-commands is passed.",
+        "subject_id": "specled.mix_tasks"
+      },
+      {
+        "file": ".spec/specs/mix_tasks.spec.md",
+        "id": "specled.tasks.status_summary",
+        "priority": "should",
+        "stability": "evolving",
+        "statement": "mix spec.status shall summarize coverage, verification strength, weak spots, and ADR usage for the current workspace, executing command verifications by default unless explicitly opted out.",
+        "subject_id": "specled.mix_tasks"
+      },
+      {
+        "file": ".spec/specs/mix_tasks.spec.md",
+        "id": "specled.tasks.validate_exit_status",
         "priority": "must",
         "stability": "stable",
-        "statement": "mix spec.verify shall validate specs, derive findings, and write .spec/state.json with a verification report before returning.",
+        "statement": "mix spec.validate shall exit non-zero whenever the generated verification report status is fail.",
         "subject_id": "specled.mix_tasks"
+      },
+      {
+        "file": ".spec/specs/mix_tasks.spec.md",
+        "id": "specled.tasks.validate_findings",
+        "priority": "must",
+        "stability": "stable",
+        "statement": "mix spec.validate shall validate specs, derive findings, and write .spec/state.json with a verification report before returning.",
+        "subject_id": "specled.mix_tasks"
+      },
+      {
+        "file": ".spec/specs/next.spec.md",
+        "id": "specled.next.bugfix_guidance",
+        "priority": "should",
+        "stability": "evolving",
+        "statement": "mix spec.next --bugfix shall prefer regression proof first and direct the maintainer to confirm whether the current subject wording already captures the fix before adding new spec churn.",
+        "subject_id": "specled.next"
+      },
+      {
+        "file": ".spec/specs/next.spec.md",
+        "id": "specled.next.change_classification",
+        "priority": "must",
+        "stability": "evolving",
+        "statement": "mix spec.next shall inspect the current Git change set, classify it as covered local, covered cross-cutting, uncovered frontier, or likely non-contract, and list the impacted subjects or uncovered policy files plus the next suggested commands.",
+        "subject_id": "specled.next"
+      },
+      {
+        "file": ".spec/specs/next.spec.md",
+        "id": "specled.next.read_only",
+        "priority": "must",
+        "stability": "evolving",
+        "statement": "mix spec.next shall stay read-only and return guidance output without writing current-truth files or derived state.",
+        "subject_id": "specled.next"
+      },
+      {
+        "file": ".spec/specs/next.spec.md",
+        "id": "specled.next.reconciliation_status",
+        "priority": "should",
+        "stability": "evolving",
+        "statement": "mix spec.next shall report whether the branch is ready for check, still needs subject updates, still needs a durable ADR update, or needs a new subject.",
+        "subject_id": "specled.next"
       },
       {
         "file": ".spec/specs/package.spec.md",
@@ -338,7 +355,7 @@
         "id": "specled.package.default_local_loop",
         "priority": "should",
         "stability": "evolving",
-        "statement": "The package README shall teach a default local loop centered on mix spec.assist, mix spec.check, and mix spec.diffcheck, explain the ready-for-check decision, reserve ADRs for durable cross-cutting policy, and present mix spec.plan and mix spec.verify as advanced plumbing rather than the beginner path.",
+        "statement": "The package README shall teach mix spec.prime as the session-start context command, a default local loop centered on mix spec.next and mix spec.check, explain the ready-for-check decision, reserve ADRs for durable cross-cutting policy, and present mix spec.status as occasional plus mix spec.index and mix spec.validate as advanced plumbing.",
         "subject_id": "specled.package"
       },
       {
@@ -354,7 +371,7 @@
         "id": "specled.package.mix_tasks",
         "priority": "must",
         "stability": "stable",
-        "statement": "The package shall provide mix spec.init, mix spec.plan, mix spec.assist, mix spec.verify, mix spec.check, mix spec.adr.new, mix spec.report, and mix spec.diffcheck as user-facing commands.",
+        "statement": "The package shall provide mix spec.init, mix spec.prime, mix spec.next, mix spec.check, mix spec.status, mix spec.decision.new, mix spec.index, and mix spec.validate as user-facing commands.",
         "subject_id": "specled.package"
       },
       {
@@ -382,28 +399,52 @@
         "subject_id": "specled.parser"
       },
       {
-        "file": ".spec/specs/reporting.spec.md",
-        "id": "specled.reporting.coverage_summary",
+        "file": ".spec/specs/prime.spec.md",
+        "id": "specled.prime.command_execution_default",
         "priority": "should",
         "stability": "evolving",
-        "statement": "spec.report shall summarize source, guide, and test coverage plus weak spots by subject from the current workspace, using executed command proof by default unless explicitly disabled.",
-        "subject_id": "specled.reporting"
+        "statement": "mix spec.prime shall keep command verification execution off by default and only execute eligible command verifications when --run-commands is passed.",
+        "subject_id": "specled.prime"
       },
       {
-        "file": ".spec/specs/reporting.spec.md",
-        "id": "specled.reporting.decision_index",
+        "file": ".spec/specs/prime.spec.md",
+        "id": "specled.prime.machine_output",
+        "priority": "should",
+        "stability": "evolving",
+        "statement": "mix spec.prime shall support JSON output that nests the workspace status report, current-branch guidance, and loop steps for agent consumption.",
+        "subject_id": "specled.prime"
+      },
+      {
+        "file": ".spec/specs/prime.spec.md",
+        "id": "specled.prime.session_context",
+        "priority": "should",
+        "stability": "evolving",
+        "statement": "mix spec.prime shall provide a read-only session-start summary that combines workspace status, current-branch guidance, and the default local loop for the current repository.",
+        "subject_id": "specled.prime"
+      },
+      {
+        "file": ".spec/specs/status.spec.md",
+        "id": "specled.status.coverage_summary",
+        "priority": "should",
+        "stability": "evolving",
+        "statement": "mix spec.status shall summarize source, guide, and test coverage plus weak spots by subject from the current workspace, using executed command proof by default unless explicitly disabled.",
+        "subject_id": "specled.status"
+      },
+      {
+        "file": ".spec/specs/status.spec.md",
+        "id": "specled.status.decision_index",
         "priority": "must",
         "stability": "evolving",
-        "statement": "state output and spec.report shall summarize indexed ADRs and subject-to-ADR references.",
-        "subject_id": "specled.reporting"
+        "statement": "state output and mix spec.status shall summarize indexed ADRs and subject-to-ADR references.",
+        "subject_id": "specled.status"
       },
       {
-        "file": ".spec/specs/reporting.spec.md",
-        "id": "specled.reporting.frontier_summary",
+        "file": ".spec/specs/status.spec.md",
+        "id": "specled.status.frontier_summary",
         "priority": "should",
         "stability": "evolving",
-        "statement": "spec.report shall include frontier data for uncovered source, guide, and test files plus short next-gap hints for brownfield adoption.",
-        "subject_id": "specled.reporting"
+        "statement": "mix spec.status shall include frontier data for uncovered source, guide, and test files plus short next-gap hints for brownfield adoption.",
+        "subject_id": "specled.status"
       },
       {
         "file": ".spec/specs/verification.spec.md",
@@ -554,32 +595,6 @@
     ],
     "subjects": [
       {
-        "file": ".spec/specs/assist.spec.md",
-        "id": "specled.assist",
-        "meta": {
-          "decisions": [
-            "specled.decision.declarative_current_truth",
-            "specled.decision.guided_reconciliation_loop",
-            "specled.decision.explicit_subject_ownership"
-          ],
-          "id": "specled.assist",
-          "kind": "workflow",
-          "status": "active",
-          "summary": "Classifies the current change set, points at impacted subjects or uncovered frontier files, and suggests the next Spec Led step without writing current truth automatically.",
-          "surface": [
-            "lib/mix/tasks/spec.assist.ex",
-            "lib/specled_ex/assist.ex",
-            "lib/specled_ex/change_analysis.ex",
-            "skills/write-spec-led-specs/SKILL.md",
-            "priv/spec_init/README.md.eex",
-            "priv/spec_init/AGENTS.md.eex",
-            "test/mix/tasks/spec_assist_task_test.exs"
-          ],
-          "verification_minimum_strength": null
-        },
-        "title": "Assist"
-      },
-      {
         "file": ".spec/specs/block_schema.spec.md",
         "id": "specled.block_schema",
         "meta": {
@@ -603,6 +618,27 @@
         "title": "Block Schema"
       },
       {
+        "file": ".spec/specs/branch_guard.spec.md",
+        "id": "specled.branch_guard",
+        "meta": {
+          "decisions": [
+            "specled.decision.declarative_current_truth",
+            "specled.decision.guided_reconciliation_loop"
+          ],
+          "id": "specled.branch_guard",
+          "kind": "workflow",
+          "status": "active",
+          "summary": "Uses the current Git change set to enforce subject co-changes and cross-cutting ADR updates during the final local check.",
+          "surface": [
+            "lib/specled_ex/branch_check.ex",
+            "lib/specled_ex/coverage.ex",
+            "lib/mix/tasks/spec.check.ex"
+          ],
+          "verification_minimum_strength": null
+        },
+        "title": "Branch Guard"
+      },
+      {
         "file": ".spec/specs/decision_governance.spec.md",
         "id": "specled.decisions",
         "meta": {
@@ -621,27 +657,6 @@
           "verification_minimum_strength": null
         },
         "title": "Decision Governance"
-      },
-      {
-        "file": ".spec/specs/diffcheck.spec.md",
-        "id": "specled.diffcheck",
-        "meta": {
-          "decisions": [
-            "specled.decision.declarative_current_truth",
-            "specled.decision.guided_reconciliation_loop"
-          ],
-          "id": "specled.diffcheck",
-          "kind": "workflow",
-          "status": "active",
-          "summary": "Uses the current Git diff to enforce subject co-changes and cross-cutting ADR updates.",
-          "surface": [
-            "lib/specled_ex/diffcheck.ex",
-            "lib/specled_ex/coverage.ex",
-            "lib/mix/tasks/spec.diffcheck.ex"
-          ],
-          "verification_minimum_strength": null
-        },
-        "title": "Diffcheck"
       },
       {
         "file": ".spec/specs/index_state.spec.md",
@@ -675,21 +690,51 @@
           "id": "specled.mix_tasks",
           "kind": "workflow",
           "status": "active",
-          "summary": "Mix tasks for scaffolding, planning, guiding, verifying, reporting on, and diff-checking Spec Led Development workspaces.",
+          "summary": "Mix tasks for scaffolding, session-start priming, indexing, guiding, validating, summarizing, and strictly checking Spec Led Development workspaces.",
           "surface": [
             "lib/mix/tasks/spec.init.ex",
-            "lib/mix/tasks/spec.plan.ex",
-            "lib/mix/tasks/spec.assist.ex",
-            "lib/mix/tasks/spec.verify.ex",
+            "lib/mix/tasks/spec.prime.ex",
+            "lib/mix/tasks/spec.next.ex",
             "lib/mix/tasks/spec.check.ex",
-            "lib/mix/tasks/spec.adr.new.ex",
-            "lib/mix/tasks/spec.report.ex",
-            "lib/mix/tasks/spec.diffcheck.ex",
+            "lib/mix/tasks/spec.status.ex",
+            "lib/mix/tasks/spec.decision.new.ex",
+            "lib/mix/tasks/spec.index.ex",
+            "lib/mix/tasks/spec.validate.ex",
+            "lib/specled_ex/prime.ex",
+            "priv/spec_init/agents/skills/spec-led-development/SKILL.md.eex",
+            "priv/spec_init/specs/spec_system.spec.md.eex",
+            "skills/write-spec-led-specs/references/authoring-reference.md",
             "test_support/specled_ex_case.ex"
           ],
           "verification_minimum_strength": null
         },
         "title": "Mix Tasks"
+      },
+      {
+        "file": ".spec/specs/next.spec.md",
+        "id": "specled.next",
+        "meta": {
+          "decisions": [
+            "specled.decision.declarative_current_truth",
+            "specled.decision.guided_reconciliation_loop",
+            "specled.decision.explicit_subject_ownership"
+          ],
+          "id": "specled.next",
+          "kind": "workflow",
+          "status": "active",
+          "summary": "Classifies the current change set, points at impacted subjects or uncovered frontier files, and suggests the next Spec Led step without writing current truth automatically.",
+          "surface": [
+            "lib/mix/tasks/spec.next.ex",
+            "lib/specled_ex/next.ex",
+            "lib/specled_ex/change_analysis.ex",
+            "skills/write-spec-led-specs/SKILL.md",
+            "priv/spec_init/README.md.eex",
+            "priv/spec_init/AGENTS.md.eex",
+            "test/mix/tasks/spec_next_task_test.exs"
+          ],
+          "verification_minimum_strength": null
+        },
+        "title": "Next"
       },
       {
         "file": ".spec/specs/package.spec.md",
@@ -704,7 +749,7 @@
           "id": "specled.package",
           "kind": "package",
           "status": "active",
-          "summary": "Elixir package for Spec Led Development. Provides Mix tasks to scaffold, index, guide, verify, report on, and diff-check authored specs.",
+          "summary": "Elixir package for Spec Led Development. Provides Mix tasks to scaffold, orient, index, guide, validate, summarize, and strictly check authored specs.",
           "surface": [
             "README.md",
             "CHANGELOG.md",
@@ -732,26 +777,25 @@
         "title": "Parser"
       },
       {
-        "file": ".spec/specs/reporting.spec.md",
-        "id": "specled.reporting",
+        "file": ".spec/specs/prime.spec.md",
+        "id": "specled.prime",
         "meta": {
           "decisions": [
             "specled.decision.declarative_current_truth",
-            "specled.decision.explicit_subject_ownership",
             "specled.decision.guided_reconciliation_loop"
           ],
-          "id": "specled.reporting",
+          "id": "specled.prime",
           "kind": "workflow",
           "status": "active",
-          "summary": "Builds current-state summaries for coverage, verification strength, weak spots, and ADR usage.",
+          "summary": "Combines workspace status, current-branch guidance, and the default local loop into one session-start command.",
           "surface": [
-            "lib/specled_ex/report.ex",
-            "lib/specled_ex/coverage.ex",
-            "lib/mix/tasks/spec.report.ex"
+            "lib/mix/tasks/spec.prime.ex",
+            "lib/specled_ex/prime.ex",
+            "test/mix/tasks/spec_prime_task_test.exs"
           ],
           "verification_minimum_strength": null
         },
-        "title": "Reporting"
+        "title": "Prime"
       },
       {
         "file": ".spec/specs/spec_system.spec.md",
@@ -777,6 +821,28 @@
           "verification_minimum_strength": null
         },
         "title": "Spec System"
+      },
+      {
+        "file": ".spec/specs/status.spec.md",
+        "id": "specled.status",
+        "meta": {
+          "decisions": [
+            "specled.decision.declarative_current_truth",
+            "specled.decision.explicit_subject_ownership",
+            "specled.decision.guided_reconciliation_loop"
+          ],
+          "id": "specled.status",
+          "kind": "workflow",
+          "status": "active",
+          "summary": "Builds current-state summaries for coverage, verification strength, weak spots, and ADR usage.",
+          "surface": [
+            "lib/specled_ex/status.ex",
+            "lib/specled_ex/coverage.ex",
+            "lib/mix/tasks/spec.status.ex"
+          ],
+          "verification_minimum_strength": null
+        },
+        "title": "Status"
       },
       {
         "file": ".spec/specs/verification.spec.md",
@@ -816,6 +882,7 @@
       {
         "covers": [
           "spec.workspace.agents_present",
+          "spec.workspace.agent_prime_context",
           "spec.workspace.reconcile_loop"
         ],
         "file": ".spec/specs/spec_system.spec.md",
@@ -840,7 +907,7 @@
         "file": ".spec/specs/spec_system.spec.md",
         "kind": "command",
         "subject_id": "spec.system",
-        "target": "mix spec.plan"
+        "target": "mix spec.index"
       },
       {
         "covers": [
@@ -849,20 +916,7 @@
         "file": ".spec/specs/spec_system.spec.md",
         "kind": "command",
         "subject_id": "spec.system",
-        "target": "mix spec.verify"
-      },
-      {
-        "covers": [
-          "specled.assist.change_classification",
-          "specled.assist.reconciliation_status",
-          "specled.assist.bugfix_guidance",
-          "specled.assist.read_only"
-        ],
-        "execute": true,
-        "file": ".spec/specs/assist.spec.md",
-        "kind": "command",
-        "subject_id": "specled.assist",
-        "target": "mix test test/mix/tasks/spec_assist_task_test.exs"
+        "target": "mix spec.validate"
       },
       {
         "covers": [
@@ -878,6 +932,19 @@
       },
       {
         "covers": [
+          "specled.branch_guard.subject_cochange",
+          "specled.branch_guard.cross_cutting_decision",
+          "specled.branch_guard.guidance_output",
+          "specled.branch_guard.plan_docs_excluded"
+        ],
+        "execute": true,
+        "file": ".spec/specs/branch_guard.spec.md",
+        "kind": "command",
+        "subject_id": "specled.branch_guard",
+        "target": "mix test test/mix/tasks/spec_tasks_test.exs"
+      },
+      {
+        "covers": [
           "specled.decisions.frontmatter_contract",
           "specled.decisions.reference_validation"
         ],
@@ -886,19 +953,6 @@
         "kind": "command",
         "subject_id": "specled.decisions",
         "target": "mix test test/specled_ex/decision_parser_test.exs test/specled_ex/verifier_test.exs"
-      },
-      {
-        "covers": [
-          "specled.diffcheck.subject_cochange",
-          "specled.diffcheck.cross_cutting_decision",
-          "specled.diffcheck.guidance_output",
-          "specled.diffcheck.plan_docs_excluded"
-        ],
-        "execute": true,
-        "file": ".spec/specs/diffcheck.spec.md",
-        "kind": "command",
-        "subject_id": "specled.diffcheck",
-        "target": "mix test test/mix/tasks/spec_tasks_test.exs"
       },
       {
         "covers": [
@@ -916,20 +970,34 @@
         "covers": [
           "specled.tasks.init_scaffold",
           "specled.tasks.init_local_skill",
-          "specled.tasks.adr_new_scaffold",
-          "specled.tasks.plan_writes_state",
-          "specled.tasks.assist_guidance",
-          "specled.tasks.verify_findings",
-          "specled.tasks.verify_exit_status",
+          "specled.tasks.decision_new_scaffold",
+          "specled.tasks.index_writes_state",
+          "specled.tasks.prime_context",
+          "specled.tasks.prime_json",
+          "specled.tasks.next_guidance",
+          "specled.tasks.validate_findings",
+          "specled.tasks.validate_exit_status",
           "specled.tasks.check_strict_gate",
-          "specled.tasks.report_summary",
-          "specled.tasks.diffcheck_gate"
+          "specled.tasks.status_summary"
         ],
         "execute": true,
         "file": ".spec/specs/mix_tasks.spec.md",
         "kind": "command",
         "subject_id": "specled.mix_tasks",
-        "target": "mix test test/mix/tasks/spec_tasks_test.exs test/mix/tasks/spec_report_task_test.exs test/mix/tasks/spec_assist_task_test.exs"
+        "target": "mix test test/mix/tasks/spec_tasks_test.exs test/mix/tasks/spec_status_task_test.exs test/mix/tasks/spec_next_task_test.exs test/mix/tasks/spec_prime_task_test.exs"
+      },
+      {
+        "covers": [
+          "specled.next.change_classification",
+          "specled.next.reconciliation_status",
+          "specled.next.bugfix_guidance",
+          "specled.next.read_only"
+        ],
+        "execute": true,
+        "file": ".spec/specs/next.spec.md",
+        "kind": "command",
+        "subject_id": "specled.next",
+        "target": "mix test test/mix/tasks/spec_next_task_test.exs"
       },
       {
         "covers": [
@@ -959,7 +1027,7 @@
         "file": ".spec/specs/package.spec.md",
         "kind": "command",
         "subject_id": "specled.package",
-        "target": "mix run -e 'Mix.Task.load_all(); Enum.each(~w(spec.init spec.plan spec.assist spec.verify spec.check spec.adr.new spec.report spec.diffcheck), fn task -> Mix.Task.get(task) || raise(\"missing #{task}\") end)'"
+        "target": "mix run -e 'Mix.Task.load_all(); Enum.each(~w(spec.init spec.prime spec.next spec.check spec.status spec.decision.new spec.index spec.validate), fn task -> Mix.Task.get(task) || raise(\"missing #{task}\") end)'"
       },
       {
         "covers": [
@@ -975,15 +1043,27 @@
       },
       {
         "covers": [
-          "specled.reporting.coverage_summary",
-          "specled.reporting.frontier_summary",
-          "specled.reporting.decision_index"
+          "specled.prime.session_context",
+          "specled.prime.command_execution_default",
+          "specled.prime.machine_output"
         ],
         "execute": true,
-        "file": ".spec/specs/reporting.spec.md",
+        "file": ".spec/specs/prime.spec.md",
         "kind": "command",
-        "subject_id": "specled.reporting",
-        "target": "mix test test/specled_ex/index_state_test.exs test/mix/tasks/spec_tasks_test.exs test/mix/tasks/spec_report_task_test.exs"
+        "subject_id": "specled.prime",
+        "target": "mix test test/mix/tasks/spec_prime_task_test.exs"
+      },
+      {
+        "covers": [
+          "specled.status.coverage_summary",
+          "specled.status.frontier_summary",
+          "specled.status.decision_index"
+        ],
+        "execute": true,
+        "file": ".spec/specs/status.spec.md",
+        "kind": "command",
+        "subject_id": "specled.status",
+        "target": "mix test test/specled_ex/index_state_test.exs test/mix/tasks/spec_tasks_test.exs test/mix/tasks/spec_status_task_test.exs"
       },
       {
         "covers": [
@@ -1009,10 +1089,10 @@
     "decisions": 5,
     "exceptions": 0,
     "findings": 0,
-    "requirements": 48,
+    "requirements": 53,
     "scenarios": 5,
-    "subjects": 11,
-    "verifications": 17
+    "subjects": 12,
+    "verifications": 18
   },
   "verification": {
     "claims": [
@@ -1037,6 +1117,17 @@
         "subject_id": "spec.system",
         "target": ".spec/README.md",
         "verification_index": 0
+      },
+      {
+        "cover_id": "spec.workspace.agent_prime_context",
+        "file": ".spec/specs/spec_system.spec.md",
+        "kind": "source_file",
+        "meets_minimum": true,
+        "required_strength": "claimed",
+        "strength": "linked",
+        "subject_id": "spec.system",
+        "target": ".spec/AGENTS.md",
+        "verification_index": 1
       },
       {
         "cover_id": "spec.workspace.agents_present",
@@ -1090,7 +1181,7 @@
         "required_strength": "claimed",
         "strength": "claimed",
         "subject_id": "spec.system",
-        "target": "mix spec.plan",
+        "target": "mix spec.index",
         "verification_index": 3
       },
       {
@@ -1101,52 +1192,8 @@
         "required_strength": "claimed",
         "strength": "claimed",
         "subject_id": "spec.system",
-        "target": "mix spec.verify",
+        "target": "mix spec.validate",
         "verification_index": 4
-      },
-      {
-        "cover_id": "specled.assist.bugfix_guidance",
-        "file": ".spec/specs/assist.spec.md",
-        "kind": "command",
-        "meets_minimum": true,
-        "required_strength": "claimed",
-        "strength": "executed",
-        "subject_id": "specled.assist",
-        "target": "mix test test/mix/tasks/spec_assist_task_test.exs",
-        "verification_index": 0
-      },
-      {
-        "cover_id": "specled.assist.change_classification",
-        "file": ".spec/specs/assist.spec.md",
-        "kind": "command",
-        "meets_minimum": true,
-        "required_strength": "claimed",
-        "strength": "executed",
-        "subject_id": "specled.assist",
-        "target": "mix test test/mix/tasks/spec_assist_task_test.exs",
-        "verification_index": 0
-      },
-      {
-        "cover_id": "specled.assist.read_only",
-        "file": ".spec/specs/assist.spec.md",
-        "kind": "command",
-        "meets_minimum": true,
-        "required_strength": "claimed",
-        "strength": "executed",
-        "subject_id": "specled.assist",
-        "target": "mix test test/mix/tasks/spec_assist_task_test.exs",
-        "verification_index": 0
-      },
-      {
-        "cover_id": "specled.assist.reconciliation_status",
-        "file": ".spec/specs/assist.spec.md",
-        "kind": "command",
-        "meets_minimum": true,
-        "required_strength": "claimed",
-        "strength": "executed",
-        "subject_id": "specled.assist",
-        "target": "mix test test/mix/tasks/spec_assist_task_test.exs",
-        "verification_index": 0
       },
       {
         "cover_id": "specled.schema.block_structs",
@@ -1182,6 +1229,50 @@
         "verification_index": 0
       },
       {
+        "cover_id": "specled.branch_guard.cross_cutting_decision",
+        "file": ".spec/specs/branch_guard.spec.md",
+        "kind": "command",
+        "meets_minimum": true,
+        "required_strength": "claimed",
+        "strength": "executed",
+        "subject_id": "specled.branch_guard",
+        "target": "mix test test/mix/tasks/spec_tasks_test.exs",
+        "verification_index": 0
+      },
+      {
+        "cover_id": "specled.branch_guard.guidance_output",
+        "file": ".spec/specs/branch_guard.spec.md",
+        "kind": "command",
+        "meets_minimum": true,
+        "required_strength": "claimed",
+        "strength": "executed",
+        "subject_id": "specled.branch_guard",
+        "target": "mix test test/mix/tasks/spec_tasks_test.exs",
+        "verification_index": 0
+      },
+      {
+        "cover_id": "specled.branch_guard.plan_docs_excluded",
+        "file": ".spec/specs/branch_guard.spec.md",
+        "kind": "command",
+        "meets_minimum": true,
+        "required_strength": "claimed",
+        "strength": "executed",
+        "subject_id": "specled.branch_guard",
+        "target": "mix test test/mix/tasks/spec_tasks_test.exs",
+        "verification_index": 0
+      },
+      {
+        "cover_id": "specled.branch_guard.subject_cochange",
+        "file": ".spec/specs/branch_guard.spec.md",
+        "kind": "command",
+        "meets_minimum": true,
+        "required_strength": "claimed",
+        "strength": "executed",
+        "subject_id": "specled.branch_guard",
+        "target": "mix test test/mix/tasks/spec_tasks_test.exs",
+        "verification_index": 0
+      },
+      {
         "cover_id": "specled.decisions.frontmatter_contract",
         "file": ".spec/specs/decision_governance.spec.md",
         "kind": "command",
@@ -1201,50 +1292,6 @@
         "strength": "executed",
         "subject_id": "specled.decisions",
         "target": "mix test test/specled_ex/decision_parser_test.exs test/specled_ex/verifier_test.exs",
-        "verification_index": 0
-      },
-      {
-        "cover_id": "specled.diffcheck.cross_cutting_decision",
-        "file": ".spec/specs/diffcheck.spec.md",
-        "kind": "command",
-        "meets_minimum": true,
-        "required_strength": "claimed",
-        "strength": "executed",
-        "subject_id": "specled.diffcheck",
-        "target": "mix test test/mix/tasks/spec_tasks_test.exs",
-        "verification_index": 0
-      },
-      {
-        "cover_id": "specled.diffcheck.guidance_output",
-        "file": ".spec/specs/diffcheck.spec.md",
-        "kind": "command",
-        "meets_minimum": true,
-        "required_strength": "claimed",
-        "strength": "executed",
-        "subject_id": "specled.diffcheck",
-        "target": "mix test test/mix/tasks/spec_tasks_test.exs",
-        "verification_index": 0
-      },
-      {
-        "cover_id": "specled.diffcheck.plan_docs_excluded",
-        "file": ".spec/specs/diffcheck.spec.md",
-        "kind": "command",
-        "meets_minimum": true,
-        "required_strength": "claimed",
-        "strength": "executed",
-        "subject_id": "specled.diffcheck",
-        "target": "mix test test/mix/tasks/spec_tasks_test.exs",
-        "verification_index": 0
-      },
-      {
-        "cover_id": "specled.diffcheck.subject_cochange",
-        "file": ".spec/specs/diffcheck.spec.md",
-        "kind": "command",
-        "meets_minimum": true,
-        "required_strength": "claimed",
-        "strength": "executed",
-        "subject_id": "specled.diffcheck",
-        "target": "mix test test/mix/tasks/spec_tasks_test.exs",
         "verification_index": 0
       },
       {
@@ -1281,28 +1328,6 @@
         "verification_index": 0
       },
       {
-        "cover_id": "specled.tasks.adr_new_scaffold",
-        "file": ".spec/specs/mix_tasks.spec.md",
-        "kind": "command",
-        "meets_minimum": true,
-        "required_strength": "claimed",
-        "strength": "executed",
-        "subject_id": "specled.mix_tasks",
-        "target": "mix test test/mix/tasks/spec_tasks_test.exs test/mix/tasks/spec_report_task_test.exs test/mix/tasks/spec_assist_task_test.exs",
-        "verification_index": 0
-      },
-      {
-        "cover_id": "specled.tasks.assist_guidance",
-        "file": ".spec/specs/mix_tasks.spec.md",
-        "kind": "command",
-        "meets_minimum": true,
-        "required_strength": "claimed",
-        "strength": "executed",
-        "subject_id": "specled.mix_tasks",
-        "target": "mix test test/mix/tasks/spec_tasks_test.exs test/mix/tasks/spec_report_task_test.exs test/mix/tasks/spec_assist_task_test.exs",
-        "verification_index": 0
-      },
-      {
         "cover_id": "specled.tasks.check_strict_gate",
         "file": ".spec/specs/mix_tasks.spec.md",
         "kind": "command",
@@ -1310,18 +1335,29 @@
         "required_strength": "claimed",
         "strength": "executed",
         "subject_id": "specled.mix_tasks",
-        "target": "mix test test/mix/tasks/spec_tasks_test.exs test/mix/tasks/spec_report_task_test.exs test/mix/tasks/spec_assist_task_test.exs",
+        "target": "mix test test/mix/tasks/spec_tasks_test.exs test/mix/tasks/spec_status_task_test.exs test/mix/tasks/spec_next_task_test.exs test/mix/tasks/spec_prime_task_test.exs",
         "verification_index": 0
       },
       {
-        "cover_id": "specled.tasks.diffcheck_gate",
+        "cover_id": "specled.tasks.decision_new_scaffold",
         "file": ".spec/specs/mix_tasks.spec.md",
         "kind": "command",
         "meets_minimum": true,
         "required_strength": "claimed",
         "strength": "executed",
         "subject_id": "specled.mix_tasks",
-        "target": "mix test test/mix/tasks/spec_tasks_test.exs test/mix/tasks/spec_report_task_test.exs test/mix/tasks/spec_assist_task_test.exs",
+        "target": "mix test test/mix/tasks/spec_tasks_test.exs test/mix/tasks/spec_status_task_test.exs test/mix/tasks/spec_next_task_test.exs test/mix/tasks/spec_prime_task_test.exs",
+        "verification_index": 0
+      },
+      {
+        "cover_id": "specled.tasks.index_writes_state",
+        "file": ".spec/specs/mix_tasks.spec.md",
+        "kind": "command",
+        "meets_minimum": true,
+        "required_strength": "claimed",
+        "strength": "executed",
+        "subject_id": "specled.mix_tasks",
+        "target": "mix test test/mix/tasks/spec_tasks_test.exs test/mix/tasks/spec_status_task_test.exs test/mix/tasks/spec_next_task_test.exs test/mix/tasks/spec_prime_task_test.exs",
         "verification_index": 0
       },
       {
@@ -1332,7 +1368,7 @@
         "required_strength": "claimed",
         "strength": "executed",
         "subject_id": "specled.mix_tasks",
-        "target": "mix test test/mix/tasks/spec_tasks_test.exs test/mix/tasks/spec_report_task_test.exs test/mix/tasks/spec_assist_task_test.exs",
+        "target": "mix test test/mix/tasks/spec_tasks_test.exs test/mix/tasks/spec_status_task_test.exs test/mix/tasks/spec_next_task_test.exs test/mix/tasks/spec_prime_task_test.exs",
         "verification_index": 0
       },
       {
@@ -1343,51 +1379,117 @@
         "required_strength": "claimed",
         "strength": "executed",
         "subject_id": "specled.mix_tasks",
-        "target": "mix test test/mix/tasks/spec_tasks_test.exs test/mix/tasks/spec_report_task_test.exs test/mix/tasks/spec_assist_task_test.exs",
+        "target": "mix test test/mix/tasks/spec_tasks_test.exs test/mix/tasks/spec_status_task_test.exs test/mix/tasks/spec_next_task_test.exs test/mix/tasks/spec_prime_task_test.exs",
         "verification_index": 0
       },
       {
-        "cover_id": "specled.tasks.plan_writes_state",
+        "cover_id": "specled.tasks.next_guidance",
         "file": ".spec/specs/mix_tasks.spec.md",
         "kind": "command",
         "meets_minimum": true,
         "required_strength": "claimed",
         "strength": "executed",
         "subject_id": "specled.mix_tasks",
-        "target": "mix test test/mix/tasks/spec_tasks_test.exs test/mix/tasks/spec_report_task_test.exs test/mix/tasks/spec_assist_task_test.exs",
+        "target": "mix test test/mix/tasks/spec_tasks_test.exs test/mix/tasks/spec_status_task_test.exs test/mix/tasks/spec_next_task_test.exs test/mix/tasks/spec_prime_task_test.exs",
         "verification_index": 0
       },
       {
-        "cover_id": "specled.tasks.report_summary",
+        "cover_id": "specled.tasks.prime_context",
         "file": ".spec/specs/mix_tasks.spec.md",
         "kind": "command",
         "meets_minimum": true,
         "required_strength": "claimed",
         "strength": "executed",
         "subject_id": "specled.mix_tasks",
-        "target": "mix test test/mix/tasks/spec_tasks_test.exs test/mix/tasks/spec_report_task_test.exs test/mix/tasks/spec_assist_task_test.exs",
+        "target": "mix test test/mix/tasks/spec_tasks_test.exs test/mix/tasks/spec_status_task_test.exs test/mix/tasks/spec_next_task_test.exs test/mix/tasks/spec_prime_task_test.exs",
         "verification_index": 0
       },
       {
-        "cover_id": "specled.tasks.verify_exit_status",
+        "cover_id": "specled.tasks.prime_json",
         "file": ".spec/specs/mix_tasks.spec.md",
         "kind": "command",
         "meets_minimum": true,
         "required_strength": "claimed",
         "strength": "executed",
         "subject_id": "specled.mix_tasks",
-        "target": "mix test test/mix/tasks/spec_tasks_test.exs test/mix/tasks/spec_report_task_test.exs test/mix/tasks/spec_assist_task_test.exs",
+        "target": "mix test test/mix/tasks/spec_tasks_test.exs test/mix/tasks/spec_status_task_test.exs test/mix/tasks/spec_next_task_test.exs test/mix/tasks/spec_prime_task_test.exs",
         "verification_index": 0
       },
       {
-        "cover_id": "specled.tasks.verify_findings",
+        "cover_id": "specled.tasks.status_summary",
         "file": ".spec/specs/mix_tasks.spec.md",
         "kind": "command",
         "meets_minimum": true,
         "required_strength": "claimed",
         "strength": "executed",
         "subject_id": "specled.mix_tasks",
-        "target": "mix test test/mix/tasks/spec_tasks_test.exs test/mix/tasks/spec_report_task_test.exs test/mix/tasks/spec_assist_task_test.exs",
+        "target": "mix test test/mix/tasks/spec_tasks_test.exs test/mix/tasks/spec_status_task_test.exs test/mix/tasks/spec_next_task_test.exs test/mix/tasks/spec_prime_task_test.exs",
+        "verification_index": 0
+      },
+      {
+        "cover_id": "specled.tasks.validate_exit_status",
+        "file": ".spec/specs/mix_tasks.spec.md",
+        "kind": "command",
+        "meets_minimum": true,
+        "required_strength": "claimed",
+        "strength": "executed",
+        "subject_id": "specled.mix_tasks",
+        "target": "mix test test/mix/tasks/spec_tasks_test.exs test/mix/tasks/spec_status_task_test.exs test/mix/tasks/spec_next_task_test.exs test/mix/tasks/spec_prime_task_test.exs",
+        "verification_index": 0
+      },
+      {
+        "cover_id": "specled.tasks.validate_findings",
+        "file": ".spec/specs/mix_tasks.spec.md",
+        "kind": "command",
+        "meets_minimum": true,
+        "required_strength": "claimed",
+        "strength": "executed",
+        "subject_id": "specled.mix_tasks",
+        "target": "mix test test/mix/tasks/spec_tasks_test.exs test/mix/tasks/spec_status_task_test.exs test/mix/tasks/spec_next_task_test.exs test/mix/tasks/spec_prime_task_test.exs",
+        "verification_index": 0
+      },
+      {
+        "cover_id": "specled.next.bugfix_guidance",
+        "file": ".spec/specs/next.spec.md",
+        "kind": "command",
+        "meets_minimum": true,
+        "required_strength": "claimed",
+        "strength": "executed",
+        "subject_id": "specled.next",
+        "target": "mix test test/mix/tasks/spec_next_task_test.exs",
+        "verification_index": 0
+      },
+      {
+        "cover_id": "specled.next.change_classification",
+        "file": ".spec/specs/next.spec.md",
+        "kind": "command",
+        "meets_minimum": true,
+        "required_strength": "claimed",
+        "strength": "executed",
+        "subject_id": "specled.next",
+        "target": "mix test test/mix/tasks/spec_next_task_test.exs",
+        "verification_index": 0
+      },
+      {
+        "cover_id": "specled.next.read_only",
+        "file": ".spec/specs/next.spec.md",
+        "kind": "command",
+        "meets_minimum": true,
+        "required_strength": "claimed",
+        "strength": "executed",
+        "subject_id": "specled.next",
+        "target": "mix test test/mix/tasks/spec_next_task_test.exs",
+        "verification_index": 0
+      },
+      {
+        "cover_id": "specled.next.reconciliation_status",
+        "file": ".spec/specs/next.spec.md",
+        "kind": "command",
+        "meets_minimum": true,
+        "required_strength": "claimed",
+        "strength": "executed",
+        "subject_id": "specled.next",
+        "target": "mix test test/mix/tasks/spec_next_task_test.exs",
         "verification_index": 0
       },
       {
@@ -1431,7 +1533,7 @@
         "required_strength": "claimed",
         "strength": "executed",
         "subject_id": "specled.package",
-        "target": "mix run -e 'Mix.Task.load_all(); Enum.each(~w(spec.init spec.plan spec.assist spec.verify spec.check spec.adr.new spec.report spec.diffcheck), fn task -> Mix.Task.get(task) || raise(\"missing #{task}\") end)'",
+        "target": "mix run -e 'Mix.Task.load_all(); Enum.each(~w(spec.init spec.prime spec.next spec.check spec.status spec.decision.new spec.index spec.validate), fn task -> Mix.Task.get(task) || raise(\"missing #{task}\") end)'",
         "verification_index": 2
       },
       {
@@ -1468,36 +1570,69 @@
         "verification_index": 0
       },
       {
-        "cover_id": "specled.reporting.coverage_summary",
-        "file": ".spec/specs/reporting.spec.md",
+        "cover_id": "specled.prime.command_execution_default",
+        "file": ".spec/specs/prime.spec.md",
         "kind": "command",
         "meets_minimum": true,
         "required_strength": "claimed",
         "strength": "executed",
-        "subject_id": "specled.reporting",
-        "target": "mix test test/specled_ex/index_state_test.exs test/mix/tasks/spec_tasks_test.exs test/mix/tasks/spec_report_task_test.exs",
+        "subject_id": "specled.prime",
+        "target": "mix test test/mix/tasks/spec_prime_task_test.exs",
         "verification_index": 0
       },
       {
-        "cover_id": "specled.reporting.decision_index",
-        "file": ".spec/specs/reporting.spec.md",
+        "cover_id": "specled.prime.machine_output",
+        "file": ".spec/specs/prime.spec.md",
         "kind": "command",
         "meets_minimum": true,
         "required_strength": "claimed",
         "strength": "executed",
-        "subject_id": "specled.reporting",
-        "target": "mix test test/specled_ex/index_state_test.exs test/mix/tasks/spec_tasks_test.exs test/mix/tasks/spec_report_task_test.exs",
+        "subject_id": "specled.prime",
+        "target": "mix test test/mix/tasks/spec_prime_task_test.exs",
         "verification_index": 0
       },
       {
-        "cover_id": "specled.reporting.frontier_summary",
-        "file": ".spec/specs/reporting.spec.md",
+        "cover_id": "specled.prime.session_context",
+        "file": ".spec/specs/prime.spec.md",
         "kind": "command",
         "meets_minimum": true,
         "required_strength": "claimed",
         "strength": "executed",
-        "subject_id": "specled.reporting",
-        "target": "mix test test/specled_ex/index_state_test.exs test/mix/tasks/spec_tasks_test.exs test/mix/tasks/spec_report_task_test.exs",
+        "subject_id": "specled.prime",
+        "target": "mix test test/mix/tasks/spec_prime_task_test.exs",
+        "verification_index": 0
+      },
+      {
+        "cover_id": "specled.status.coverage_summary",
+        "file": ".spec/specs/status.spec.md",
+        "kind": "command",
+        "meets_minimum": true,
+        "required_strength": "claimed",
+        "strength": "executed",
+        "subject_id": "specled.status",
+        "target": "mix test test/specled_ex/index_state_test.exs test/mix/tasks/spec_tasks_test.exs test/mix/tasks/spec_status_task_test.exs",
+        "verification_index": 0
+      },
+      {
+        "cover_id": "specled.status.decision_index",
+        "file": ".spec/specs/status.spec.md",
+        "kind": "command",
+        "meets_minimum": true,
+        "required_strength": "claimed",
+        "strength": "executed",
+        "subject_id": "specled.status",
+        "target": "mix test test/specled_ex/index_state_test.exs test/mix/tasks/spec_tasks_test.exs test/mix/tasks/spec_status_task_test.exs",
+        "verification_index": 0
+      },
+      {
+        "cover_id": "specled.status.frontier_summary",
+        "file": ".spec/specs/status.spec.md",
+        "kind": "command",
+        "meets_minimum": true,
+        "required_strength": "claimed",
+        "strength": "executed",
+        "subject_id": "specled.status",
+        "target": "mix test test/specled_ex/index_state_test.exs test/mix/tasks/spec_tasks_test.exs test/mix/tasks/spec_status_task_test.exs",
         "verification_index": 0
       },
       {
@@ -1582,13 +1717,13 @@
     "default_minimum_strength": "claimed",
     "strength_summary": {
       "claimed": 2,
-      "executed": 42,
-      "linked": 7
+      "executed": 46,
+      "linked": 8
     },
     "threshold_failures": 0
   },
   "workspace": {
     "decision_count": 5,
-    "spec_count": 11
+    "spec_count": 12
   }
 }

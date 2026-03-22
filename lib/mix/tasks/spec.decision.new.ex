@@ -1,4 +1,4 @@
-defmodule Mix.Tasks.Spec.Adr.New do
+defmodule Mix.Tasks.Spec.Decision.New do
   use Mix.Task
 
   @shortdoc "Scaffolds a decision ADR under .spec/decisions"
@@ -35,7 +35,7 @@ defmodule Mix.Tasks.Spec.Adr.New do
       true ->
         File.mkdir_p!(Path.dirname(path))
         File.write!(path, content)
-        Mix.shell().info("spec.adr.new wrote #{path}")
+        Mix.shell().info("spec.decision.new wrote #{path}")
     end
   end
 
@@ -73,9 +73,9 @@ defmodule Mix.Tasks.Spec.Adr.New do
     details = Enum.join(invalid_flags ++ extra_args, ", ")
 
     if details == "" do
-      Mix.raise("spec.adr.new requires exactly one DECISION_ID argument")
+      Mix.raise("spec.decision.new requires exactly one DECISION_ID argument")
     else
-      Mix.raise("Invalid arguments for spec.adr.new: #{details}")
+      Mix.raise("Invalid arguments for spec.decision.new: #{details}")
     end
   end
 

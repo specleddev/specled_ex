@@ -7,8 +7,8 @@ affects:
   - spec.system
   - specled.package
   - specled.mix_tasks
-  - specled.reporting
-  - specled.diffcheck
+  - specled.status
+  - specled.branch_guard
 ---
 
 # Declarative Current Truth With Git History
@@ -23,4 +23,4 @@ Keep `.spec/specs/*.spec.md` as current truth only. Use Git branches, commits, a
 
 ## Consequences
 
-The workspace stays declarative. Agents and humans update current truth directly, use ADRs for stable policy, and rely on `mix spec.diffcheck` plus Git review to catch missing co-changes.
+The workspace stays declarative. Agents and humans update current truth directly, use ADRs for stable policy, and rely on `mix spec.check` plus Git review to catch missing co-changes.

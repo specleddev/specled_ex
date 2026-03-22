@@ -18,7 +18,8 @@ Use this folder for durable cross-cutting decisions that shape the current Spec 
 
 ## Workflow
 
-1. Update the current-truth subject specs in `.spec/specs/`.
-2. Use `mix spec.assist` to understand whether the change is local, cross-cutting, or on the uncovered frontier.
-3. Add or revise an ADR here only when the change is cross-cutting and should stay durable.
-4. Use Git history and pull requests as the time dimension for how the change evolved.
+1. Start with `mix spec.prime --base HEAD` when you are entering the repo or picking up a branch.
+2. Update the current-truth subject specs in `.spec/specs/`.
+3. Use `mix spec.next` to understand whether the change is local, cross-cutting, or on the uncovered frontier.
+4. Add or revise an ADR here only when the change is cross-cutting and should stay durable.
+5. Use Git history and pull requests as the time dimension for how the change evolved.

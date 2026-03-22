@@ -1,18 +1,19 @@
 ---
 name: write-spec-led-specs
-description: Draft, revise, and validate authored Spec Led Development subject specs for repositories that use `.spec/specs/*.spec.md` files and `mix spec.*` tasks. Use when Codex needs to create a new subject spec, update `spec-meta`, `spec-requirements`, `spec-scenarios`, `spec-verification`, or `spec-exceptions` blocks, connect a subject to durable ADRs, repair `mix spec.verify` or `mix spec.check` findings, or align `.spec` files with implementation, tests, and docs changes.
+description: Draft, revise, and validate authored Spec Led Development subject specs for repositories that use `.spec/specs/*.spec.md` files and `mix spec.*` tasks. Use when Codex needs to create a new subject spec, update `spec-meta`, `spec-requirements`, `spec-scenarios`, `spec-verification`, or `spec-exceptions` blocks, connect a subject to durable ADRs, repair `mix spec.validate` or `mix spec.check` findings, or align `.spec` files with implementation, tests, and docs changes.
 ---
 
 # Write Spec Led Specs
 
 ## Overview
 
-Author `.spec/specs/*.spec.md` files that match this package's parser and verifier. Keep every claim grounded in repository evidence, prefer YAML fenced blocks, and use `mix spec.assist` to reconcile code, tests, docs, and current truth before you finish with `mix spec.check`.
+Author `.spec/specs/*.spec.md` files that match this package's parser and verifier. Keep every claim grounded in repository evidence, prefer YAML fenced blocks, start with `mix spec.prime` when you are entering a workspace, and use `mix spec.next` to reconcile code, tests, docs, and current truth before you finish with `mix spec.check`.
 
 ## Workflow
 
 1. Confirm the workspace.
    - Run `mix spec.init` if `.spec/` is missing.
+   - Run `mix spec.prime --base HEAD` when you are entering an existing repository or branch.
    - Read `.spec/README.md`, `.spec/decisions/README.md` when present, and neighboring subject specs before drafting a new file.
 2. Gather evidence.
    - Read the code, tests, docs, and Mix tasks that define the behavior.
@@ -31,14 +32,13 @@ Author `.spec/specs/*.spec.md` files that match this package's parser and verifi
    - Add `spec-exceptions` only when a requirement is intentionally not verified yet and the reason should suppress the uncovered-requirement warning.
    - Add `spec-meta.decisions` only when the subject depends on a durable cross-cutting ADR in `.spec/decisions/*.md`.
 5. Validate and tighten.
-   - After code, docs, or tests change, run `mix spec.assist`.
-   - For a regression fix, run `mix spec.assist --bugfix`.
-   - If assist says `ready for check`, move to `mix spec.check`.
-   - If assist says `needs subject updates`, update the named subject before you finish.
-   - Run `mix spec.verify --debug` after edits.
+   - After code, docs, or tests change, run `mix spec.next`.
+   - For a regression fix, run `mix spec.next --bugfix`.
+   - If next says `ready for check`, move to `mix spec.check --base ...`.
+   - If next says `needs subject updates`, update the named subject before you finish.
+   - Run `mix spec.validate --debug` after edits when you need low-level verifier output.
    - Fix warnings as well as errors; `mix spec.check` runs strict verification and fails on both.
-   - Run `mix spec.check` once the subject is complete.
-   - Run `mix spec.diffcheck` when you need to enforce diff-aware co-changes before merge.
+   - Run `mix spec.check --base ...` once the subject is complete.
 
 ## Authoring Rules
 
