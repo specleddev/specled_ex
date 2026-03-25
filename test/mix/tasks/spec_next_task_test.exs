@@ -217,6 +217,49 @@ defmodule Mix.Tasks.SpecNextTaskTest do
     assert message_contains?(messages, "mix spec.check --base main")
   end
 
+  test "spec.next keeps default output compact and expands file lists with --verbose", %{
+    root: root
+  } do
+    init_git_repo(root)
+
+    write_files(root, %{
+      "lib/example.ex" => "defmodule Example do\nend\n"
+    })
+
+    write_subject_spec(
+      root,
+      "example",
+      meta: %{
+        "id" => "example.subject",
+        "kind" => "module",
+        "status" => "active",
+        "surface" => ["lib/example.ex"]
+      }
+    )
+
+    commit_all(root, "initial")
+
+    write_files(root, %{
+      "lib/example.ex" => "defmodule Example do\n  def run, do: :ok\nend\n"
+    })
+
+    Mix.Tasks.Spec.Next.run(["--root", root, "--base", "HEAD"])
+    compact_messages = drain_shell_messages()
+
+    assert message_contains?(compact_messages, "classification=covered local change")
+    refute message_contains?(compact_messages, "changed_files:")
+    refute message_contains?(compact_messages, "policy_files:")
+
+    reenable_tasks(["spec.next"])
+
+    Mix.Tasks.Spec.Next.run(["--root", root, "--base", "HEAD", "--verbose"])
+    verbose_messages = drain_shell_messages()
+
+    assert message_contains?(verbose_messages, "changed_files:")
+    assert message_contains?(verbose_messages, "- lib/example.ex")
+    assert message_contains?(verbose_messages, "policy_files:")
+  end
+
   test "spec.next says ready for check when current truth and ADR updates are already present", %{
     root: root
   } do

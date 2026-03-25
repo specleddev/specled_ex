@@ -81,6 +81,8 @@ For one focused workset inside a longer-lived branch:
 mix spec.next --base main --since <checkpoint>
 ```
 
+Add `--verbose` when you want the raw changed-file lists in the guidance output.
+
 ## Local Usage
 
 Add as a path dependency in another project:

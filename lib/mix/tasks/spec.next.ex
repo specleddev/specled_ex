@@ -15,6 +15,7 @@ defmodule Mix.Tasks.Spec.Next do
           spec_dir: :string,
           base: :string,
           since: :string,
+          verbose: :boolean,
           bugfix: :boolean
         ],
         aliases: [r: :root]
@@ -30,7 +31,7 @@ defmodule Mix.Tasks.Spec.Next do
     report =
       SpecLedEx.next(index, root, base: opts[:base], since: opts[:since], bugfix: opts[:bugfix])
 
-    Mix.shell().info(SpecLedEx.Next.format_human(report))
+    Mix.shell().info(SpecLedEx.Next.format_human(report, verbose: opts[:verbose] || false))
   end
 
   defp validate_args!([], []), do: :ok

@@ -32,7 +32,9 @@ defmodule SpecLedEx.Next do
     }
   end
 
-  def format_human(report) do
+  def format_human(report, opts \\ []) do
+    verbose? = Keyword.get(opts, :verbose, false)
+
     lines =
       [
         "Spec Led Next",
@@ -42,9 +44,14 @@ defmodule SpecLedEx.Next do
         "reconciliation=#{report["reconciliation_label"]}",
         "rationale=#{report["rationale"]}"
       ] ++
-        format_items("changed_files", report["changed_files"] || []) ++
+        format_verbose_items(verbose?, "changed_files", report["changed_files"] || []) ++
+        format_verbose_items(verbose?, "policy_files", report["policy_files"] || []) ++
         format_subjects(report["subject_refs"] || []) ++
-        format_items("uncovered_policy_files", report["uncovered_policy_files"] || []) ++
+        format_optional_items(
+          verbose? or report["uncovered_policy_files"] != [],
+          "uncovered_policy_files",
+          report["uncovered_policy_files"] || []
+        ) ++
         format_items("next_steps", report["next_steps"] || []) ++
         format_items("commands", report["suggested_commands"] || [])
 
@@ -296,6 +303,12 @@ defmodule SpecLedEx.Next do
   defp format_items(label, items) do
     ["#{label}:"] ++ Enum.map(items, &"- #{&1}")
   end
+
+  defp format_optional_items(false, _label, _items), do: []
+  defp format_optional_items(true, label, items), do: format_items(label, items)
+
+  defp format_verbose_items(false, _label, _items), do: []
+  defp format_verbose_items(true, label, items), do: format_items(label, items)
 
   defp format_subjects([]), do: ["impacted_subjects=none"]
 
