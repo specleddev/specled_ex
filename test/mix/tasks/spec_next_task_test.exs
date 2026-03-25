@@ -260,6 +260,46 @@ defmodule Mix.Tasks.SpecNextTaskTest do
     assert message_contains?(verbose_messages, "policy_files:")
   end
 
+  test "spec.next supports json output", %{root: root} do
+    init_git_repo(root)
+
+    write_files(root, %{
+      "lib/example.ex" => "defmodule Example do\nend\n"
+    })
+
+    write_subject_spec(
+      root,
+      "example",
+      meta: %{
+        "id" => "example.subject",
+        "kind" => "module",
+        "status" => "active",
+        "surface" => ["lib/example.ex"]
+      }
+    )
+
+    commit_all(root, "initial")
+
+    write_files(root, %{
+      "lib/example.ex" => "defmodule Example do\n  def run, do: :ok\nend\n"
+    })
+
+    Mix.Tasks.Spec.Next.run(["--root", root, "--base", "HEAD", "--since", "HEAD", "--json"])
+    [json] = drain_shell_messages()
+    report = Jason.decode!(json)
+
+    assert report["base"] == "HEAD"
+    assert report["since"] == "HEAD"
+    assert report["guidance_scope"] == "since HEAD"
+    assert report["classification"] == "covered_local_change"
+    assert report["reconciliation"] == "needs_subject_updates"
+    assert report["changed_files"] == ["lib/example.ex"]
+
+    assert report["subject_refs"] == [
+             %{"file" => ".spec/specs/example.spec.md", "id" => "example.subject"}
+           ]
+  end
+
   test "spec.next says ready for check when current truth and ADR updates are already present", %{
     root: root
   } do

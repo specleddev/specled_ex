@@ -82,6 +82,7 @@ mix spec.next --base main --since <checkpoint>
 ```
 
 Add `--verbose` when you want the raw changed-file lists in the guidance output.
+Add `--json` when an editor, script, or agent needs the structured report.
 
 ## Local Usage
 

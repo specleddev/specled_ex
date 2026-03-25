@@ -16,6 +16,7 @@ defmodule Mix.Tasks.Spec.Next do
           base: :string,
           since: :string,
           verbose: :boolean,
+          json: :boolean,
           bugfix: :boolean
         ],
         aliases: [r: :root]
@@ -31,7 +32,11 @@ defmodule Mix.Tasks.Spec.Next do
     report =
       SpecLedEx.next(index, root, base: opts[:base], since: opts[:since], bugfix: opts[:bugfix])
 
-    Mix.shell().info(SpecLedEx.Next.format_human(report, verbose: opts[:verbose] || false))
+    if opts[:json] do
+      Mix.shell().info(Jason.encode!(report, pretty: true))
+    else
+      Mix.shell().info(SpecLedEx.Next.format_human(report, verbose: opts[:verbose] || false))
+    end
   end
 
   defp validate_args!([], []), do: :ok
