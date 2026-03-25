@@ -80,6 +80,8 @@ defmodule Mix.Tasks.SpecPrimeTaskTest do
       root,
       "--base",
       "HEAD",
+      "--since",
+      "HEAD",
       "--bugfix",
       "--run-commands",
       "--json"
@@ -92,7 +94,9 @@ defmodule Mix.Tasks.SpecPrimeTaskTest do
     assert report["summary"]["run_commands"] == true
     assert report["summary"]["bugfix"] == true
     assert report["next"]["base"] == "HEAD"
+    assert report["next"]["since"] == "HEAD"
     assert report["next"]["bugfix"] == true
+    assert report["next"]["guidance_scope"] == "since HEAD"
     assert report["next"]["classification"] == "covered_local_change"
     assert report["next"]["reconciliation"] == "needs_subject_updates"
 

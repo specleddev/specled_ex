@@ -12,7 +12,10 @@ defmodule SpecLedEx.Next do
 
     %{
       "base" => analysis.base,
+      "since" => analysis.since,
       "bugfix" => Keyword.get(opts, :bugfix, false),
+      "guidance_scope" => guidance_scope_label(analysis),
+      "check_scope" => check_scope_label(analysis),
       "changed_files" => analysis.changed_files,
       "policy_files" => analysis.policy_files,
       "classification" => classification,
@@ -34,6 +37,7 @@ defmodule SpecLedEx.Next do
       [
         "Spec Led Next",
         "base=#{report["base"]} changed_files=#{length(report["changed_files"] || [])} policy_files=#{length(report["policy_files"] || [])}",
+        "guidance_scope=#{report["guidance_scope"]} check_scope=#{report["check_scope"]}",
         "classification=#{report["classification_label"]}",
         "reconciliation=#{report["reconciliation_label"]}",
         "rationale=#{report["rationale"]}"
@@ -314,4 +318,11 @@ defmodule SpecLedEx.Next do
 
   defp check_command(%{git_repo?: true, base: base}), do: "mix spec.check --base #{base}"
   defp check_command(_analysis), do: "mix spec.check"
+
+  defp guidance_scope_label(%{since: since}) when is_binary(since), do: "since #{since}"
+  defp guidance_scope_label(%{git_repo?: true, base: base}), do: "branch vs #{base}"
+  defp guidance_scope_label(_analysis), do: "workspace"
+
+  defp check_scope_label(%{git_repo?: true, base: base}), do: "full branch vs #{base}"
+  defp check_scope_label(_analysis), do: "workspace"
 end

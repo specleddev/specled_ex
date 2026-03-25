@@ -154,6 +154,69 @@ defmodule Mix.Tasks.SpecNextTaskTest do
     assert message_contains?(messages, "mix spec.check --base HEAD")
   end
 
+  test "spec.next --since scopes guidance to changes after a checkpoint", %{root: root} do
+    init_git_repo(root)
+
+    write_files(root, %{
+      "lib/a.ex" => "defmodule A do\nend\n",
+      "lib/b.ex" => "defmodule B do\nend\n"
+    })
+
+    write_subject_spec(
+      root,
+      "a",
+      meta: %{
+        "id" => "a.subject",
+        "kind" => "module",
+        "status" => "active",
+        "surface" => ["lib/a.ex"]
+      }
+    )
+
+    write_subject_spec(
+      root,
+      "b",
+      meta: %{
+        "id" => "b.subject",
+        "kind" => "module",
+        "status" => "active",
+        "surface" => ["lib/b.ex"]
+      }
+    )
+
+    commit_all(root, "initial")
+    git!(root, ["checkout", "-b", "feature/workset"])
+
+    write_files(root, %{
+      "lib/a.ex" => "defmodule A do\n  def run, do: :ok\nend\n"
+    })
+
+    File.write!(
+      Path.join(root, ".spec/specs/a.spec.md"),
+      File.read!(Path.join(root, ".spec/specs/a.spec.md")) <> "\n"
+    )
+
+    commit_all(root, "complete first ticket")
+    checkpoint = root |> git!(["rev-parse", "HEAD"]) |> String.trim()
+
+    write_files(root, %{
+      "lib/b.ex" => "defmodule B do\n  def run, do: :ok\nend\n"
+    })
+
+    commit_all(root, "start second ticket")
+
+    Mix.Tasks.Spec.Next.run(["--root", root, "--base", "main", "--since", checkpoint])
+    messages = drain_shell_messages()
+
+    assert message_contains?(messages, "guidance_scope=since #{checkpoint}")
+    assert message_contains?(messages, "check_scope=full branch vs main")
+    assert message_contains?(messages, "classification=covered local change")
+    assert message_contains?(messages, "reconciliation=needs subject updates")
+    assert message_contains?(messages, "b.subject (.spec/specs/b.spec.md)")
+    refute message_contains?(messages, "a.subject (.spec/specs/a.spec.md)")
+    assert message_contains?(messages, "mix spec.check --base main")
+  end
+
   test "spec.next says ready for check when current truth and ADR updates are already present", %{
     root: root
   } do

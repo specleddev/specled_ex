@@ -7,7 +7,7 @@ defmodule SpecLedEx.Prime do
     run_commands? = opts[:run_commands] == true
     bugfix? = opts[:bugfix] == true
     status_report = Status.build(index, verification_report, root)
-    next_report = Next.run(index, root, base: opts[:base], bugfix: bugfix?)
+    next_report = Next.run(index, root, base: opts[:base], since: opts[:since], bugfix: bugfix?)
 
     %{
       "generated_at" => status_report["generated_at"],

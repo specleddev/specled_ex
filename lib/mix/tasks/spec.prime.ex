@@ -24,6 +24,7 @@ defmodule Mix.Tasks.Spec.Prime do
           root: :string,
           spec_dir: :string,
           base: :string,
+          since: :string,
           bugfix: :boolean,
           run_commands: :boolean,
           min_strength: :string,
@@ -48,6 +49,7 @@ defmodule Mix.Tasks.Spec.Prime do
     report =
       SpecLedEx.prime(index, verification_report, root,
         base: opts[:base],
+        since: opts[:since],
         bugfix: opts[:bugfix],
         run_commands: run_commands?(opts)
       )

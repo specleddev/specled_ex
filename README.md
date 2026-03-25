@@ -75,6 +75,12 @@ For bug fixes:
 mix spec.next --bugfix
 ```
 
+For one focused workset inside a longer-lived branch:
+
+```bash
+mix spec.next --base main --since <checkpoint>
+```
+
 ## Local Usage
 
 Add as a path dependency in another project:

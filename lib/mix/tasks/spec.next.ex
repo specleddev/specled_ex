@@ -10,7 +10,13 @@ defmodule Mix.Tasks.Spec.Next do
     {opts, rest, invalid} =
       OptionParser.parse(
         args,
-        strict: [root: :string, spec_dir: :string, base: :string, bugfix: :boolean],
+        strict: [
+          root: :string,
+          spec_dir: :string,
+          base: :string,
+          since: :string,
+          bugfix: :boolean
+        ],
         aliases: [r: :root]
       )
 
@@ -20,7 +26,9 @@ defmodule Mix.Tasks.Spec.Next do
     spec_dir = opts[:spec_dir] || SpecLedEx.detect_spec_dir(root)
     authored_dir = SpecLedEx.detect_authored_dir(root, spec_dir)
     index = SpecLedEx.index(root, spec_dir: spec_dir, authored_dir: authored_dir)
-    report = SpecLedEx.next(index, root, base: opts[:base], bugfix: opts[:bugfix])
+
+    report =
+      SpecLedEx.next(index, root, base: opts[:base], since: opts[:since], bugfix: opts[:bugfix])
 
     Mix.shell().info(SpecLedEx.Next.format_human(report))
   end

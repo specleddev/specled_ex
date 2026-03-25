@@ -10,7 +10,9 @@ defmodule SpecLedEx.ChangeAnalysis do
   def analyze(index, root, opts \\ []) do
     git_repo? = git_repo?(root)
     base = detect_base_ref(root, opts[:base], git_repo?)
-    changed_files = changed_files(root, base, git_repo?)
+    since = detect_since_ref(root, opts[:since], git_repo?)
+    guidance_scope = guidance_scope(base, since)
+    changed_files = changed_files(root, guidance_scope, git_repo?)
     subject_file_map = Coverage.subject_file_map(index, root)
     changed_subject_ids = changed_subject_ids(index, changed_files)
     policy_files = Enum.filter(changed_files, &policy_target?/1)
@@ -36,6 +38,8 @@ defmodule SpecLedEx.ChangeAnalysis do
     %{
       git_repo?: git_repo?,
       base: base,
+      since: since,
+      guidance_scope: guidance_scope,
       changed_files: changed_files,
       policy_files: policy_files,
       subject_file_map: subject_file_map,
@@ -72,14 +76,14 @@ defmodule SpecLedEx.ChangeAnalysis do
   def changed_files(root, explicit_base \\ nil) do
     git_repo? = git_repo?(root)
     base = detect_base_ref(root, explicit_base, git_repo?)
-    changed_files(root, base, git_repo?)
+    changed_files(root, guidance_scope(base, nil), git_repo?)
   end
 
-  defp changed_files(_root, _base, false), do: []
+  defp changed_files(_root, _scope, false), do: []
 
-  defp changed_files(root, base, true) do
+  defp changed_files(root, scope, true) do
     [
-      diff_against_base(root, base),
+      scope_diff(root, scope),
       working_tree_diff(root),
       staged_diff(root),
       untracked_files(root)
@@ -95,6 +99,10 @@ defmodule SpecLedEx.ChangeAnalysis do
     detect_base_ref(root, explicit_base, git_repo?(root))
   end
 
+  def detect_since_ref(root, explicit_since \\ nil) do
+    detect_since_ref(root, explicit_since, git_repo?(root))
+  end
+
   defp detect_base_ref(_root, explicit_base, _git_repo?) when is_binary(explicit_base),
     do: explicit_base
 
@@ -102,6 +110,19 @@ defmodule SpecLedEx.ChangeAnalysis do
 
   defp detect_base_ref(root, nil, true) do
     Enum.find(["origin/main", "main", "master", "HEAD"], &git_ref_exists?(root, &1)) || "HEAD"
+  end
+
+  defp detect_since_ref(_root, nil, _git_repo?), do: nil
+
+  defp detect_since_ref(_root, explicit_since, false) when is_binary(explicit_since),
+    do: explicit_since
+
+  defp detect_since_ref(root, explicit_since, true) when is_binary(explicit_since) do
+    if git_ref_exists?(root, explicit_since) do
+      explicit_since
+    else
+      raise "git ref not found for --since: #{explicit_since}"
+    end
   end
 
   def decision_file?(path) do
@@ -144,6 +165,10 @@ defmodule SpecLedEx.ChangeAnalysis do
     git_lines(root, ["diff", "--name-only", "#{base}...HEAD"])
   end
 
+  defp diff_since_ref(root, since) do
+    git_lines(root, ["diff", "--name-only", "#{since}..HEAD"])
+  end
+
   defp working_tree_diff(root) do
     git_lines(root, ["diff", "--name-only"])
   end
@@ -183,6 +208,12 @@ defmodule SpecLedEx.ChangeAnalysis do
   end
 
   defp generated_state_file?(path), do: path == ".spec/state.json"
+
+  defp guidance_scope(_base, since) when is_binary(since), do: %{type: :since, ref: since}
+  defp guidance_scope(base, _since), do: %{type: :branch, ref: base}
+
+  defp scope_diff(root, %{type: :since, ref: since}), do: diff_since_ref(root, since)
+  defp scope_diff(root, %{type: :branch, ref: base}), do: diff_against_base(root, base)
 
   defp subject_file(subject) when is_map(subject) do
     Map.get(subject, "file", Map.get(subject, :file))
