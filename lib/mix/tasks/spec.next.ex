@@ -1,12 +1,11 @@
 defmodule Mix.Tasks.Spec.Next do
   use Mix.Task
+  @requirements ["loadpaths"]
 
   @shortdoc "Guides the next current-truth update for the current Git change set"
 
   @impl true
   def run(args) do
-    Mix.Task.run("app.start")
-
     {opts, rest, invalid} =
       OptionParser.parse(
         args,
