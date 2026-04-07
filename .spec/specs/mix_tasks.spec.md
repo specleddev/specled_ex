@@ -29,6 +29,7 @@ decisions:
   - specled.decision.declarative_current_truth
   - specled.decision.local_skill_scaffold
   - specled.decision.guided_reconciliation_loop
+  - specled.decision.no_app_start
 ```
 
 ## Requirements
@@ -78,6 +79,10 @@ decisions:
   statement: mix spec.status shall summarize coverage, verification strength, weak spots, and ADR usage for the current workspace, executing command verifications by default unless explicitly opted out.
   priority: should
   stability: evolving
+- id: specled.tasks.no_app_start
+  statement: No mix spec.* task shall call Mix.Task.run("app.start") or otherwise require the host OTP application to be running, since spec tasks perform only file I/O, Git CLI calls, and in-memory parsing.
+  priority: must
+  stability: stable
 ```
 
 ## Verification
@@ -98,4 +103,5 @@ decisions:
     - specled.tasks.validate_exit_status
     - specled.tasks.check_strict_gate
     - specled.tasks.status_summary
+    - specled.tasks.no_app_start
 ```

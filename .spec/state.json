@@ -71,6 +71,20 @@
         "id": "specled.decision.local_skill_scaffold",
         "status": "accepted",
         "title": "Local Skill Scaffold Supports Repo Usage"
+      },
+      {
+        "affects": [
+          "specled.mix_tasks",
+          "specled.branch_guard",
+          "specled.next",
+          "specled.prime",
+          "specled.status"
+        ],
+        "date": "2026-04-07",
+        "file": ".spec/decisions/specled.decision.no_app_start.md",
+        "id": "specled.decision.no_app_start",
+        "status": "accepted",
+        "title": "Spec Tasks Shall Not Start the OTP Application"
       }
     ]
   },
@@ -268,6 +282,14 @@
         "priority": "should",
         "stability": "evolving",
         "statement": "mix spec.next shall provide a read-only guided reconciliation step that points at the next subject, proof, or ADR update for the current Git change set and tell the maintainer when the branch is ready for the full local check.",
+        "subject_id": "specled.mix_tasks"
+      },
+      {
+        "file": ".spec/specs/mix_tasks.spec.md",
+        "id": "specled.tasks.no_app_start",
+        "priority": "must",
+        "stability": "stable",
+        "statement": "No mix spec.* task shall call Mix.Task.run(\"app.start\") or otherwise require the host OTP application to be running, since spec tasks perform only file I/O, Git CLI calls, and in-memory parsing.",
         "subject_id": "specled.mix_tasks"
       },
       {
@@ -623,7 +645,8 @@
         "meta": {
           "decisions": [
             "specled.decision.declarative_current_truth",
-            "specled.decision.guided_reconciliation_loop"
+            "specled.decision.guided_reconciliation_loop",
+            "specled.decision.no_app_start"
           ],
           "id": "specled.branch_guard",
           "kind": "workflow",
@@ -685,7 +708,8 @@
           "decisions": [
             "specled.decision.declarative_current_truth",
             "specled.decision.local_skill_scaffold",
-            "specled.decision.guided_reconciliation_loop"
+            "specled.decision.guided_reconciliation_loop",
+            "specled.decision.no_app_start"
           ],
           "id": "specled.mix_tasks",
           "kind": "workflow",
@@ -717,7 +741,8 @@
           "decisions": [
             "specled.decision.declarative_current_truth",
             "specled.decision.guided_reconciliation_loop",
-            "specled.decision.explicit_subject_ownership"
+            "specled.decision.explicit_subject_ownership",
+            "specled.decision.no_app_start"
           ],
           "id": "specled.next",
           "kind": "workflow",
@@ -782,7 +807,8 @@
         "meta": {
           "decisions": [
             "specled.decision.declarative_current_truth",
-            "specled.decision.guided_reconciliation_loop"
+            "specled.decision.guided_reconciliation_loop",
+            "specled.decision.no_app_start"
           ],
           "id": "specled.prime",
           "kind": "workflow",
@@ -829,7 +855,8 @@
           "decisions": [
             "specled.decision.declarative_current_truth",
             "specled.decision.explicit_subject_ownership",
-            "specled.decision.guided_reconciliation_loop"
+            "specled.decision.guided_reconciliation_loop",
+            "specled.decision.no_app_start"
           ],
           "id": "specled.status",
           "kind": "workflow",
@@ -978,7 +1005,8 @@
           "specled.tasks.validate_findings",
           "specled.tasks.validate_exit_status",
           "specled.tasks.check_strict_gate",
-          "specled.tasks.status_summary"
+          "specled.tasks.status_summary",
+          "specled.tasks.no_app_start"
         ],
         "execute": true,
         "file": ".spec/specs/mix_tasks.spec.md",
@@ -1086,10 +1114,10 @@
   "specification_version": "1.0",
   "summary": {
     "decision_parse_errors": 0,
-    "decisions": 5,
+    "decisions": 6,
     "exceptions": 0,
     "findings": 0,
-    "requirements": 53,
+    "requirements": 54,
     "scenarios": 5,
     "subjects": 12,
     "verifications": 18
@@ -1384,6 +1412,17 @@
       },
       {
         "cover_id": "specled.tasks.next_guidance",
+        "file": ".spec/specs/mix_tasks.spec.md",
+        "kind": "command",
+        "meets_minimum": true,
+        "required_strength": "claimed",
+        "strength": "executed",
+        "subject_id": "specled.mix_tasks",
+        "target": "mix test test/mix/tasks/spec_tasks_test.exs test/mix/tasks/spec_status_task_test.exs test/mix/tasks/spec_next_task_test.exs test/mix/tasks/spec_prime_task_test.exs",
+        "verification_index": 0
+      },
+      {
+        "cover_id": "specled.tasks.no_app_start",
         "file": ".spec/specs/mix_tasks.spec.md",
         "kind": "command",
         "meets_minimum": true,
@@ -1717,13 +1756,13 @@
     "default_minimum_strength": "claimed",
     "strength_summary": {
       "claimed": 2,
-      "executed": 46,
+      "executed": 47,
       "linked": 8
     },
     "threshold_failures": 0
   },
   "workspace": {
-    "decision_count": 5,
+    "decision_count": 6,
     "spec_count": 12
   }
 }

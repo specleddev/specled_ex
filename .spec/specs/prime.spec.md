@@ -18,6 +18,7 @@ surface:
 decisions:
   - specled.decision.declarative_current_truth
   - specled.decision.guided_reconciliation_loop
+  - specled.decision.no_app_start
 ```
 
 ## Requirements

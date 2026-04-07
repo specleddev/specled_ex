@@ -12,6 +12,7 @@ This project uses its own tooling to specify itself.
 - `AGENTS.md` — local operating guidance for agents working in `.spec/` (authored)
 - `decisions/README.md` — ADR guidance for durable cross-cutting decisions (authored)
 - `decisions/*.md` — accepted or superseded ADRs for the current workspace (authored)
+  - `decisions/specled.decision.no_app_start.md` — spec tasks shall not start the OTP application (accepted)
 - `specs/spec_system.spec.md` — meta-spec for this workspace (authored)
 - `specs/package.spec.md` — package-level contract (authored)
 - `specs/index_state.spec.md` — index building and canonical state rules (authored)

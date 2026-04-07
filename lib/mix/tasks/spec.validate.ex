@@ -16,8 +16,6 @@ defmodule Mix.Tasks.Spec.Validate do
 
   @impl true
   def run(args) do
-    Mix.Task.run("app.start")
-
     {opts, rest, invalid} =
       OptionParser.parse(
         args,

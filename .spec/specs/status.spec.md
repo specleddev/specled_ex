@@ -19,6 +19,7 @@ decisions:
   - specled.decision.declarative_current_truth
   - specled.decision.explicit_subject_ownership
   - specled.decision.guided_reconciliation_loop
+  - specled.decision.no_app_start
 ```
 
 ## Requirements

@@ -6,8 +6,6 @@ defmodule Mix.Tasks.Spec.Decision.New do
 
   @impl true
   def run(args) do
-    Mix.Task.run("app.start")
-
     {opts, rest, invalid} =
       OptionParser.parse(
         args,
