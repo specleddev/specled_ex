@@ -1,13 +1,12 @@
 defmodule Mix.Tasks.Spec.Decision.New do
   use Mix.Task
+  @requirements ["loadpaths"]
 
   @shortdoc "Scaffolds a decision ADR under .spec/decisions"
   @id_pattern ~r/^[a-z0-9][a-z0-9._-]*$/
 
   @impl true
   def run(args) do
-    Mix.Task.run("app.start")
-
     {opts, rest, invalid} =
       OptionParser.parse(
         args,

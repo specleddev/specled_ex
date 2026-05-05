@@ -1,12 +1,11 @@
 defmodule Mix.Tasks.Spec.Index do
   use Mix.Task
+  @requirements ["loadpaths"]
 
   @shortdoc "Builds index state and writes .spec/state.json"
 
   @impl true
   def run(args) do
-    Mix.Task.run("app.start")
-
     {opts, rest, invalid} =
       OptionParser.parse(
         args,

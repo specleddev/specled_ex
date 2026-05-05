@@ -1,5 +1,6 @@
 defmodule Mix.Tasks.Spec.Check do
   use Mix.Task
+  @requirements ["loadpaths"]
 
   alias SpecLedEx.VerificationStrength
 
@@ -19,8 +20,6 @@ defmodule Mix.Tasks.Spec.Check do
 
   @impl true
   def run(args) do
-    Mix.Task.run("app.start")
-
     {opts, rest, invalid} =
       OptionParser.parse(
         args,
