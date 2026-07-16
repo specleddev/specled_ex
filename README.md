@@ -1,5 +1,9 @@
 # SpecLedEx
 
+> **Maintenance status**
+>
+> Spec Led Development is no longer maintained. This repository remains public as a reference. No new features, bug fixes, or support are planned.
+
 Local helper package for Spec Led Development repositories.
 
 The commands make the most sense when you group them by job instead of reading
