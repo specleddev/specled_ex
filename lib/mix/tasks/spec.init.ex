@@ -1,5 +1,6 @@
 defmodule Mix.Tasks.Spec.Init do
   use Mix.Task
+  @requirements ["loadpaths"]
 
   @shortdoc "Scaffolds a canonical .spec/ workspace"
   @templates [
@@ -17,8 +18,6 @@ defmodule Mix.Tasks.Spec.Init do
 
   @impl true
   def run(args) do
-    Mix.Task.run("app.start")
-
     {opts, rest, invalid} =
       OptionParser.parse(args,
         strict: [root: :string, force: :boolean],
